@@ -1,0 +1,81 @@
+import classNames from 'classnames';
+import React, { ChangeEvent, FunctionComponent } from 'react';
+import { FormGroup, Input, Label } from 'reactstrap';
+
+import { withFormValue } from '../Consumer';
+import { FormContextValue } from '../Types';
+import { InputProps } from './Input';
+
+export interface CheckboxProps<Data> extends FormContextValue<Data> {}
+
+type CheckboxValues<Data extends Object = {}> = {[key in keyof Data]: boolean};
+
+export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & InputProps<CheckboxValues>> = <Data extends CheckboxValues<Data>>(
+    props: CheckboxProps<Data> & InputProps<Data>
+) => {
+  const {
+    data,
+    propertyKey,
+    setFormValue,
+  } = props;
+
+  const formValue = data[propertyKey as keyof Data];
+  const inputValue = formValue.value;
+  
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.checked;
+    
+    if (setFormValue) {
+      
+      const newFormValue = {
+        ...formValue,
+        value,
+      };
+      setFormValue(propertyKey, newFormValue);
+    }
+  }
+
+  const handleFocus = () => {
+    if (setFormValue) {
+      const newFormValue = {
+        ...formValue,
+        touched: true,
+      };
+      setFormValue(propertyKey, newFormValue);
+    }
+  };
+
+  const isValid = formValue?.pristine || formValue?.isValid ? true : false;
+
+  return (
+    <FormGroup check={true}>
+      <Label 
+        className={classNames({
+          'is-invalid': !isValid,
+        })}
+        check={true}
+      >
+        <Input
+          className={classNames({
+            'is-invalid': !isValid,
+          })}
+          disabled={props.disabled || (formValue && formValue.disabled) ? true : false}
+          checked={inputValue ? true : false}
+          value={inputValue ? 'true' : 'false'}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          name={formValue?.name as string}
+          type="checkbox"
+        />
+        {formValue?.config?.title}
+        {!isValid && (
+        <span className="invalid-feedback">
+          {formValue.error}
+        </span>
+      )}
+      </Label>
+    </FormGroup>
+  );
+};
+
+export const Checkbox = withFormValue<InputProps<Object>>(CheckboxBase);
