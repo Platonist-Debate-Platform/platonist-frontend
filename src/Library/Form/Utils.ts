@@ -1,15 +1,17 @@
+import { isArray, isObject } from 'lodash';
+
+import { FormInputTypes } from './Keys';
 import {
   CreateInitialFormDataProps,
   FormData,
+  FormDataConfig,
   FormDataItem,
   HandleValidationFn,
   PrepareValidationValuesFn,
-  ValidateValue,
   SubmitData,
+  ValidateValue,
 } from './Types';
-
 import { validate } from './Validate';
-import { FormInputTypes } from './Keys';
 
 export const createInitialFormData = <Data extends Object>(props: CreateInitialFormDataProps<Data>) => {
   const {
@@ -33,13 +35,14 @@ export const createInitialFormData = <Data extends Object>(props: CreateInitialF
     if (shouldPreValidate && config?.validate) {
       error = validateValues({
         comparison: comparison as string | string[],
+        group: config?.group,
         options: config?.validateOptions,
         types: config?.validate,
         value: value as ValidateValue,
       });
 
-      if (Array.isArray(error)) {
-        isValid = error.some(err => err.length === 0);
+      if (isArray(error)) {
+        isValid = error.some(err => err && err.length === 0);
       } else {        
         isValid = (error || error?.length) ? false : true;
       }  
@@ -70,13 +73,12 @@ export const getSubmitData = <Data extends Object>(formData: FormData<Data>, def
   const formDataAsArray = Object.keys(formData).map(key => formData[key as keyof FormData<Data>])
   const newData: Data | {} = {}
   
-  formDataAsArray.forEach(data => Object.assign(newData, {[data.name]: data.value || ''}));
+  formDataAsArray.forEach(data => 
+    Object.assign(newData, {[data.name]: data.value || data.defaultValue || ''})
+  );
   
   return {
-    data: {
-      ...defaultData,
-      ...newData,
-    },
+    data: newData as Data,
     isValid: !formDataAsArray.some(data => data.config?.required ? !data.isValid : false),
     pristine: !formDataAsArray.some(data => !data.pristine),
     touched: formDataAsArray.some(data => data.touched),
@@ -84,15 +86,15 @@ export const getSubmitData = <Data extends Object>(formData: FormData<Data>, def
 }
 
 export const handleValidation: HandleValidationFn = ({
+  comparison,
+  options, 
   types, 
   value, 
-  options, 
-  comparison
 }) => {
   let isValid: string | string[] | undefined = undefined;
  
   if (types) {
-    if (Array.isArray(types)) {
+    if (isArray(types)) {
       types.forEach(type => {
         const validation = handleValidation({
           comparison,
@@ -102,7 +104,7 @@ export const handleValidation: HandleValidationFn = ({
         });
 
         if (validation?.length)  {
-          isValid = ((Array.isArray(isValid) && isValid) || []);
+          isValid = ((isArray(isValid) && isValid) || []);
           isValid.push(validation as string);
         }
       })
@@ -120,10 +122,12 @@ export const handleValidation: HandleValidationFn = ({
 
 export const validateValues: PrepareValidationValuesFn = ({
   comparison,
+  group,
   types, 
   value, 
   options, 
 }) => {
+
   value = value === null || value === undefined ? '' : value;
   
   if (typeof value === 'boolean' || typeof value === 'string') {
@@ -133,33 +137,105 @@ export const validateValues: PrepareValidationValuesFn = ({
       value: value.toString(),
       options
     });
-  } else if (Array.isArray(value)) {
+  } else if (!isArray(value) && isObject(value) && group) {
+    const validation = Object.keys(value).map(key => {
+      const v = (value as any)[key as string];
+      const g = group.find(gr => gr.key === key);
+      
+      if (g && v) {
+        return validateValues({
+          comparison: g.comparison,
+          group: g.group,
+          types: g.validate,
+          value: v || '',
+          options: g.validateOptions,
+        }) || '';
+      }
 
+      return undefined;
+    });
+
+    const isValid = validation.filter(val => val !== '') as string | string[];
+    
+    if (isValid && isValid.length === 0) {
+      return '';
+    }
+    return isValid || '';
+
+  } else if (isArray(value)) {
     if (!value.length) {
       return 'Should contain Values';
     }
 
     const isValid: string | string[] = [];
+
     value.forEach(v => {
-      const validate = handleValidation({
+      const validation = !isArray(v) && isObject(v) ? validateValues({
+        comparison,
+        group,
+        types,
+        value: v,
+        options
+      }) : handleValidation({
         comparison,
         types,
         value: v,
         options
       });
 
-      if (validate && typeof validate === 'string') {
-        isValid.push(validate);
+      if (validation && typeof validation === 'string') {
+        isValid.push(validation);
       }
-      else if (Array.isArray(validate)) {
-        isValid.push(...validate);
+      else if (isArray(validation)) {
+        isValid.push(...validation);
       } else {
-        isValid.push('')
+        isValid.push('');
       }
     });
 
-    return isValid;
+    return isValid.filter(val => val !== '');
   }
 
   return undefined;
+};
+
+export const createDefaultData = <Data extends Object = {}>(data: FormDataConfig<Data>[]): Data => {
+  const newData: Data | {} = {}
+  
+  data.forEach(d => {
+    switch (d.type) {
+      case FormInputTypes.Date:
+        Object.assign(newData, {
+          [d.key]: new Date(),
+        });
+        break;
+      case FormInputTypes.Checkbox:
+        Object.assign(newData, {
+          [d.key]: false,
+        });
+        break;
+      case FormInputTypes.List:
+      case FormInputTypes.Multiple:
+        Object.assign(newData, {
+          [d.key]: [],
+        });
+        break;
+      case FormInputTypes.MultipleGroup:
+        Object.assign(newData, {
+          [d.key]: (d.group && [createDefaultData(d.group)]) || [],
+        });        
+        break;
+      case FormInputTypes.Group: 
+        Object.assign(newData, {
+          [d.key]: (d.group && createDefaultData(d.group)) || {},
+        });
+        break;
+      default:
+        Object.assign(newData, {
+          [d.key]: ''
+        });
+    } 
+  });
+
+  return newData as Data;
 };

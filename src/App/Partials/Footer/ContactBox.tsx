@@ -6,26 +6,19 @@ import { Contact, GlobalState, PublicRequestKeys } from "../../../Library";
 import { Image } from "../Image";
 
 interface ContactBoxProps {
-  [PublicRequestKeys.ServicesFilter]: GlobalState[PublicRequestKeys.ServicesFilter];
-  [PublicRequestKeys.Jobs]: GlobalState[PublicRequestKeys.Jobs];
   [PublicRequestKeys.Page]: GlobalState[PublicRequestKeys.Page];
   [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
   contact: Contact;
 }
 
 export const ContactBoxBase: FC<ContactBoxProps> = (props) => {
-  const { servicesFilter, page, router, jobs } = props;
+  const { page, router} = props;
 
-  const servîceContact =
-    servicesFilter.result &&
-    servicesFilter.result[0] &&
-    servicesFilter.result[0].contact;
-  const jobContact = jobs.result && jobs.result[0] && jobs.result[0].contactBox;
   const pageContact = page.result && page.result.contact;
   const homepageContact =
     router.location.pathname === "/" ? props.contact : null;
   const contact =
-    servîceContact || pageContact || homepageContact || jobContact || null; // props.contact;
+     pageContact || homepageContact || null; // props.contact;
 
   return (
     contact &&
@@ -80,8 +73,6 @@ export const ContactBoxBase: FC<ContactBoxProps> = (props) => {
 };
 
 export const ContactBox = connect((state: GlobalState) => ({
-  [PublicRequestKeys.ServicesFilter]: state[PublicRequestKeys.ServicesFilter],
-  [PublicRequestKeys.Jobs]: state[PublicRequestKeys.Jobs],
   [PublicRequestKeys.Page]: state[PublicRequestKeys.Page],
   [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],
 }))(ContactBoxBase);

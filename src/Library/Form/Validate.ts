@@ -91,6 +91,19 @@ export const validate: Validate = ({type, value, comparison, options}) => {
         return 'Value should be selected';
       }
       return undefined;
+    case FormValidationTypes.Words: 
+      const wordsOptions: validator.IsLengthOptions = {
+        min: 3,
+        ...(options as validator.IsLengthOptions || {})
+      }
+      const wordCount = value.split(' ').length;
+      if (wordCount <= (wordsOptions.min || 3)) {
+        return `Should be more then ${wordsOptions.min} words.`
+      }
+      if (wordsOptions.max && wordCount <= wordsOptions.max) {
+        return `Shouldn't be more then ${wordsOptions.max} words.`
+      }
+      return undefined;
     default:
       return undefined; 
   }

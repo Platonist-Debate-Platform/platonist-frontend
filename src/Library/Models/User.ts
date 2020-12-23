@@ -1,10 +1,8 @@
 import { AxiosRequestConfig } from 'axios';
 import { ReactReduxRequestState } from '../ReactReduxRequest';
-import { Author } from './Author';
 import { Role } from './Role';
 
 export interface User {
-  author?: Author | null;
   blocked?: boolean | null;
   confirmed?: boolean | null;
   email: string;
@@ -14,6 +12,8 @@ export interface User {
   resetPasswordToken: string;
   role?: Role | null;
   username: string;
+  firstName: string;
+  lastName: string;
 }
 
 export type UserState = ReactReduxRequestState<User, AxiosRequestConfig>;

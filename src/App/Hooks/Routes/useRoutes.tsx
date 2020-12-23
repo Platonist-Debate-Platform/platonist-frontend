@@ -1,7 +1,7 @@
 import React from 'react';
-import { Page, ContentKeys, Homepage } from "../../../Library";
-import { PageResolver, ContentResolverItem } from '../../Partials';
-import { RouteProps, RouteComponentProps } from 'react-router-dom';
+import { Page, Homepage, ContentKeys } from "../../../Library";
+import { ContentResolverItem, PageResolver } from '../../Partials';
+import { RouteComponentProps, RouteProps } from 'react-router-dom';
 
 export interface PageRoutesProps {
   isAdmin: boolean;
@@ -39,19 +39,16 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
       page.content.forEach((item, index) => {
         if (item) {
           switch(item.__component) {
-            case ContentKeys.BranchList:
-            case ContentKeys.JobList:
-            case ContentKeys.ServiceList:
+            case ContentKeys.DebateList:
               routes.push({
                 exact: true,
                 path: `${path}/:title`,
-                render: (props: RouteComponentProps) => 
-                  <ContentResolverItem 
+                render: (props: RouteComponentProps) => <ContentResolverItem
                     {...item}
                     isAdmin={isAdmin} 
                     path={path} 
                     routeProps={props} 
-                />,
+                />
               });
               break;
             default:
@@ -78,7 +75,4 @@ export const concatPages = (homepages: Homepage[]):Page[] => {
   return pages;
 }
 
-export const useRoutes = (props: PageRoutesProps): RouteProps[] => {
-  const routes = createRoutes(props);
-  return routes;
-}
+export const useRoutes = (props: PageRoutesProps): RouteProps[] => createRoutes(props);

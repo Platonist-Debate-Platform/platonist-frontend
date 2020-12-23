@@ -17,11 +17,11 @@ export const SelectBase: FunctionComponent<SelectProps<SelectValues> & InputProp
   const {
     data,
     formId,
-    propertyKey,
+    inputKey,
     setFormValue,
   } = props;
 
-  const inputValue = data[props.propertyKey as keyof Data];
+  const inputValue = data[props.inputKey as keyof Data];
   const selectValues = (inputValue && inputValue.config?.selectValues) || [];
   const selected = inputValue && inputValue.value;
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -32,7 +32,7 @@ export const SelectBase: FunctionComponent<SelectProps<SelectValues> & InputProp
         ...inputValue,
         touched: true,
       };
-      setFormValue(propertyKey, newInputValue, selectValues);
+      setFormValue(inputKey, newInputValue, selectValues);
     }
     return !prevState;
   });
@@ -44,7 +44,7 @@ export const SelectBase: FunctionComponent<SelectProps<SelectValues> & InputProp
         ...inputValue,
         value,
       };
-      setFormValue(propertyKey, newInputValue, selectValues);
+      setFormValue(inputKey, newInputValue, selectValues);
     }
   };
 
@@ -77,6 +77,7 @@ export const SelectBase: FunctionComponent<SelectProps<SelectValues> & InputProp
         >
           {selected}
         </div>
+
         <Dropdown className="input-group-append" isOpen={dropdownOpen} toggle={toggle} group={true}>
           <DropdownToggle caret={false} color={'none'} className="btn btn-outline-secondary">
             Select
@@ -85,7 +86,7 @@ export const SelectBase: FunctionComponent<SelectProps<SelectValues> & InputProp
             {selectValues.map((value, index) => {
               return (
                 <DropdownItem 
-                  key={`office_location_select_${formId}_${propertyKey}_${index}`}
+                  key={`office_location_select_${formId}_${inputKey}_${index}`}
                   onClick={() => handleClick(index)}
                 >
                   {value}

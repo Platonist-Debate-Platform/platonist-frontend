@@ -4,7 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Collapse, Navbar } from 'reactstrap';
 
-import { GlobalState, Page, PublicRequestKeys, Homepage } from '../../../Library';
+import { GlobalState, Page, PublicRequestKeys, Homepage, User } from '../../../Library';
 import { NavigationType } from './Keys';
 import Logo from './NavbarBrand';
 import Header from './NavbarHeader';
@@ -13,8 +13,9 @@ import { NavigationMobile } from './NavigationMobile';
 
 export interface NavbarComponentProps {
   [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
-  pages?: Page[];
   homePageData?: Homepage;
+  pages?: Page[];
+  user?: User;
 }
 
 export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
@@ -22,7 +23,6 @@ export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
   router,
   homePageData
 }) => {
-
   const [location, setLocation] = useState(router.location);
   const [toggled, setToggle] = useState<boolean>(false);
   const [screenSize, setScreenSize] = useState<{height: number; width: number;}>({

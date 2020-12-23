@@ -15,11 +15,11 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
 ) => {
   const {
     data,
-    propertyKey,
+    inputKey,
     setFormValue,
   } = props;
 
-  const formValue = data[propertyKey as keyof Data];
+  const formValue = data[inputKey as keyof Data];
   const inputValue = formValue.value;
   
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +31,7 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
         ...formValue,
         value,
       };
-      setFormValue(propertyKey, newFormValue);
+      setFormValue(inputKey, newFormValue);
     }
   }
 
@@ -41,14 +41,14 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
         ...formValue,
         touched: true,
       };
-      setFormValue(propertyKey, newFormValue);
+      setFormValue(inputKey, newFormValue);
     }
   };
 
   const isValid = formValue?.pristine || formValue?.isValid ? true : false;
 
   return (
-    <FormGroup check={true}>
+    <FormGroup className="form-group" check={true}>
       <Label 
         className={classNames({
           'is-invalid': !isValid,

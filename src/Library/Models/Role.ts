@@ -187,14 +187,13 @@ export interface UsersPermission {
 }
 
 export enum ApplicationKeys {
+  Article = 'article',
   Author = 'author',
-  Benefit = 'benefit',
-  Branch = 'branch',
-  CompanyLocation = 'company-location',
+  Comment = 'comment',
+  Debate = 'debate',
   Homepage = 'homepage',
-  Job = 'job',
   Page = 'page',
-  Service = 'service',
+  Rating = 'rating',
   Social = 'social',
 }
 

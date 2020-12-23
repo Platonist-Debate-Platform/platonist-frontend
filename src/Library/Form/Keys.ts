@@ -2,13 +2,16 @@ export enum FormInputTypes {
   Checkbox = 'checkbox',
   Date = 'date',
   Email = 'email',
+  Group = 'group',
   List = 'list',
   Multiple = 'multiple',
+  MultipleGroup = 'multipleGroup',
   Number = 'number',
   Password= 'password',
   Select = 'select',
   Static = 'static',
   String = 'string',
+  Text = 'text',
 }
 
 export enum FormValidationTypes {
@@ -16,11 +19,13 @@ export enum FormValidationTypes {
   Date = 'date',
   Email = 'email',
   Equal = 'equal',
+  Group = 'array',
   Length = 'length',
   Number = 'number',
   Password = 'password',
   Phone = 'phone',
   Selected = 'selected',
+  Words = 'words',
 }
 
 export enum AutocompleteKeys {

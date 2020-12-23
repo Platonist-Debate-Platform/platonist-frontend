@@ -21,11 +21,13 @@ export interface SubmitData<Data> {
   touched: boolean;
 }
 
+export type SetFormValueFn<Data> = (key: keyof Data | string, value: FormData<Data>[keyof FormData<Data>], comparison?: string | string[]) => void;
+
 export interface FormContextValue<Data> {
   data: FormData<Data>;
   formId: string;
   options: FormOptions;
-  setFormValue: (key: keyof Data | string, value: FormData<Data>[keyof FormData<Data>], comparison?: string | string[]) => void;
+  setFormValue: SetFormValueFn<Data>;
   submitData: SubmitData<Data>;
   // validateFormValue: (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void;
 }
@@ -34,10 +36,13 @@ export type ValidateOptions = validator.IsLengthOptions | validator.IsEmailOptio
 
 export interface FormDataConfig<Data> {
   autocomplete?: AutocompleteKeys;
+  compareKey?: (keyof Data);
   comparison?: Data[keyof Data];
   editable: boolean;
   format?: string;
+  group?: FormDataConfig<any>[];
   key: (keyof Data);
+  placeholder?: string;
   preValidate?: boolean;
   required: boolean;
   selectValues?: string[], 
@@ -96,7 +101,8 @@ export type HandleValidationFn = (
 
 export type PrepareValidationValuesProps = {
   comparison?: string | string[];
-  options?: ValidateBaseProps['options']; 
+  options?: ValidateBaseProps['options'];
+  group?: FormDataConfig<any>[];
   types: FormValidationTypes | FormValidationTypes[] | undefined;
   value: ValidateValue;
 }

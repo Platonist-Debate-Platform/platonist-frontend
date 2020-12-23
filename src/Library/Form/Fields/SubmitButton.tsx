@@ -46,6 +46,7 @@ export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonV
 
   return (
     <Button 
+      color="none"
       {...rest}
       disabled={isDisabled}
       onClick={handleClick}

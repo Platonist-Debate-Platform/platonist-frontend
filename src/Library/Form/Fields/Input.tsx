@@ -1,35 +1,48 @@
 import classNames from 'classnames';
-import React, { FunctionComponent, useState, ChangeEvent } from 'react';
+import React, { FunctionComponent, ChangeEvent, useContext, Context } from 'react';
 import { FormGroup, Label } from 'reactstrap';
 
-import { useFormValue } from '../Consumer';
-import { FormInputTypes } from '../Keys';
+import { FormContext } from '../Context';
+import { FormInputTypes, FormValidationTypes } from '../Keys';
+import { FormContextValue } from '../Types';
 
 export interface InputProps<Data extends Object> {
   className?: string;
   disabled?: boolean;
   hideLabel?: boolean;
-  propertyKey: keyof Data | string;
+  inputKey: keyof Data | string;
 }
 
-export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object>(
-  props: InputProps<Data>
-) => {
+export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object>({
+  className,
+  disabled,
+  hideLabel,
+  inputKey,
+}: InputProps<Data>) => {
 
-  const {formValue, setFormValue} = useFormValue(props.propertyKey as keyof Data);
-  
-  const [inputValue, setInputValue] = useState(formValue);
+  const {
+    data, 
+    setFormValue,
+    submitData,
+  } = useContext<FormContextValue<Data>>(FormContext as Context<FormContextValue<Data>>);
+
+  const inputValue = data && data[inputKey as keyof Data];
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    
     const value = event.target.value;
-
+    const compareKey = inputValue.config?.compareKey;
+    const comparison = (
+        inputValue.config?.validate === FormValidationTypes.Equal && compareKey && submitData.data[compareKey]
+      ) || undefined;
+    
     if (inputValue && setFormValue) {
       const newFormValue = {
         ...inputValue,
         value,
       };
-      setInputValue(newFormValue);
-      setFormValue(props.propertyKey, newFormValue);
+
+      setFormValue(inputKey, newFormValue, comparison as any);
     }
   }
 
@@ -40,17 +53,16 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
         touched: true,
       };
       
-      setInputValue(newFormValue);
-      setFormValue(props.propertyKey, newFormValue);
+      setFormValue(inputKey, newFormValue);
     }
   };
 
-  const isValid = formValue?.pristine || formValue?.isValid ? true : false;
-  const name = formValue?.name as string;
+  const isValid = inputValue?.pristine || inputValue?.isValid ? true : false;
+  const name = inputValue?.name as string;
   
   return (
-    <FormGroup className={props.className}>
-      {!props.hideLabel && (
+    <FormGroup className={className}>
+      {!hideLabel && (
         <>
           <Label
             className={classNames({
@@ -72,12 +84,13 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
         className={classNames('form-control', {
           'is-invalid': !isValid,
         })}
-        disabled={props.disabled || (inputValue && inputValue.disabled) ? true : false}
-        value={(inputValue && inputValue.value) as any || ''}
+        disabled={disabled || (inputValue && inputValue.disabled) ? true : false}
+        name={name}
         onChange={handleChange}
         onFocus={handleFocus}
-        name={name}
+        placeholder={inputValue?.config?.placeholder}
         type={inputValue?.config?.type === FormInputTypes.Number ? FormInputTypes.Number : (inputValue?.config?.type || 'text')}
+        value={(inputValue && inputValue.value) as any || ''}
       />
     </FormGroup>
   );

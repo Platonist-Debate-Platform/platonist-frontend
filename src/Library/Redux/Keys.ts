@@ -1,23 +1,20 @@
 export enum PublicRequestKeys {
   Alerts = 'alerts',
   Authentication = 'authentication',
-  Branch = 'branch',
-  Branches = 'branches',
+  Comments = 'comments',
+  Debate = 'debate',
+  DebateLink = 'debateLink',
+  Debates = 'debates',
   Homepage = 'homepage',
   Homepages = 'homepages',
-  Job = 'job',
-  Jobs = 'jobs',
-  JobsLatest = 'jobsLatest',
   Locals ='locals',
   Page = 'page',
   Pages = 'pages',
   Router = 'router',
-  Service = 'service',
-  Services = 'services',
-  ServicesFilter = 'servicesFilter',
 }
 
 export enum PrivateRequestKeys {
+  Comment = 'comment',
   Role = 'role',
   Roles = 'roles',
   Permission = 'permission',

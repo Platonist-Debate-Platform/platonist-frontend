@@ -5,14 +5,14 @@ import { useCookie } from 'react-use';
 import { GlobalState, PublicRequestKeys, RequestStatus } from '../../../Library';
 
 export interface AuthCookie {
-  jwt: string;
+  status: string;
   id: string;
 }
 
-export type UseAuthentication = [boolean, {Authorization: string | undefined}, AuthCookie | undefined];
+export type UseAuthentication = [boolean, {status: string | undefined}, AuthCookie | undefined];
 
 const authenticationChecker = (state: GlobalState[PublicRequestKeys.Authentication]): boolean => 
-  state.status === RequestStatus.Loaded && state.result?.jwt && state.result?.jwt.length > 0 ? true : false;
+  state.status === RequestStatus.Loaded && state.result?.status === 'Authenticated' ? true : false;
 
 export const useAuthentication = (): UseAuthentication => {
   const authentication = useSelector<
@@ -22,11 +22,11 @@ export const useAuthentication = (): UseAuthentication => {
     state => state[PublicRequestKeys.Authentication]
   );
     
-  const [cookie, setAuthCookie, deleteAuthCookie] = useCookie('authentication');
+  const [cookie, setAuthCookie, deleteAuthCookie] = useCookie('authStatus');
   const authCookie = (cookie && JSON.parse(cookie) as AuthCookie) || undefined;
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    (authCookie && authCookie.jwt && authCookie.jwt.length > 0 && true) || authenticationChecker(authentication)
+    (authCookie && authCookie.status && authCookie.status === 'Authenticated' && true) || authenticationChecker(authentication)
   );
  
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useAuthentication = (): UseAuthentication => {
 
     if (!authCookie && isAuthenticated && authentication.result) {
       setAuthCookie(JSON.stringify({
-        jwt: authentication.result.jwt,
+        status: authentication.result.status,
         id: authentication.result.user.id,
       } as AuthCookie))
     }
@@ -55,7 +55,7 @@ export const useAuthentication = (): UseAuthentication => {
 
   return [
     isAuthenticated, {
-      Authorization: authCookie && `Bearer ${authCookie.jwt}`
+      status: authCookie && authCookie.status,
     },
     authCookie,
   ];

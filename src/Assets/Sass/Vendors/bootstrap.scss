@@ -52,15 +52,15 @@ $grays: map-merge(
   $grays
 );
 
-$blue-darker:     #131e36;
-$blue-dark:       #21335b;
-$blue:            #37578a;
-$blue-light:      #4f89c8;
+$blue-darker:     #1f2535;
+$blue-dark:       #444b51;
+$blue:            #3d2831;
+$blue-light:      lighten($blue, 25%);
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
 $red:     #dc3545 !default;
-$orange:  #fd7e14 !default;
+$orange:  #da7831 !default;
 $yellow:  #ffc107 !default;
 $green:   #5db77a !default;
 $teal:    #20c997 !default;
@@ -115,6 +115,7 @@ $theme-colors: map-merge(
     "blue-dark":    $blue-dark,
     "blue":         $blue,
     "green":        $green,
+    "orange":       $orange,
   ),
   $theme-colors
 );
@@ -224,7 +225,7 @@ $body-color:                $blue-darker !default;
 //
 // Style anchor elements.
 
-$link-color:                              theme-color("green") !default;
+$link-color:                              theme-color("orange") !default;
 $link-decoration:                         none !default;
 $link-hover-color:                        darken($link-color, 15%) !default;
 $link-hover-decoration:                   none !default;
@@ -354,7 +355,7 @@ $mobile-h5-font-size:                $mobile-font-size-base;
 $mobile-h6-font-size:                $mobile-font-size-sm;
 
 $headings-margin-bottom:      $spacer * 1.8;
-$headings-font-family:        AmpleSoft !default;
+$headings-font-family:        Roboto !default;
 $headings-font-weight:        600 !default;
 $headings-line-height:        1.2 !default;
 $headings-color:              null !default;

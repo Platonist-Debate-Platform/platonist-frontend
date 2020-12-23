@@ -1,66 +1,92 @@
-import React, { FunctionComponent, useContext } from 'react';
+import React, { FunctionComponent, useContext, useEffect } from 'react';
 import { Form as FormElement } from 'reactstrap';
 
 import { FormContext } from './Context';
-import { Input, MultipleInput, Select, DateInput } from './Fields';
-import { FormInputTypes } from './Keys';
+import { FormResolver } from './FormResolver';
 import { FormContextValue, FormData, FormEvent } from './Types';
 
+export type OnContextChange<D> = (key: string, data: FormContextValue<D>) => void;
 export interface FormProps<Data extends Object = {}> {
+  asForm: boolean;
   className?: string;
   data?: FormData<Data>;
   inline?: boolean;
+  inputKey?: string;
   onChange?: <D>(event: FormEvent<D>) => void;
+  onContextChange?: <D>(key: string, data: FormContextValue<D>) => void;
   onSubmit?: <D>(event: FormEvent<D>) => void;
 }
 
 export const Form: FunctionComponent<FormProps> = <Data extends Object>(
   props: FormProps<Data>
 ) => {
+
+  const {
+    asForm,
+    className,
+    data,
+    inline,
+    inputKey,
+    onChange,
+    onContextChange,
+    onSubmit,
+  } = props;
+
   const context = useContext(FormContext as React.Context<FormContextValue<Data> | undefined>);
   
-  let data: FormData<Data>;
+  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
+    if (onChange && context ) {
+      onChange<Data>({
+        ...event,
+        data: context.data,
+        submitData: context.submitData,
+      });
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    if (onSubmit && context) {
+      onSubmit<Data>({
+        ...event,
+        data: context.data,
+        submitData: context.submitData,
+      });
+    }
+  }
+
+  useEffect(()=> {     
+    if (!asForm && inputKey && onContextChange && context) {
+      onContextChange(inputKey, context);
+    }
+  }, [
+    asForm,
+    context,
+    inputKey,
+    onContextChange,
+  ]);
+
+  let formData: FormData<Data>;
   if (!(context && context.data)) {
-    console.warn('Context Provider is missing, using data from props.');
-    if (props.data) {
-      data = props.data;
+    console.warn('Context Provider is missing, using data from ');
+    if (data) {
+      formData = data;
     } else {
       console.warn('Could not render Form, data property is missing.');
       return null;
     }
   } else {
-    data = context.data;
+    formData = context.data;
   }
 
-  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
-    if (props.onChange && context) {
-      props.onChange<Data>({
-        ...event,
-        data: context.data,
-        submitData: context.submitData,
-      })
-    }
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (props.onSubmit && context) {
-      props.onSubmit<Data>({
-        ...event,
-        data: context.data,
-        submitData: context.submitData,
-      })
-    }
-  }
-
-  return (
+  return (asForm && (
     <FormElement 
-      className={props.className}
-      inline={props.inline}
+      className={className}
+      inline={inline}
       onChange={handleChange}
       onSubmit={handleSubmit}
     >
-      {(Object.keys(data) as (keyof FormData<Data>)[]).map((propertyKey, index) => {
-        const item = data[propertyKey];
+      {(Object.keys(formData) as (keyof FormData<Data>)[]).map((inputKey, index) => {
+        const item = formData[inputKey];
 
         if (!item.shouldRender || !item.config) {
           return null;
@@ -68,43 +94,36 @@ export const Form: FunctionComponent<FormProps> = <Data extends Object>(
 
         const key = `form_${context?.formId}_${item.config.type}_${index}`;
         
-        switch (item.config.type) {
-          case FormInputTypes.Date:
-            return (
-              <React.Fragment key={key}>
-                <DateInput propertyKey={propertyKey as string} />
-              </React.Fragment>
-            );
-          case FormInputTypes.Multiple:
-            return (
-              <React.Fragment key={key}>
-                <MultipleInput propertyKey={propertyKey as string} />
-              </React.Fragment>
-            );
-          case FormInputTypes.Email:
-          case FormInputTypes.Number:
-          case FormInputTypes.Password:
-          case FormInputTypes.String:
-            return (
-              <React.Fragment key={key}>
-                <Input propertyKey={propertyKey as string} />
-              </React.Fragment>
-            );
-          case FormInputTypes.Select:
-            return (
-              <React.Fragment key={key}>
-                <Select propertyKey={propertyKey as string} />
-              </React.Fragment>
-            );
-          case FormInputTypes.Static:
-          default:
-            return (
-              <React.Fragment key={key}>
-                {item.value}
-              </React.Fragment>
-            );
-        }
+        return (
+          <FormResolver 
+            key={key} 
+            inputKey={inputKey as string} 
+            type={item.config.type}
+            value={item.value}
+          />
+        );
       })}
     </FormElement>
+  )) || (
+    <div>
+      {(Object.keys(formData) as (keyof FormData<Data>)[]).map((inputKey, index) => {
+        const item = formData[inputKey];
+
+        if (!item.shouldRender || !item.config) {
+          return null;
+        }
+
+        const key = `form_${context?.formId}_${item.config.type}_${index}`;
+        
+        return (
+          <FormResolver 
+            key={key} 
+            inputKey={inputKey as string} 
+            type={item.config.type}
+            value={item.value}
+          />
+        );
+      })}
+    </div>
   );
 };

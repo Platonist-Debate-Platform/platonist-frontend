@@ -61,8 +61,12 @@ export class SetScrollPositionBase extends React.Component<ScrollPositionProps> 
     const { 
       location
     } = this.props.router;
+
+    const pattern = /\?.*(modal=|edit=)/;
+    const isModal = pattern.test(location.search);
+    const isModalPrev = pattern.test(prevProps.router.location.search);
     
-    if (location !== prevProps.router.location) {
+    if (!isModal && !isModalPrev && location !== prevProps.router.location) {
       window.scrollTo(0, 0);
     }
   }

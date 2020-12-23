@@ -11,35 +11,32 @@ import {
 } from '../../../Library';
 import { useAuthentication } from './useAuthentication';
 
-export const useRoles = (key: PrivateRequestKeys | PrivateRequestKeys.Roles, id?: string) => {
+export const useRoles = (key: PrivateRequestKeys.Role | PrivateRequestKeys.Roles, id?: string) => {
   
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const [isAuthenticated, headers] = useAuthentication();
-  const url = config.createApiUrl(config.api.config);
-  url.pathname = `users-permissions/roles${(id && '/' + id) || ''}`;
+  const [isAuthenticated, state] = useAuthentication();
   
   const roles = useSelector<
   GlobalState, 
   GlobalState[typeof key]
   >(state => state[key]);
-    
+
+  const url = config.createApiUrl(config.api.config);
+  url.pathname = `users-permissions/roles${(id && '/' + id) || ''}`;
+  
   useEffect(() => {
+    if (key === PrivateRequestKeys.Role && !id) {
+      return;
+    }
     if (isAuthenticated && roles.status === RequestStatus.Initial) {
       dispatch(requestAction.load(key, {
         method: 'GET',
         url: url.href,
-        headers,
+        withCredentials: true,
       }));
     }
-  }, [
-    dispatch,
-    isAuthenticated,
-    headers,
-    key,
-    roles,
-    url.href
-  ]);
+  }, [dispatch, isAuthenticated, key, roles, url.href, state.status, id]);
 
   return roles;
 };

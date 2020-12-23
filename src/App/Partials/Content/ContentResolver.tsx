@@ -2,15 +2,10 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import {
-  BenefitList as BenefitListProps,
-  BranchList as BranchListProps,
   Content,
   ContentKeys,
-  JobList as JobListProps,
+  DebateList as DebateListProps,
   Jumbotron,
-  RelevantBranches as RelevantBranchesProps,
-  ServiceList as ServiceListProps,
-  ServiceSlider as ServiceSliderProps,
   Tab as TabProps,
   Teaser as TeaserProps,
   Text,
@@ -18,13 +13,9 @@ import {
   TextWithList as TextWithListProps,
   CompanyLocationList as CompanyLocationListProps,
 } from "../../../Library";
-import { BenefitsList } from "./Benefit";
-import { BranchRoute } from "./Branch";
-import { RelevantBranches } from "./Branch/RelevantBranches";
 import { CompanyLocationsList } from "./CompanyLocation";
-import { JobList } from "./Job";
+import { DebateRoute } from "./Debate";
 import { JumbotronComponent } from "./Jumbotron";
-import { ServiceRoute, ServiceSlider } from "./Service";
 import { TabPage } from "./Tab";
 import { Teaser } from "./Teaser";
 import { TextComponent, TextWithImage, TextWithList } from "./Text";
@@ -54,30 +45,11 @@ export const ContentResolverItem: React.FC<ContentResolverItemProps> = (
   const { __component } = props;
 
   switch (__component) {
-    case ContentKeys.BenefitsList:
-      return <BenefitsList {...(props as BenefitListProps)} />;
-
-    case ContentKeys.BranchList:
-      return <BranchRoute {...(props as BranchListProps & ContentResolverItemExtendedProps)} />;
-
-    case ContentKeys.JobList:
-      return <JobList {...(props as JobListProps & ContentResolverItemExtendedProps)} />;
+    case ContentKeys.DebateList: 
+      return <DebateRoute {...(props as DebateListProps & ContentResolverItemExtendedProps)} />;
 
     case ContentKeys.Jumbotron:
       return <JumbotronComponent {...(props as Jumbotron)} />;
-
-    case ContentKeys.RelevantBranches:
-    case ContentKeys.RelevantServices:
-      return <RelevantBranches {...(props as RelevantBranchesProps)} />;
-
-    case ContentKeys.ServiceList:
-      return (
-        <ServiceRoute {...(props as ServiceListProps & ContentResolverItemExtendedProps)} />
-      );
-
-    case ContentKeys.ServiceSlider:
-    case ContentKeys.BranchSlider:
-      return <ServiceSlider {...(props as ServiceSliderProps)} />;
 
     case ContentKeys.Tab:
       return <TabPage {...(props as TabProps)} />;

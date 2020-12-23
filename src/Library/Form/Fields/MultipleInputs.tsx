@@ -19,7 +19,7 @@ export const MultipleInputBase: FunctionComponent<MultipleInputProps<MultipleInp
     setFormValue,
   } = props;
   
-  const inputValue = data[props.propertyKey as keyof Data];
+  const inputValue = data[props.inputKey as keyof Data];
   const values = !(inputValue && inputValue.value) || ((inputValue.value.length === 0) && (inputValue.value && !inputValue.value[0])) ? [''] : inputValue.value;
   const last = values[values.length - 1];
   const disabled = last.length === 0 || (values.length === 1 && last.length === 0);
@@ -31,7 +31,7 @@ export const MultipleInputBase: FunctionComponent<MultipleInputProps<MultipleInp
       ...inputValue,
       value: newValues
     };
-    setFormValue(props.propertyKey, newInputValue);
+    setFormValue(props.inputKey, newInputValue);
   };
 
   const handleFocus = () => {
@@ -40,7 +40,7 @@ export const MultipleInputBase: FunctionComponent<MultipleInputProps<MultipleInp
         ...inputValue,
         touched: true,
       };
-      setFormValue(props.propertyKey, newInputValue);
+      setFormValue(props.inputKey, newInputValue);
     }
   };
 
@@ -58,7 +58,7 @@ export const MultipleInputBase: FunctionComponent<MultipleInputProps<MultipleInp
       ...inputValue,
       value: values
     };
-    setFormValue(props.propertyKey, newInputValue);
+    setFormValue(props.inputKey, newInputValue);
   }
 
   const isValid = inputValue && (inputValue.pristine || inputValue.isValid) ? true : false;
@@ -85,7 +85,7 @@ export const MultipleInputBase: FunctionComponent<MultipleInputProps<MultipleInp
               className={classNames({
                 'mt-3': index > 0,
               })}
-              key={`input_multiple_${props.propertyKey}_${index}`}
+              key={`input_multiple_${props.inputKey}_${index}`}
             >
               <input
                 className={classNames('form-control', {

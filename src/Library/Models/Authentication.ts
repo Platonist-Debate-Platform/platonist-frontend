@@ -3,7 +3,7 @@ import { ReactReduxRequestState } from '../ReactReduxRequest';
 import { User } from './User';
 
 export interface Authentication {
-  jwt: string;
+  status: string;
   user: User
 }
 

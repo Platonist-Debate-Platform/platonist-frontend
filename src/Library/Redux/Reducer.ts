@@ -6,6 +6,7 @@ import { ReactReduxRequest } from '../ReactReduxRequest/ReactReduxRequest';
 import { PrivateRequestKeys, PublicRequestKeys } from './Keys';
 import { alertReducer } from '../Alerts';
 import { localizeReducer } from '../Localize';
+import { debateLinkReducer } from '../DebateLink';
 
 const getRequestKeys = (requestKeys: Object): string[] => 
   Object.keys(requestKeys).map((key) => requestKeys[key as never]);
@@ -20,9 +21,10 @@ export const reactReduxRequest = new ReactReduxRequest({
 
 export const createRootReducer = (history: History) => combineReducers({
   ...reactReduxRequest.createReducer(),
-  alerts: alertReducer,
-  locals: localizeReducer,
-  router: connectRouter(history),
+  [PublicRequestKeys.Alerts]: alertReducer,
+  [PublicRequestKeys.Locals]: localizeReducer,
+  [PublicRequestKeys.Router]: connectRouter(history),
+  [PublicRequestKeys.DebateLink]: debateLinkReducer,
 });
 
 export default createRootReducer;

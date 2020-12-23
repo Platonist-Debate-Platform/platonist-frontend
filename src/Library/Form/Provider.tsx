@@ -7,7 +7,7 @@ import { randomHash } from '../Utils';
 import { FormContext } from './Context';
 import { Form } from './Form';
 import { FormContextValue, FormData, FormDataConfig, FormOptions } from './Types';
-import { createInitialFormData, validateValues, getSubmitData } from './Utils';
+import { createInitialFormData, getSubmitData, validateValues } from './Utils';
 
 export interface FormProviderProps<Data extends Object = {}> {
   children?: ReactNode;
@@ -16,6 +16,7 @@ export interface FormProviderProps<Data extends Object = {}> {
   inputConfig: FormDataConfig<Data>[];
   isProtected?: boolean;
   preValidate?: boolean;
+  reset?: boolean;
 }
 
 export class FormProvider<Data extends Object = {}> extends Component<FormProviderProps<Data>, FormContextValue<Data>> {
@@ -56,18 +57,22 @@ export class FormProvider<Data extends Object = {}> extends Component<FormProvid
     if (key as keyof Data in formData) {
       const error = formValue.config && validateValues({
         comparison: comparison || formValue.config.comparison as string | undefined,
+        group: formValue.config?.group,
         types: formValue.config.validate,
         value: formValue.value as never,
         options: formValue.config.validateOptions
-      })
+      });
 
+      
       let isValid = false;
-      if (Array.isArray(error)) {
-        isValid = error.some(err => err.length === 0);
+      if (Array.isArray(error) && error.length) {
+        isValid = error.filter(err => err !== undefined || err === '').some(err => err && err.length === 0);
+      } else if (Array.isArray(error) && !error.length) {
+        isValid = true;
       } else {        
         isValid = (error || error?.length) ? false : true;
-      }      
-
+      }
+      
       let pristine = true;
       if (Array.isArray(formValue.value)) {
         pristine = Array.isArray(formValue.value) && Array.isArray(formValue.defaultValue) && isEqual(formValue.value, formValue.defaultValue);
@@ -93,6 +98,35 @@ export class FormProvider<Data extends Object = {}> extends Component<FormProvid
     }
   }
 
+  componentDidUpdate(prevProps: FormProviderProps<Data>) {
+    const {
+      data,
+      inputConfig,
+      isProtected,
+      preValidate,
+      reset,
+    } = this.props;
+
+    if (reset && !prevProps.reset) {
+
+      const options: FormOptions = {
+        isProtected: isProtected ? true : false,
+        preValidate: preValidate === undefined ? true : preValidate,
+      }
+
+      const formData = createInitialFormData<Data>({
+        data, 
+        inputConfig, 
+        isProtected: options.isProtected,
+        preValidate: options.preValidate,
+      });
+      this.setState({
+        data: formData,
+        submitData: getSubmitData(formData, data),
+      });
+    }
+  }
+
   render () {
     const value = this.state as FormContextValue<Data>;
     
@@ -101,7 +135,7 @@ export class FormProvider<Data extends Object = {}> extends Component<FormProvid
         {this.props.children ? (
           <>{this.props.children}</>
         ) :  (
-          <Form />
+          <Form asForm={true} />
         )}
       </FormContext.Provider>
     );

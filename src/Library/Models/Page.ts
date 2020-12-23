@@ -3,7 +3,6 @@ import { AxiosRequestConfig } from 'axios';
 import { ReactReduxRequestState } from '../ReactReduxRequest';
 import { Contact } from './Contact';
 import { Content } from './Content';
-import { FooterNav } from './Footer';
 import { Homepage } from './Homepage';
 import { Meta } from './Meta';
 
@@ -12,7 +11,6 @@ export interface Page {
   contact: Contact | null;
   content: (Content | null)[] | null;
   created_at: Date;
-  footerNav?: (FooterNav | null)[] | null;
   homepage?: Homepage | null;
   id: number;
   inFooter: boolean;

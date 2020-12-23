@@ -1,25 +1,13 @@
-import {
-  RelevantServices,
-  ServiceItem,
-  ServiceList,
-  ServiceSlider,
-} from "./Service";
+
 import { TextWithImage, Text, TextWithList } from "./Text";
 import { Jumbotron } from "./Jumbotron";
 import { Tab } from "./Tab";
-import { JobList } from "./Job";
 import { Teaser } from "./Teaser";
+import { Debate } from "./Debate";
 
 export enum ContentKeys {
-  BenefitsList = "page-content.benefit-list",
-  BranchList = "page-branches.branch-list",
-  BranchSlider = "page-branches.branch-slider",
-  JobList = "page-jobs.job-list",
+  DebateList = "debates.debate-list",
   Jumbotron = "page-content.jumbotron",
-  RelevantBranches = "page-branches.relevant-branches",
-  RelevantServices = "page-services.relevant-services",
-  ServiceList = "page-services.service-list",
-  ServiceSlider = "page-services.service-slider",
   Tab = "page-content.tab",
   Teaser = "page-content.teaser",
   Text = "page-content.text",
@@ -30,7 +18,6 @@ export enum ContentKeys {
 }
 
 export type HomepageContent =
-  | JobList
   | Jumbotron
   | Tab
   | Teaser
@@ -38,10 +25,7 @@ export type HomepageContent =
   | TextWithImage
   | TextWithList;
 
-export type PageContent =
-  | RelevantServices
-  | ServiceItem
-  | ServiceList
-  | ServiceSlider;
+export type PageContent = 
+  | Debate;
 
 export type Content = HomepageContent & PageContent;

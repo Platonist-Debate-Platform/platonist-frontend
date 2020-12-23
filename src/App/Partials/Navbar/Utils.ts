@@ -1,4 +1,3 @@
-import { FooterNavItems, Page } from '../../../Library';
 import { NavigationType } from './Keys';
 
 
@@ -15,23 +14,8 @@ export const enableNavItem = (type: NavigationType, inNavigation: boolean, inFoo
   }
 }
 
-export const getNavItems = (navItems: Page['footerNav']) => {
-  if (!navItems) { return; }
-
-  const items: FooterNavItems[] = [];
-  
-  navItems.forEach(navItem => {
-    if (navItem && navItem.items && navItem.items.length > 0) {
-      navItem.items.forEach(item => item && items.push(item));
-    }
-  });
-
-  return items;
-}
-
 export const utils = {
   enableNavItem,
-  getNavItems
 }
 
 export default utils;

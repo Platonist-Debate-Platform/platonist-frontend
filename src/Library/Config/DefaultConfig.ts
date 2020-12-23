@@ -17,15 +17,15 @@ const resolveApiUrl = (environment: AppEnvKeys) => {
       return 'api.globalctgroup.com';
     case AppEnvKeys.Development:
     default:
-      return 'staging-api.globalctgroup.com';
+      return 'localhost';
   }
 };
 
 export const apiConfig: ApiConfig = {
-  protocol: ApiProtocol.Https, // isDevelopment ? ApiProtocol.Http : ApiProtocol.Https,
+  protocol: isDevelopment ? ApiProtocol.Http : ApiProtocol.Https,
   url: env.REACT_APP_API || resolveApiUrl(env.NODE_ENV as AppEnvKeys),
   path: '',
-  port: undefined, // isDevelopment ? 1337 : undefined,
+  port: isDevelopment ? 1337 : undefined,
 };
 
 

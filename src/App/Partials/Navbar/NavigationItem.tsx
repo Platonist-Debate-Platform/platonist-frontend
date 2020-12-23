@@ -1,12 +1,11 @@
 import classNames from 'classnames';
-import { concat } from 'lodash';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Nav, NavItem } from 'reactstrap';
-import { FooterNavItems, GlobalState, Page, PublicRequestKeys } from '../../../Library';
+import { GlobalState, Page, PublicRequestKeys } from '../../../Library';
 import { NavigationType } from './Keys';
-import { enableNavItem, getNavItems } from './Utils';
+import { enableNavItem } from './Utils';
 
 export interface NavigationItemProps extends Page {
   index: number;
@@ -18,7 +17,7 @@ export interface NavigationItemProps extends Page {
 }
 
 interface NavigationContentItemProps {
-  item: FooterNavItems | Page;
+  item: Page;
   parentLink?: string;
   title: string;
   location: GlobalState['router']['location']
@@ -46,7 +45,6 @@ export const NavigationContentItem: React.FC<NavigationContentItemProps> = ({
 export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
   const {
     active,
-    footerNav,
     inFooter,
     inNavigation,
     isSandwich,
@@ -63,7 +61,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
   const { location } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(state => state[PublicRequestKeys.Router]);
   const enabled = enableNavItem(navFor, inNavigation, inFooter);
 
-  const items = concat<Page | FooterNavItems | null>(pages || [], getNavItems(footerNav) || []);
+  const items = pages || [];
   const linkTo = (parentLink || '') + `/${title}`;
   const isActive = location.pathname === linkTo || location.pathname.startsWith(linkTo);
   const hasNoItems = !items || (items && items.length === 0);

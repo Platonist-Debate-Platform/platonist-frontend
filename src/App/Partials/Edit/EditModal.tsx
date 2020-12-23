@@ -1,38 +1,67 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { Location } from 'history';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
-import { GlobalState } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from '../../../Library';
 
 export interface EditModalProps {
+  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router],
   className?: string;
-  location: string;
+  children: ReactNode
+  pathname: string;
 }
 
-export const EditModal: FunctionComponent<EditModalProps> = ({
+const showModal = (pathname: string, location: Location) => {
+  if (!location.search.length) {
+    return false;
+  }
+
+  return location.pathname + location.search === pathname
+}
+
+export const EditModalWithoutState: FunctionComponent<EditModalProps> = ({
   className,
   children,
+  pathname,
+  router,
 }) => {
-  
-  const router = useSelector((state: GlobalState) => state.router);
-  console.log(router);
-  
-  const [modal, setModal] = useState(false);
+
+  const [modal, setModal] = useState(showModal(pathname, router.location));
+  const [redirect, setRedirect] = useState(false);
 
   const toggle = () => setModal(!modal);
+  
+  useEffect(() => {
+    setModal(showModal(pathname, router.location));
+    setRedirect(false);
+  }, [
+    router,
+    pathname,
+  ]);
 
   return (
-    <Modal isOpen={modal} toggle={toggle} className={className}>
-      <ModalHeader toggle={toggle}>Modal title</ModalHeader>
-      <ModalBody>
-        {children}
-      </ModalBody>
-      <ModalFooter>
-        <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
-        <Button color="secondary" onClick={toggle}>Cancel</Button>
-      </ModalFooter>
-    </Modal>
+    <>
+      <Modal size="lg" isOpen={modal} className={className} onClosed={() => setRedirect(true)}>
+        <ModalHeader toggle={toggle}>Modal title</ModalHeader>
+        <ModalBody>
+          {children}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
+          <Button color="secondary" onClick={toggle}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+      {redirect && (
+        <Redirect to={router.location.pathname} />
+      )}
+    </>
   );
 }
+
+export const EditModal = connect((state: GlobalState) =>({
+  [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],
+}))(EditModalWithoutState);
 
 export default EditModal;

@@ -1,7 +1,7 @@
 import React, { Component, ComponentType, useContext } from 'react';
 
 import { FormContext } from './Context';
-import { FormContextValue, KeyOfFormData } from './Types';
+import { FormContextValue, FormDataItem, KeyOfFormData, SetFormValueFn } from './Types';
 
 export const useFormValue = <Data extends Object>(key: KeyOfFormData<Data>) => {
   const context = useContext<FormContextValue<Data>>(FormContext as React.Context<FormContextValue<Data>>);
@@ -16,6 +16,24 @@ export const useFormValue = <Data extends Object>(key: KeyOfFormData<Data>) => {
     formValue: context.data[key], 
     setFormValue: context.setFormValue
   };
+}
+
+export const useInputValue = <Data extends Object>(key: KeyOfFormData<Data>): [
+  FormDataItem<Data> | undefined,
+  SetFormValueFn<Data>,
+] => {
+  const context = useContext<FormContextValue<Data>>(FormContext as React.Context<FormContextValue<Data>>);
+  if (!context.data || !(context.data && context.data[key]) ) {
+    return [
+      undefined, 
+      context.setFormValue,
+    ];
+  }
+
+  return [
+    context.data[key], 
+    context.setFormValue,
+  ];
 }
 
 export const withFormValue = <P extends Object = {}, Data extends Object = {}>(

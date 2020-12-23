@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Col, Container, Form, Row } from 'reactstrap';
+import { Form } from 'reactstrap';
 
 import {
   AutocompleteKeys,
@@ -68,39 +68,34 @@ export const LoginFormWithoutState: FunctionComponent<LoginFormProps> = ({
       data,
       method: 'post',
       url: url.href,
+      withCredentials: true,
     }));
   }
 
   return (
-    <section className="section section-login">
-      <Container>
-        <Row>
-          <Col md={6} className="offset-md-3">
-            <h2>Admin Panel</h2>
-            <FormProvider data={{identifier: '', password: ''}} inputConfig={loginFormData}>
-              <Form>
-                <Input
-                  disabled={authentication?.status === RequestStatus.Updating} 
-                  propertyKey="identifier"
-                />
-                <Input
-                  disabled={authentication?.status === RequestStatus.Updating} 
-                  propertyKey="password"
-                />
-                <SubmitButton
-                  disabled={authentication?.status === RequestStatus.Updating} 
-                  onClick={handleSubmit}
-                  preventDefault={true}
-                  type="submit"
-                >
-                  Login
-                </SubmitButton>
-              </Form>
-            </FormProvider >
-          </Col>
-        </Row>
-      </Container>
-    </section>
+    <FormProvider data={{identifier: '', password: ''}} inputConfig={loginFormData}>
+      <Form>
+        <Input
+          disabled={authentication?.status === RequestStatus.Updating} 
+          inputKey="identifier"
+        />
+        <Input
+          disabled={authentication?.status === RequestStatus.Updating} 
+          inputKey="password"
+        />
+        <div className="text-right">
+          <SubmitButton
+            className="btn-sm btn-primary"
+            disabled={authentication?.status === RequestStatus.Updating} 
+            onClick={handleSubmit}
+            preventDefault={true}
+            type="submit"
+          >
+            Sign in <i className="fa fa-sign-in-alt" />
+          </SubmitButton>
+        </div>
+      </Form>
+    </FormProvider >
   );
 };
 

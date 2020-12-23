@@ -48,26 +48,16 @@ export const usePermission: UsePermission = ({
   id,
   ...rest
 }) => {
-  const roleState = useRoles(PrivateRequestKeys.Role, id) as RoleState;
+  const state = useRoles(PrivateRequestKeys.Role, id) as RoleState;
 
-  const [role, setRole] = useState(roleState.result?.role);
-  const [isAllowed, setIsAllowed] = 
-    useState(role && hasPermission(role.permissions, rest));
+  const [allowed, setIsAllowed] = 
+    useState(state && state.result && hasPermission(state.result.role.permissions, rest));
 
   useEffect(() => {
-    if (role?.id !== roleState?.result?.role.id) {
-      setRole(roleState?.result?.role);
+    if (state && state.result && hasPermission(state.result.role.permissions, rest) !== allowed) {
+      setIsAllowed(hasPermission(state.result.role.permissions, rest));
     }
-    if (role && hasPermission(role.permissions, rest) !== isAllowed) {
-      setIsAllowed(hasPermission(role.permissions, rest));
-    }
-  }, [
-    isAllowed,
-    rest,
-    role,
-    roleState,
-    setRole,
-  ]);
+  }, [allowed, rest, state]);
 
-  return [isAllowed || false, role];
+  return [allowed || false, state.result?.role];
 };

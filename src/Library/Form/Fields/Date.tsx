@@ -13,16 +13,16 @@ export type DateInputProps<Data> = InputProps<Data> & FormContextValue<Data>;
 type DateInputValues<Data extends Object = {}> = {[key in keyof Data]: string};
 
 export const DateInputBase: FunctionComponent<DateInputProps<DateInputValues> & InputProps<DateInputValues>> = <Data extends DateInputValues<Data>>(
-    props: DateInputProps<Data> & InputProps<Data>
+  props: DateInputProps<Data> & InputProps<Data>
 ) => {
   
   const {
     data,
-    propertyKey,
+    inputKey,
     setFormValue,
   } = props;
   
-  const inputValue = data[propertyKey as keyof Data];
+  const inputValue = data[inputKey as keyof Data];
   const isValid = inputValue?.pristine || inputValue?.isValid ? true : false;
 
   const handleChange = (date: Date | null, event: React.SyntheticEvent<HTMLInputElement>) => {
@@ -31,7 +31,7 @@ export const DateInputBase: FunctionComponent<DateInputProps<DateInputValues> & 
         ...inputValue,
         value: date && (date as any).toISOString(),
       };
-      setFormValue(propertyKey, newInputValue);
+      setFormValue(inputKey, newInputValue);
     }
   }
 
@@ -41,7 +41,7 @@ export const DateInputBase: FunctionComponent<DateInputProps<DateInputValues> & 
         ...inputValue,
         touched: true,
       };
-      setFormValue(propertyKey, newInputValue);
+      setFormValue(inputKey, newInputValue);
     }
   };
 

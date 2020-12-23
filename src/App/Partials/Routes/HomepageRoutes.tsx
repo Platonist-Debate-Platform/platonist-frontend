@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { Homepage, RequestStatus } from '../../../Library';
 import { useHomepage, usePages, useRoutes } from '../../Hooks';
+import useUser from '../../Hooks/Requests/useUser';
 import { ContactBox, Footer, FooterCopyright } from '../Footer';
 import { NavbarComponent } from '../Navbar';
 import { HomepageResolver, NotFound, PageAdmin, PageLogin } from '../Pages';
@@ -10,6 +11,7 @@ import { HomepageResolver, NotFound, PageAdmin, PageLogin } from '../Pages';
 const HomepageRoutes: React.FC<Homepage> = (props) => {
   const homepage = useHomepage(props.id);
   const pages = usePages(homepage.result && homepage.result.id);
+  const user = useUser();
 
   const routes = useRoutes({
     isAdmin: false,
@@ -20,23 +22,27 @@ const HomepageRoutes: React.FC<Homepage> = (props) => {
     <div className="page" id="page">
       {pages?.status === RequestStatus.Loaded && (
         <>
-          <NavbarComponent pages={pages && pages.result} homePageData={homepage.result} />
+          <NavbarComponent 
+            homePageData={homepage.result}
+            pages={pages && pages.result}
+            user={user?.result}
+          />
           <div className="main-body" id="main_body">
             <main>
-                <Switch>
-                  <Route
-                    path="/"
-                    exact={true}
-                    render={() => <HomepageResolver {...props} isAdmin={false} />}
-                  />
-                  {routes.map((route, index) => (
-                    <Route {...route} key={`main_route_${index}`} />
-                  ))}
-                  <Route path="/admin" exact={false} component={PageAdmin} />
-                  <Route path="/auth/login" exact={true} component={PageLogin} />
-                  <Route path="/404" exact={true} component={NotFound} />
-                  <Route render={() => <Redirect to="/404" />} />
-                </Switch>
+              <Switch>
+                <Route
+                  path="/"
+                  exact={true}
+                  render={() => <HomepageResolver {...props} isAdmin={false} />}
+                />
+                {routes.map((route, index) => (
+                  <Route {...route} key={`main_route_${index}`} />
+                ))}
+                <Route path="/admin" exact={false} component={PageAdmin} />
+                <Route path="/auth/login" exact={true} component={PageLogin} />
+                <Route path="/404" exact={true} component={NotFound} />
+                <Route render={() => <Redirect to="/404" />} />
+              </Switch>
             </main>
             {homepage.result && (
               <footer>
