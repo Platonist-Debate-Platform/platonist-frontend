@@ -41,6 +41,11 @@ export const useAuthentication = (): UseAuthentication => {
       } as AuthCookie))
     }
 
+    if (isAuthenticated && authentication.result?.status === 'Unauthorized') {
+      deleteAuthCookie();
+      setIsAuthenticated(false);
+    }
+
     // if (isAuthenticated && !authenticationChecker(authentication) && (authCookie && authCookie.jwt && authCookie.jwt.length > 0 && true)) {
     //   setIsAuthenticated(false);
     //   deleteAuthCookie();

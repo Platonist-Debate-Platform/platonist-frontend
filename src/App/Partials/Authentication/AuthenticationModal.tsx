@@ -1,11 +1,10 @@
-import './AuthenticationModal.scss'
+import './AuthenticationModal.scss';
 
-import React, { FunctionComponent, useState } from 'react';
-import { Button, Col, Collapse, Row } from 'reactstrap';
+import React, { FunctionComponent } from 'react';
+import { Col, Row } from 'reactstrap';
 
 import { ModalAutomatic } from '../Modal';
-import { LoginForm } from './LoginForm';
-import { RegisterForm } from './RegisterForm';
+import { Authentication } from './Authentication';
 
 export interface AuthenticationModalProps {
   pathname: string;
@@ -14,13 +13,6 @@ export interface AuthenticationModalProps {
 export const AuthenticationModal: FunctionComponent<AuthenticationModalProps> = ({
   pathname,
 }) => {
-
-  const [open, setOpen] = useState(false);
-  
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   return (
     <ModalAutomatic 
       pathname={pathname}
@@ -28,24 +20,7 @@ export const AuthenticationModal: FunctionComponent<AuthenticationModalProps> = 
     >
       <Row>
         <Col md={8} className="offset-md-2">
-          <p>
-            In order to debate you'll have to sign in. If you don't have an account you could register an account.
-          </p>
-          <Collapse isOpen={!open}>
-            <div className="authentication-modal-login">
-              <LoginForm />
-            </div>
-          </Collapse>
-          <Collapse isOpen={open}>
-            <div className="authentication-modal-register">
-              <RegisterForm />
-            </div>
-          </Collapse>
-          <div className="authentication-modal-toggle">
-            <Button size="sm" color="none" onClick={handleClick}>
-              {open ? 'Or sign in here' : 'Or sign up now'}
-            </Button>
-          </div>
+          <Authentication />
         </Col>
       </Row>
     </ModalAutomatic>

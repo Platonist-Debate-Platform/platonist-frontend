@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { ReactReduxRequestState } from '../ReactReduxRequest';
+import { ContentKeys } from './Content';
 import { Role } from './Role';
 
 export interface User {
@@ -14,6 +15,10 @@ export interface User {
   username: string;
   firstName: string;
   lastName: string;
+}
+
+export interface UserList {
+  __component: ContentKeys;
 }
 
 export type UserState = ReactReduxRequestState<User, AxiosRequestConfig>;

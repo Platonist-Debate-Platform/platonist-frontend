@@ -5,6 +5,7 @@ import { Nav, NavItem } from 'reactstrap';
 import { Page, SocialItem } from '../../../Library';
 import { NavigationType } from './Keys';
 import { NavigationItem } from './NavigationItem';
+import { NavigationPrivate } from './NavigationPrivate';
 
 export interface NavigationProps {
   className?: string;
@@ -86,6 +87,9 @@ export const Navigation: React.FC<NavigationProps> = ({
             </Nav>
           )}
         </NavItem>
+      )}
+      {level === 1 && (
+        <NavigationPrivate />
       )}
     </Nav>
   );

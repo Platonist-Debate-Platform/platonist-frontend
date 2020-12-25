@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { stringify } from 'querystring';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Col, Collapse, Row } from 'reactstrap';
 
 import { Debate, GlobalState, PublicRequestKeys } from '../../../Library';

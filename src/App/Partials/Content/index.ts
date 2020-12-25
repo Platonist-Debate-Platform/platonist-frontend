@@ -4,4 +4,3 @@ export * from './Jumbotron';
 export * from './Tab';
 export * from './Teaser';
 export * from './Text';
-export * from './CompanyLocation';

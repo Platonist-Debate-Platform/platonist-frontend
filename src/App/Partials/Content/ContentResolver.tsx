@@ -1,5 +1,5 @@
-import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import {
   Content,
@@ -11,14 +11,12 @@ import {
   Text,
   TextWithImage as TextWithImageProps,
   TextWithList as TextWithListProps,
-  CompanyLocationList as CompanyLocationListProps,
-} from "../../../Library";
-import { CompanyLocationsList } from "./CompanyLocation";
-import { DebateRoute } from "./Debate";
-import { JumbotronComponent } from "./Jumbotron";
-import { TabPage } from "./Tab";
-import { Teaser } from "./Teaser";
-import { TextComponent, TextWithImage, TextWithList } from "./Text";
+} from '../../../Library';
+import { DebateRoute } from './Debate';
+import { JumbotronComponent } from './Jumbotron';
+import { TabPage } from './Tab';
+import { Teaser } from './Teaser';
+import { TextComponent, TextWithImage, TextWithList } from './Text';
 
 export interface ContentResolverProps {
   contents: (Content | null)[] | null;
@@ -68,8 +66,6 @@ export const ContentResolverItem: React.FC<ContentResolverItemProps> = (
     case ContentKeys.TextWithList:
       return <TextWithList {...(props as TextWithListProps)} />;
 
-    case ContentKeys.CompanyLocationsListItem:
-      return <CompanyLocationsList {...(props as CompanyLocationListProps)} />;
     default:
       return null;
   }

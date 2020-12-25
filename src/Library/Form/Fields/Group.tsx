@@ -1,6 +1,6 @@
 // import classNames from 'classnames';
 import { isEqual, isNumber } from 'lodash';
-import React, { FunctionComponent, useCallback, useEffect } from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
 import { FormGroup } from 'reactstrap';
 
 import { withFormValue } from '../Consumer';
@@ -99,12 +99,7 @@ export const GroupBase: FunctionComponent<GroupProps<GroupValues> & InputProps<G
       //   });
       // }
     }
-  }, [
-    index,
-    inputValue,
-    setFormValue,
-    value,
-  ]);
+  }, [index, inputValue, onChange, setFormValue, value]);
 
   // useEffect(() => {
   //   console.log('Update', index);

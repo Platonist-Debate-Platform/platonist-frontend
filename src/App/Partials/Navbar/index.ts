@@ -5,4 +5,5 @@ export * from './NavbarHeader';
 export * from './Navigation';
 export * from './NavigationItem';
 export * from './NavigationMobile';
+export * from './NavigationPrivate';
 export * from './Utils';

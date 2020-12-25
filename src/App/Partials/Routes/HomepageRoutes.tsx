@@ -7,6 +7,8 @@ import useUser from '../../Hooks/Requests/useUser';
 import { ContactBox, Footer, FooterCopyright } from '../Footer';
 import { NavbarComponent } from '../Navbar';
 import { HomepageResolver, NotFound, PageAdmin, PageLogin } from '../Pages';
+import { PageLogout } from '../Pages/PageLogout';
+import { PrivateRoute } from './PrivateRoute';
 
 const HomepageRoutes: React.FC<Homepage> = (props) => {
   const homepage = useHomepage(props.id);
@@ -38,8 +40,10 @@ const HomepageRoutes: React.FC<Homepage> = (props) => {
                 {routes.map((route, index) => (
                   <Route {...route} key={`main_route_${index}`} />
                 ))}
+                <PrivateRoute path="/user/me" exact={true} render={() => <>ME</>} />
                 <Route path="/admin" exact={false} component={PageAdmin} />
                 <Route path="/auth/login" exact={true} component={PageLogin} />
+                <Route path="/auth/logout" exact={true} component={PageLogout} />
                 <Route path="/404" exact={true} component={NotFound} />
                 <Route render={() => <Redirect to="/404" />} />
               </Switch>
