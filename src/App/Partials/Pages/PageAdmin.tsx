@@ -23,17 +23,17 @@ export const PageAdmin: FunctionComponent = () => {
   url.pathname = `/users`;
 
   const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(state => state[PrivateRequestKeys.User]);
-  const [isAuthenticated, headers, authCookie] = useAuthentication();
+  const [isAuthenticated, state] = useAuthentication();
   
   const showLoginForm = (!isAuthenticated && !user.result) || (isAuthenticated && !user.result) ? true : false;
 
   useEffect(() => {
-    if (isAuthenticated && authCookie && user.status === RequestStatus.Initial) {
-      url.pathname = `${url.pathname}/${authCookie.id}`;
+    if (isAuthenticated && state && user.status === RequestStatus.Initial) {
+      url.pathname = `${url.pathname}/${state.id}`;
 
       dispatch(requestAction.load(PrivateRequestKeys.User, {
         url: url.href,
-        headers,
+        withCredentials: true,
       }));
     }
   });

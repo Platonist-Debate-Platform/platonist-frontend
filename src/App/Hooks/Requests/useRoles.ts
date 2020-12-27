@@ -36,7 +36,7 @@ export const useRoles = (key: PrivateRequestKeys.Role | PrivateRequestKeys.Roles
         withCredentials: true,
       }));
     }
-  }, [dispatch, isAuthenticated, key, roles, url.href, state.status, id]);
+  }, [dispatch, isAuthenticated, key, roles, url.href, state?.status, id]);
 
   return roles;
 };

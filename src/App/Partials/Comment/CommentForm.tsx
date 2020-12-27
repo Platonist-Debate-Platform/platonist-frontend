@@ -49,7 +49,7 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
   reset,
 }) => {
 
-  const [isAuthenticated, headers, cookie] = useAuthentication();
+  const [isAuthenticated, state] = useAuthentication();
   const comment = useSelector<GlobalState, GlobalState[PrivateRequestKeys.Comment]>(
     state => state[PrivateRequestKeys.Comment]
   );
@@ -62,23 +62,23 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
   const prevComment = usePrevious(comment);
 
   const handleSubmit = (event: FormClickEvent<Partial<Comment>>) => {
-    if (!isAuthenticated && !headers && !event.submitData.isValid) {
+    if (!isAuthenticated && !state && !event.submitData.isValid) {
       return;
     }
     
     const data = {
       ...event.submitData.data,
       debate: debateId,
-      user: cookie?.id,
-      created_by: cookie?.id,
-      updated_by: cookie?.id,
+      user: state?.id,
+      created_by: state?.id,
+      updated_by: state?.id,
     };
     
     dispatch(requestAction.load(PrivateRequestKeys.Comment, {
       data,
       method: defaultData ? 'put' : 'post',
       url: url.href,
-      withCredentials: headers.status === 'Authenticated',
+      withCredentials: state?.status === 'Authenticated',
     }));
   }
 

@@ -9,7 +9,7 @@ export interface AuthCookie {
   id: string;
 }
 
-export type UseAuthentication = [boolean, {status: string | undefined}, AuthCookie | undefined];
+export type UseAuthentication = [boolean, AuthCookie | undefined];
 
 const authenticationChecker = (state: GlobalState[PublicRequestKeys.Authentication]): boolean => 
   state.status === RequestStatus.Loaded && state.result?.status === 'Authenticated' ? true : false;
@@ -60,9 +60,7 @@ export const useAuthentication = (): UseAuthentication => {
   ]); 
 
   return [
-    isAuthenticated, {
-      status: authCookie && authCookie.status,
-    },
+    isAuthenticated, 
     authCookie,
   ];
 }

@@ -15,9 +15,9 @@ export const useUser = (id?: string) => {
   
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const [isAuthenticated, state, cookie] = useAuthentication();
+  const [isAuthenticated, state] = useAuthentication();
   const url = config.createApiUrl(config.api.config);
-  const userId = id || cookie?.id;
+  const userId = id || state?.id;
   url.pathname = `users/${userId}`;
   
   const user = useSelector<
@@ -33,7 +33,7 @@ export const useUser = (id?: string) => {
         withCredentials: true,
       }));
     }
-  }, [dispatch, isAuthenticated, user, url.href, state.status, userId]);
+  }, [dispatch, isAuthenticated, user, url.href, state?.status, userId]);
 
   return user;
 };
