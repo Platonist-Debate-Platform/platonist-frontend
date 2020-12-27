@@ -67,14 +67,14 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
       request();
     }
 
-    return () => {
-      if (
-          debate.status === RequestStatus.Loaded &&
-          routeProps.location.pathname !== (prevRouterProps && prevRouterProps.location.pathname)
-      ) {
-        dispatch(requestAction.clear(PublicRequestKeys.Debate));
-      }
-    }
+    // return () => {
+    //   if (
+    //       debate.status === RequestStatus.Loaded &&
+    //       routeProps.location.pathname !== (prevRouterProps && prevRouterProps.location.pathname)
+    //   ) {
+    //     dispatch(requestAction.clear(PublicRequestKeys.Debate));
+    //   }
+    // }
   }, [config, debate.status, debateLink.id, dispatch, prevRouterProps, routeProps.location.pathname, routeProps.match]);
 
   return (
