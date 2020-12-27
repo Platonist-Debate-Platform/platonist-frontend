@@ -14,6 +14,8 @@ export type UseAuthentication = [boolean, {status: string | undefined}, AuthCook
 const authenticationChecker = (state: GlobalState[PublicRequestKeys.Authentication]): boolean => 
   state.status === RequestStatus.Loaded && state.result?.status === 'Authenticated' ? true : false;
 
+const cookieMaxAge = 1000 * 60 * 60 * 24 * 14;
+
 export const useAuthentication = (): UseAuthentication => {
   const authentication = useSelector<
     GlobalState, 
@@ -22,7 +24,8 @@ export const useAuthentication = (): UseAuthentication => {
     state => state[PublicRequestKeys.Authentication]
   );
     
-  const [cookie, setAuthCookie, deleteAuthCookie] = useCookie('authStatus');
+  const [cookie, setAuthCookie, deleteAuthCookie] = useCookie('AuthenticationStatus');
+  
   const authCookie = (cookie && JSON.parse(cookie) as AuthCookie) || undefined;
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
@@ -38,18 +41,16 @@ export const useAuthentication = (): UseAuthentication => {
       setAuthCookie(JSON.stringify({
         status: authentication.result.status,
         id: authentication.result.user.id,
-      } as AuthCookie))
+      } as AuthCookie), {
+        expires: new Date(Date.now() + cookieMaxAge),
+        sameSite: 'strict',
+      });
     }
 
     if (isAuthenticated && authentication.result?.status === 'Unauthorized') {
       deleteAuthCookie();
       setIsAuthenticated(false);
     }
-
-    // if (isAuthenticated && !authenticationChecker(authentication) && (authCookie && authCookie.jwt && authCookie.jwt.length > 0 && true)) {
-    //   setIsAuthenticated(false);
-    //   deleteAuthCookie();
-    // }
   }, [
     authCookie,
     authentication,
