@@ -55,3 +55,7 @@ export interface PrivateState {
 }
 
 export type GlobalState = PublicState & PrivateState;
+
+export interface Dispatch<Action> {
+  <A extends Action>(action: A): A;
+}

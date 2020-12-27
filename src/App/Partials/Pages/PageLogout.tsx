@@ -2,7 +2,8 @@ import { parse } from 'querystring';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { GlobalState, PrivateRequestKeys, PublicRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, useConfig } from '../../../Library';
+import { Dispatch } from 'redux';
+import { alertAction, AlertActions, AlertTypes, ToggleType, GlobalState, PrivateRequestKeys, PublicRequestKeys, ReactReduxRequestActions, ReactReduxRequestDispatch, requestAction, RequestStatus, useConfig } from '../../../Library';
 import { useAuthentication } from '../../Hooks';
 
 export const PageLogout: FunctionComponent = () => {
@@ -11,7 +12,7 @@ export const PageLogout: FunctionComponent = () => {
   );
 
   const config = useConfig();
-  const dispatch = useDispatch<ReactReduxRequestDispatch>();
+  const dispatch = useDispatch<Dispatch<ReactReduxRequestActions | AlertActions>>();
   const [isAuthenticated] = useAuthentication();
 
   const {
@@ -43,7 +44,16 @@ export const PageLogout: FunctionComponent = () => {
     if (
       !isAuthenticated && authentication.status === RequestStatus.Loaded && authentication.result?.status === 'Unauthorized'
     ) {
+      
+      dispatch(alertAction.add({
+        id: 'logout_success',
+        message: 'You have been logged out successful',
+        state: ToggleType.Show,
+        type: AlertTypes.Success,
+      }));
+
       dispatch(requestAction.clear(PublicRequestKeys.Authentication));
+
       Object.keys(PrivateRequestKeys).forEach((key) => {
         dispatch(requestAction.clear(PrivateRequestKeys[key as never]));
       });
