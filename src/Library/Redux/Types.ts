@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { RouterActionType } from 'connected-react-router';
 import { Location } from 'history';
 
@@ -10,6 +11,7 @@ import {
   CommentState,
   DebatesState,
   DebateState,
+  FileState,
   HomepagesState,
   HomepageState,
   PagesState,
@@ -19,6 +21,7 @@ import {
   UserState,
 } from '../Models';
 import { PermissionsState, PermissionState } from '../Models/Permission';
+import { ReactReduxRequestState } from '../ReactReduxRequest';
 import { PrivateRequestKeys, PublicRequestKeys } from './Keys';
 
 export type LocationState<Q extends Object | undefined> = Location & {
@@ -47,10 +50,12 @@ export interface PublicState {
 
 export interface PrivateState {
   [PrivateRequestKeys.Comment]: CommentState;
+  [PrivateRequestKeys.File]: FileState;
   [PrivateRequestKeys.Permission]: PermissionState,
   [PrivateRequestKeys.Permissions]: PermissionsState,
   [PrivateRequestKeys.Role]: RoleState,
   [PrivateRequestKeys.Roles]: RolesState,
+  [PrivateRequestKeys.Upload]: ReactReduxRequestState<any, AxiosRequestConfig>;
   [PrivateRequestKeys.User]: UserState,
 }
 

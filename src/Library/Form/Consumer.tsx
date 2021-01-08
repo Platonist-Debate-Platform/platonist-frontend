@@ -21,18 +21,21 @@ export const useFormValue = <Data extends Object>(key: KeyOfFormData<Data>) => {
 export const useInputValue = <Data extends Object>(key: KeyOfFormData<Data>): [
   FormDataItem<Data> | undefined,
   SetFormValueFn<Data>,
+  string,
 ] => {
   const context = useContext<FormContextValue<Data>>(FormContext as React.Context<FormContextValue<Data>>);
   if (!context.data || !(context.data && context.data[key]) ) {
     return [
       undefined, 
       context.setFormValue,
+      context.formId,
     ];
   }
 
   return [
     context.data[key], 
     context.setFormValue,
+    context.formId,
   ];
 }
 

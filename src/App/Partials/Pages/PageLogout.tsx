@@ -3,7 +3,20 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Dispatch } from 'redux';
-import { alertAction, AlertActions, AlertTypes, ToggleType, GlobalState, PrivateRequestKeys, PublicRequestKeys, ReactReduxRequestActions, ReactReduxRequestDispatch, requestAction, RequestStatus, useConfig } from '../../../Library';
+
+import {
+  alertAction,
+  AlertActions,
+  AlertTypes,
+  GlobalState,
+  PrivateRequestKeys,
+  PublicRequestKeys,
+  ReactReduxRequestActions,
+  requestAction,
+  RequestStatus,
+  ToggleType,
+  useConfig,
+} from '../../../Library';
 import { useAuthentication } from '../../Hooks';
 
 export const PageLogout: FunctionComponent = () => {

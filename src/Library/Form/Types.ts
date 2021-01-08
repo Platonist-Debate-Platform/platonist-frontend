@@ -1,16 +1,19 @@
-import { AutocompleteKeys, FormInputTypes, FormValidationTypes } from "./Keys";
-import { ValidateBaseProps } from "./Validate";
-import validator from "validator";
+import validator from 'validator';
+
+import { AutocompleteKeys, FormInputTypes, FormValidationTypes } from './Keys';
+import { ValidateBaseProps } from './Validate';
 
 export interface FormEvent<Data> extends React.FormEvent<HTMLFormElement> {
   data: FormData<Data>,
   submitData: SubmitData<Data>;
 }
 
-export interface FormClickEvent<Data> extends React.MouseEvent<HTMLButtonElement> {
+export interface FormClickEvent<Data> extends React.MouseEvent<HTMLButtonElement, MouseEvent> {
   data: FormData<Data>,
   submitData: SubmitData<Data>;
 }
+
+export type SubmitFn<Data> = (event: FormClickEvent<Data> | FormEvent<Data>) => void;
 
 export type SetFormValue<Data> = (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void; 
 

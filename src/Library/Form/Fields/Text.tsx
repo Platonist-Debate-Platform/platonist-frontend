@@ -3,6 +3,7 @@ import React, { ChangeEvent, FunctionComponent, useCallback } from 'react';
 import { FormGroup, Label } from 'reactstrap';
 import { useInputValue} from '../Consumer';
 import { FormDataItem } from '../Types';
+import { ErrorTooltip } from '../UtilComponents';
 import { InputProps } from './Input';
 
 export interface TextProps {}
@@ -16,7 +17,7 @@ export const Text: FunctionComponent<InputProps<TextValues>> = <Data extends Tex
   inputKey
 }: InputProps<Data>) => {
 
-  const [inputValue, setInputValue] = useInputValue<Data>(inputKey as keyof Data);
+  const [inputValue, setInputValue, formId] = useInputValue<Data>(inputKey as keyof Data);
 
   const handleChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
@@ -58,9 +59,13 @@ export const Text: FunctionComponent<InputProps<TextValues>> = <Data extends Tex
           {' '}
         </>
       )}
-      {!isValid && (
+      {!isValid && inputValue?.error && (
         <span className="invalid-feedback">
-          {inputValue?.error}
+          <ErrorTooltip
+            error={inputValue?.error}
+            formId={formId}
+            inputKey={inputKey as string}
+          />
         </span>
       )}
       <textarea

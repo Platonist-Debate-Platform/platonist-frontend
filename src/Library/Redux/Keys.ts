@@ -15,9 +15,11 @@ export enum PublicRequestKeys {
 
 export enum PrivateRequestKeys {
   Comment = 'comment',
+  File = 'file',
   Role = 'role',
   Roles = 'roles',
   Permission = 'permission',
   Permissions = 'permissions',
+  Upload = 'upload',
   User = 'user',
 }

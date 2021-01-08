@@ -94,7 +94,17 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
         })
       );
     }
+
   }, [comment, comments.status, config.api, debate.result, debate.status, debateId, dispatch, prevComment, url.href]);
+
+  useEffect(() => {
+    return () => {
+      if (comments.status === RequestStatus.Loaded) {
+        dispatch(requestAction.clear(PublicRequestKeys.Comments))
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="comments-list">

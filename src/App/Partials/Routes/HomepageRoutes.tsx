@@ -2,18 +2,23 @@ import * as React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { Homepage, RequestStatus } from '../../../Library';
-import { useHomepage, usePages, useRoutes } from '../../Hooks';
+import { useAuthentication, useHomepage, usePages, useRoutes } from '../../Hooks';
 import useUser from '../../Hooks/Requests/useUser';
 import { ContactBox, Footer, FooterCopyright } from '../Footer';
 import { NavbarComponent } from '../Navbar';
 import { HomepageResolver, NotFound, PageAdmin, PageLogin } from '../Pages';
 import { PageLogout } from '../Pages/PageLogout';
+import { PageProfile } from '../Pages/PageProfile';
 import { PrivateRoute } from './PrivateRoute';
 
 const HomepageRoutes: React.FC<Homepage> = (props) => {
+  const authentication = useAuthentication();
+  const {
+    user
+  } = useUser(authentication[1]?.id);
+  
   const homepage = useHomepage(props.id);
   const pages = usePages(homepage.result && homepage.result.id);
-  const user = useUser();
 
   const routes = useRoutes({
     isAdmin: false,
@@ -40,7 +45,7 @@ const HomepageRoutes: React.FC<Homepage> = (props) => {
                 {routes.map((route, index) => (
                   <Route {...route} key={`main_route_${index}`} />
                 ))}
-                <PrivateRoute path="/user/me" exact={true} render={() => <>ME</>} />
+                <PrivateRoute path="/user/me" exact={true} component={PageProfile} />
                 <Route path="/admin" exact={false} component={PageAdmin} />
                 <Route path="/auth/login" exact={true} component={PageLogin} />
                 <Route path="/auth/logout" exact={true} component={PageLogout} />

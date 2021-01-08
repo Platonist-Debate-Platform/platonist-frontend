@@ -19,7 +19,7 @@ import {
 } from '../../../Library';
 import { Input, SubmitButton } from '../../../Library/Form/Fields';
 
-interface RegisterData extends User {
+export interface RegisterData extends User {
   passwordRepeat: string;
 }
 

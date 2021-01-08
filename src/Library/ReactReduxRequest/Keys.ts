@@ -13,3 +13,10 @@ export enum RequestStatus {
   Loaded = 'LOADED',
   Updating = 'UPDATING',
 }
+
+export enum RequestMethod {
+  Create = 'POST',
+  Delete = 'DELETE',
+  Receive = 'GET',
+  Update = 'PUT',
+}

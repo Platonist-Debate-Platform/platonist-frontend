@@ -5,6 +5,7 @@ import { FormGroup, Label } from 'reactstrap';
 import { FormContext } from '../Context';
 import { FormInputTypes, FormValidationTypes } from '../Keys';
 import { FormContextValue } from '../Types';
+import { ErrorTooltip } from '../UtilComponents';
 
 export interface InputProps<Data extends Object> {
   className?: string;
@@ -22,6 +23,7 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
 
   const {
     data, 
+    formId,
     setFormValue,
     submitData,
   } = useContext<FormContextValue<Data>>(FormContext as Context<FormContextValue<Data>>);
@@ -74,9 +76,13 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
           {' '}
         </>
       )}
-      {!isValid && (
+      {!isValid && inputValue?.error && (
         <span className="invalid-feedback">
-          {inputValue?.error}
+          <ErrorTooltip
+            error={inputValue?.error}
+            formId={formId}
+            inputKey={inputKey as string}
+          />
         </span>
       )}
       <input

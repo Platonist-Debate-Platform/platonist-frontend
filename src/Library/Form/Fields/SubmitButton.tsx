@@ -42,11 +42,12 @@ export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonV
     }
   }
 
-  const isDisabled = props.disabled || !submitData.isValid;
+  const isDisabled = !submitData.isValid || submitData.pristine || props.disabled;
 
   return (
     <Button 
       color="none"
+      type="submit"
       {...rest}
       disabled={isDisabled}
       onClick={handleClick}

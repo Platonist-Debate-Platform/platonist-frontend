@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext, useEffect } from 'react';
+import React, { FunctionComponent, PropsWithChildren, useContext, useEffect } from 'react';
 import { Form as FormElement } from 'reactstrap';
 
 import { FormContext } from './Context';
@@ -17,12 +17,13 @@ export interface FormProps<Data extends Object = {}> {
   onSubmit?: <D>(event: FormEvent<D>) => void;
 }
 
-export const Form: FunctionComponent<FormProps> = <Data extends Object>(
-  props: FormProps<Data>
+export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <Data extends Object>(
+  props: PropsWithChildren<FormProps<Data>>
 ) => {
 
   const {
     asForm,
+    children,
     className,
     data,
     inline,
@@ -103,6 +104,7 @@ export const Form: FunctionComponent<FormProps> = <Data extends Object>(
           />
         );
       })}
+      {children}
     </FormElement>
   )) || (
     <div>
@@ -124,6 +126,7 @@ export const Form: FunctionComponent<FormProps> = <Data extends Object>(
           />
         );
       })}
+      {children}
     </div>
   );
 };

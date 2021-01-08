@@ -9,6 +9,7 @@ import { createSrcSet } from './Utils';
 export interface ImageDefaultProps {
   className?: string;
   imgClassName?: string;
+  isLocal?: boolean;
   onAbort?: (event: React.SyntheticEvent<HTMLImageElement, Event>) => void;
   onLoad?: (event: React.SyntheticEvent<HTMLImageElement, Event>) => void;
   onLoadStart?: (event: React.SyntheticEvent<HTMLImageElement, Event>) => void;
@@ -21,6 +22,7 @@ export const Image: React.FC<ImageProps & ImageDefaultProps> = (props) => {
     caption,
     className,
     imgClassName,
+    isLocal,
     formats,
     onAbort,
     onLoad,
@@ -40,7 +42,7 @@ export const Image: React.FC<ImageProps & ImageDefaultProps> = (props) => {
     background: `url(${apiUrl.origin}${url}) no-repeat`,
     backgroundPosition: 'top center',
   };
-
+  
   return (
     <div 
       className={
@@ -56,7 +58,7 @@ export const Image: React.FC<ImageProps & ImageDefaultProps> = (props) => {
           onAbort={onAbort}
           onLoad={onLoad}
           onLoadStart={onLoadStart}
-          src={apiUrl.href} 
+          src={isLocal ? url : apiUrl.href} 
           srcSet={srcSet && srcSet.join(',')}
         />
         {caption && showCaption && (

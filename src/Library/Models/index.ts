@@ -7,6 +7,7 @@ export * from './Contact';
 export * from './Content';
 export * from './Copyright';
 export * from './Debate';
+export * from './File';
 export * from './Homepage';
 export * from './Icon';
 export * from './Image';

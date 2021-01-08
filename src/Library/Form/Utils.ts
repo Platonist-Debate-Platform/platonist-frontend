@@ -239,3 +239,17 @@ export const createDefaultData = <Data extends Object = {}>(data: FormDataConfig
 
   return newData as Data;
 };
+
+export const getDefaultDataFromResult = <Data extends Object = {}>(data: Data, config: FormDataConfig<Data>[]): Data => {
+  const newData: Data | {} = {};
+  Object.keys(data).forEach((key) => {
+    const findKey = config.find(conf => conf.key === key);
+    if (findKey) {
+      Object.assign(newData, {
+        [key]: data[key as keyof Data],
+      });
+    }
+  });
+
+  return newData as Data;
+}

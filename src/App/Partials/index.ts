@@ -9,4 +9,5 @@ export * from './Loader';
 export * from './Modal'
 export * from './Navbar';
 export * from './Pages';
+export * from './Profile';
 export * from './Routes';
