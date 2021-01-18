@@ -1,4 +1,4 @@
-import './ProfileImage.scss';
+import './Image.scss';
 
 import { stringify } from 'querystring';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ import { GlobalState, Image as ImageProps, PublicRequestKeys, randomHash, Reques
 import { useAuthentication } from '../../Hooks';
 import useUser from '../../Hooks/Requests/useUser';
 import { Image } from '../Image';
-import { ProfileImageEdit } from './ProfileImageEdit';
+import { ProfileImageEdit } from './ImageEdit';
 
 const noImageItem = require('../../../Assets/Images/dummy-profile.png');
 console.log(noImageItem);

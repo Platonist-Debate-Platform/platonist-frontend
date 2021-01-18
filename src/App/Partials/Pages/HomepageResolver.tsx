@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState, Homepage } from '../../../Library';
 import { ContentResolver } from '../Content';
 import { HomepageSettings } from '../Edit';
-import PageMeta from './PageMeta';
+import PageMeta from './Meta';
 
 export const HomepageResolver: React.FC<Homepage & {isAdmin: boolean}> = (props) => {
   const {

@@ -2,45 +2,45 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Redirect } from 'react-router-dom';
 import { usePrevious } from 'react-use';
 import { Form } from 'reactstrap';
-import { AutocompleteKeys, FormClickEvent, FormDataConfig, FormInputTypes, FormProvider, FormValidationTypes, RequestStatus } from '../../../Library';
+
+import {
+  AutocompleteKeys,
+  FormClickEvent,
+  FormDataConfig,
+  FormInputTypes,
+  FormProvider,
+  FormValidationTypes,
+  RequestStatus,
+} from '../../../Library';
 import { Input, SubmitButton } from '../../../Library/Form/Fields';
 import useUser from '../../Hooks/Requests/useUser';
 
-interface ChangePasswordData {
-  oldPassword: string;
-  password: string;
-  passwordRepeat: string;
+interface ChangeEmailData {
+  email: string;
+  emailRepeat: string;
 }
 
-const changePasswordFormData: FormDataConfig<Partial<ChangePasswordData>>[] =[{
+const changeEmailFormData: FormDataConfig<Partial<ChangeEmailData>>[] =[{
   autocomplete: AutocompleteKeys.Email,
   editable: true,
-  key: 'oldPassword',
+  key: 'email',
   required: true,
-  title: 'Old password',
-  type: FormInputTypes.Password,
-  validate: FormValidationTypes.Length,
+  title: 'New E-Mail',
+  type: FormInputTypes.Email,
+  validate: FormValidationTypes.Email,
 }, {
-  autocomplete: AutocompleteKeys.CurrentPassword,
+  autocomplete: AutocompleteKeys.Email,
+  compareKey: 'email',
   editable: true,
-  key: 'password',
+  key: 'emailRepeat',
   required: true,
-  title: 'Password',
-  type: FormInputTypes.Password,
-  validate: FormValidationTypes.Password,
-}, {
-  autocomplete: AutocompleteKeys.CurrentPassword,
-  compareKey: 'password',
-  editable: true,
-  key: 'passwordRepeat',
-  required: true,
-  title: 'Repeat password',
-  type: FormInputTypes.Password,
+  title: 'Repeat E-mail',
+  type: FormInputTypes.Email,
   validate: FormValidationTypes.Equal,
   validateOptions: {}
-}]
+}];
 
-export const ChangePassword: FunctionComponent<{
+export const ChangeEmail: FunctionComponent<{
   redirectTarget?: string;
   reset?: boolean;
 }> = ({
@@ -58,21 +58,21 @@ export const ChangePassword: FunctionComponent<{
   const prevStatus = usePrevious(status);
   const [shouldReset, setShouldReset] = useState(false);
 
-  const handleSubmit = useCallback((event: FormClickEvent<Partial<ChangePasswordData>>) => {
+  const handleSubmit = useCallback((event: FormClickEvent<Partial<ChangeEmailData>>) => {
     if (!event.submitData.isValid) {
       return;
     }
     
     const data = event.submitData.data;
     
-    if (data.passwordRepeat) {
-      delete data.passwordRepeat;
+    if (data.emailRepeat) {
+      delete data.emailRepeat;
     }
 
     send({
       data,
       method: 'POST',
-      pathname: '/auth/local/change-password'
+      pathname: '/auth/local/change-email'
     });
   }, [send]);
 
@@ -87,22 +87,18 @@ export const ChangePassword: FunctionComponent<{
 
   return (
     <FormProvider
-      data={{oldPassword: '', password: '', passwordRepeat: ''}} 
-      inputConfig={changePasswordFormData}
+      data={{email: '', emailRepeat: ''}} 
+      inputConfig={changeEmailFormData}
       reset={shouldReset || reset}
     >
       <Form>
         <Input
           disabled={status === RequestStatus.Updating} 
-          inputKey="oldPassword"
+          inputKey="email"
         />
         <Input
           disabled={status === RequestStatus.Updating} 
-          inputKey="password"
-        />
-        <Input
-          disabled={status === RequestStatus.Updating} 
-          inputKey="passwordRepeat"
+          inputKey="emailRepeat"
         />
         <div className="text-right">
           <SubmitButton

@@ -11,8 +11,7 @@ import {
   RequestStatus,
 } from '../../../Library';
 import { useComments } from '../../Hooks';
-import { ChangePassword } from '../Authentication/ChangePassword';
-import { ProfileForm, ProfileImage } from '../Profile';
+import { ProfileChangeEmailForm, ProfileChangePasswordForm, ProfileForm, ProfileImage } from '../Profile';
 
 export const PageProfile: FunctionComponent = () => {
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
@@ -45,11 +44,8 @@ export const PageProfile: FunctionComponent = () => {
             </Col>
             <Col md={8}>
               <ProfileForm />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <ChangePassword />
+              <ProfileChangePasswordForm />
+              <ProfileChangeEmailForm />
             </Col>
           </Row>
         </Container>

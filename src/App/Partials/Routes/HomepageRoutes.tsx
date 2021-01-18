@@ -6,9 +6,7 @@ import { useAuthentication, useHomepage, usePages, useRoutes } from '../../Hooks
 import useUser from '../../Hooks/Requests/useUser';
 import { ContactBox, Footer, FooterCopyright } from '../Footer';
 import { NavbarComponent } from '../Navbar';
-import { HomepageResolver, NotFound, PageAdmin, PageLogin } from '../Pages';
-import { PageLogout } from '../Pages/PageLogout';
-import { PageProfile } from '../Pages/PageProfile';
+import { HomepageResolver, NotFound, PageAdmin, PageEmailConfirmation, PageLogin, PageLogout, PageProfile } from '../Pages';
 import { PrivateRoute } from './PrivateRoute';
 
 const HomepageRoutes: React.FC<Homepage> = (props) => {
@@ -49,6 +47,7 @@ const HomepageRoutes: React.FC<Homepage> = (props) => {
                 <Route path="/admin" exact={false} component={PageAdmin} />
                 <Route path="/auth/login" exact={true} component={PageLogin} />
                 <Route path="/auth/logout" exact={true} component={PageLogout} />
+                <Route path="/auth/email-confirmation" exact={true} component={PageEmailConfirmation} />
                 <Route path="/404" exact={true} component={NotFound} />
                 <Route render={() => <Redirect to="/404" />} />
               </Switch>

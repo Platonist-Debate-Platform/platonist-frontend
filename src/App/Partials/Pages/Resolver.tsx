@@ -10,7 +10,7 @@ import {
   WithConfigProps,
 } from "../../../Library";
 import { ContentResolver } from "../Content";
-import PageMeta from "./PageMeta";
+import PageMeta from "./Meta";
 
 export interface PageResolverProps extends WithConfigProps {
   [PublicRequestKeys.Homepage]: GlobalState[PublicRequestKeys.Homepage];

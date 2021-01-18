@@ -64,14 +64,13 @@ export const createReducer = <Payload extends Object = {}, Meta extends Object =
         const hasValue = stateValue ? true : false;
         
         let result: Object = action.payload || {};
-        
+
         if (hasValue) {
           (result as any).value = isArray(stateValue) ?
-            unionBy(stateValue|| [], payloadValue, 'id') : merge(payloadValue || {}, stateValue || {});
+          unionBy(stateValue|| [], payloadValue, 'id') : merge(payloadValue || {}, stateValue || {});
         } else {
-
           result = (!state.result && isArray(result)) || isArray(state.result) ?
-          unionBy<Payload>(action.payload as [] || [], state.result || [], 'id') : merge(action.payload || {}, state.result || {});
+          unionBy<Payload>(action.payload as [] || [], state.result || [], 'id') : merge(state.result || {}, action.payload || {});
         }
 
         if (action.meta && (action.meta as any).update) {
