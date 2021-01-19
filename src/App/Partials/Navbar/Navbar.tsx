@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Collapse, Navbar } from 'reactstrap';
 
 import { GlobalState, Page, PublicRequestKeys, Homepage, User } from '../../../Library';
+import { EmailConfirmation } from '../Authentication';
 import { NavigationType } from './Keys';
 import Logo from './NavbarBrand';
 import Header from './NavbarHeader';

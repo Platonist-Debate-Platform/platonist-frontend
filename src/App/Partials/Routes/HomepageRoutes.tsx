@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { Homepage, RequestStatus } from '../../../Library';
 import { useAuthentication, useHomepage, usePages, useRoutes } from '../../Hooks';
 import useUser from '../../Hooks/Requests/useUser';
+import { EmailConfirmation } from '../Authentication';
 import { ContactBox, Footer, FooterCopyright } from '../Footer';
 import { NavbarComponent } from '../Navbar';
 import { HomepageResolver, NotFound, PageAdmin, PageEmailConfirmation, PageLogin, PageLogout, PageProfile } from '../Pages';
@@ -65,6 +66,7 @@ const HomepageRoutes: React.FC<Homepage> = (props) => {
       {pages?.status === RequestStatus.Error && (
         <Redirect to="/404" />
       )}
+      <EmailConfirmation />
     </div>
   );
 };

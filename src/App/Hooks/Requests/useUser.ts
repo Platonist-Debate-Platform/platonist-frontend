@@ -26,12 +26,13 @@ export const useUser = (id?: string) => {
     GlobalState[PrivateRequestKeys.User]
   >(state => state[PrivateRequestKeys.User]);
 
-  const send = ({data, method, pathname}: {data: Partial<User>, method: 'POST' | 'PUT', pathname?: string}) => {
+  const send = ({data, method, pathname, search}: {data?: Partial<User>, method: 'GET' | 'POST' | 'PUT', pathname?: string, search?: string}) => {
     let sendUrl: URL | undefined;
 
     if (pathname) {
       sendUrl = config.createApiUrl(config.api.config);
       sendUrl.pathname = pathname;
+      sendUrl.search = search || '';
     }
 
     if (userId && isAuthenticated) {
