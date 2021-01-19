@@ -4,8 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Collapse, Navbar } from 'reactstrap';
 
-import { GlobalState, Page, PublicRequestKeys, Homepage, User } from '../../../Library';
-import { EmailConfirmation } from '../Authentication';
+import { GlobalState, Homepage, Page, PublicRequestKeys, User } from '../../../Library';
 import { NavigationType } from './Keys';
 import Logo from './NavbarBrand';
 import Header from './NavbarHeader';

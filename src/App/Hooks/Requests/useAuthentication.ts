@@ -40,7 +40,7 @@ export const useAuthentication = (): UseAuthentication => {
     if (!authCookie && isAuthenticated && authentication.result) {
       setAuthCookie(JSON.stringify({
         status: authentication.result.status,
-        id: authentication.result.user.id,
+        id: authentication.result.id,
       } as AuthCookie), {
         expires: new Date(Date.now() + cookieMaxAge),
         sameSite: 'strict',

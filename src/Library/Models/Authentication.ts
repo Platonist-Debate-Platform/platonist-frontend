@@ -2,9 +2,8 @@ import { AxiosRequestConfig } from 'axios';
 import { ReactReduxRequestState } from '../ReactReduxRequest';
 import { User } from './User';
 
-export interface Authentication {
+export interface Authentication extends User {
   status: string;
-  user: User
 }
 
 export type AuthenticationState = ReactReduxRequestState<Authentication, AxiosRequestConfig>;
