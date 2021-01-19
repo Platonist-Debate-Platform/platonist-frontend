@@ -20,6 +20,8 @@ export const PageProfile: FunctionComponent = () => {
     state => state[PrivateRequestKeys.User]
   );
 
+  console.log(user);
+  
   const comments = useComments(user?.id);
   
   useEffect(() => () => {

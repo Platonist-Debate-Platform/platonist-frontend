@@ -19,6 +19,7 @@ export const useComments = (userId?: User['id'], queryParameter: QueryParameter 
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
   const comments = useSelector<GlobalState, GlobalState[PublicRequestKeys.Comments]>(state => state[PublicRequestKeys.Comments]);
   const config = useConfig();
+  console.log(userId);
   
   useEffect(() => {
     const url = config.createApiUrl(config.api.config);
