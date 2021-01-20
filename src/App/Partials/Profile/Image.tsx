@@ -73,14 +73,12 @@ export const ProfileImage: FunctionComponent = () => {
           <Image {...noImage} isLocal={true} />
         )}
       </Link>
-      {user?.avatarOriginal && (
-        <ProfileImageEdit 
-          from={location.pathname}
-          image={user?.avatarOriginal}
-          onSuccess={handleSuccess}
-          to={target}
-        />
-      )}
+      <ProfileImageEdit 
+        from={location.pathname}
+        image={user?.avatarOriginal}
+        onSuccess={handleSuccess}
+        to={target}
+      />
     </div>
   );
 }

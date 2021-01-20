@@ -29,7 +29,7 @@ export interface ProfileImageEditProps {
 const appendFileExtension = (fileName: string, type: string) => {
   
   let extension: string = '';
-  //  'image/jpg', 'image/jpeg', 'image/png'
+  
   switch (type.toLocaleLowerCase()) {
     case 'image/jpg':
     case 'image/jpeg':
