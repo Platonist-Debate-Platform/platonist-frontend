@@ -3,7 +3,6 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import Dropzone, { DropEvent, FileRejection } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { usePrevious } from 'react-use';
 import { Button } from 'reactstrap';
 
 import {
@@ -16,7 +15,6 @@ import {
   RequestStatus,
   useConfig,
 } from '../../../Library';
-import { useFile } from '../../Hooks';
 import { ImageCrop } from '../Image';
 import { ModalWithRoute } from '../Modal';
 
@@ -67,16 +65,10 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
     state => state.upload,
   );
   
-  const fileResult = useFile((image && {
-    pathname: image.url,
-    fileName: image.name
-  }) || undefined);
-
-  let prevFileResult = usePrevious(fileResult);
-
-  const [file, setFile] = useState<File | undefined>(fileResult);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [showDropZone, setShowDropZone] = useState(!image);
 
   const config = useConfig();
   const url = config.api.createApiUrl(config.api.config);
@@ -106,6 +98,7 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
   const handleImageDrop = (files: File[], _fileRejections: FileRejection[], _event: DropEvent) => {
     if (files && files.length > 0 && files[0]) {
       setFile(files[0]);
+      setShowDropZone(false);
     }
   };
 
@@ -117,17 +110,7 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
     if (formData) {
       setFormData(undefined);
     }
-
-    if (fileResult) {
-      dispatch(requestAction.clear(PrivateRequestKeys.File));
-    }
   };
-
-  const handleModalOpened = () => {
-    if (!file) {
-      setFile(fileResult);
-    }
-  }
 
   const handleModalClose = () => {
     resetStates();
@@ -143,10 +126,6 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
   };
   
   useEffect(() => {
-    if (prevFileResult === undefined && fileResult && !file) {
-      setFile(fileResult);
-    }
-
     if (uploadState.status === RequestStatus.Loaded && uploadState.result) {
       if (onSuccess) {
         onSuccess(uploadState.result[0], uploadState.result[1]);
@@ -158,8 +137,8 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
         setShouldRedirect(true);
       }
     }    
-  }, [prevFileResult, file, fileResult, formData, uploadState.status, uploadState.result, onSuccess, shouldRedirect, dispatch]);
-
+  }, [file, formData, uploadState.status, uploadState.result, onSuccess, shouldRedirect, dispatch]);
+  
   return (
     <ModalWithRoute
       footer={
@@ -176,31 +155,29 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
       from={from}
       header="Edit and upload your profile image"
       onClosed={handleModalClose}
-      onOpened={handleModalOpened}
       size={'xl'}
       to={to}
     >
       <div className="profile-image-edit-settings text-right mb-3">
         <Button
-          disabled={(file?.size === fileResult?.size && file?.name === fileResult?.name) || file ? true : false}
-          onClick={() => fileResult && setFile(fileResult)}
+          disabled={showDropZone ? false : true}
+          onClick={() => setFile(undefined)}
           size="sm"
           title="Reset Image"
         >
           <i className="fa fa-undo" /> <span className="sr-only">Reset image</span>
         </Button>
         <Button
-          color="danger"
-          disabled={!file}
-          onClick={() => file && setFile(undefined)}
+          color="success"
+          disabled={showDropZone}
+          onClick={() => setShowDropZone(true)}
           size="sm"
           title="Remove image"
         >
-          <i className="fa fa-trash" /> <span className="sr-only">Remove image</span>
+          <i className="fa fa-upload" /> <span className="sr-only">Remove image</span>
         </Button>
       </div>
       <div className="shadow p-3">
-        {!file && (
           <Dropzone
             accept={['image/jpg', 'image/jpeg', 'image/png']}
             preventDropOnDocument={true}
@@ -215,13 +192,12 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
               </section>
             )}
           </Dropzone>
-        )}
-        {file && (
           <ImageCrop
             file={file}
+            image={image}
             onCrop={handleImageCrop}
+            reset={!file}
           />
-        )}
       </div>
       {shouldRedirect && (
         <Redirect to={from} />

@@ -1,12 +1,15 @@
 import 'react-image-crop/lib/ReactCrop.scss';
 
 import React from 'react';
-import ReactCrop, {Crop, PercentCrop} from 'react-image-crop';
-import { randomHash } from '../../../Library';
+import ReactCrop, { Crop, PercentCrop } from 'react-image-crop';
 
-export interface ImageCropProps {
-  file: File;
+import { Image, randomHash, withConfig, WithConfigProps } from '../../../Library';
+
+export interface ImageCropProps extends WithConfigProps {
+  file?: File;
+  image?: Image | null;
   onCrop?: (file: File) => void;
+  reset: boolean;
 }
 
 export interface ImageCropState {
@@ -16,7 +19,7 @@ export interface ImageCropState {
   src?: string | null;
 }
 
-export class ImageCrop extends React.Component<ImageCropProps, ImageCropState> {
+export class ImageCropBase extends React.Component<ImageCropProps, ImageCropState> {
   fileUrl: string | undefined;
   imageRef: HTMLImageElement | undefined;
   reader = new FileReader();
@@ -35,19 +38,30 @@ export class ImageCrop extends React.Component<ImageCropProps, ImageCropState> {
   }
 
   public componentDidMount () {
+    this.setSrcFromImage();
+
     const _self = this;
     this.reader.addEventListener('load', function (event: ProgressEvent) {
       _self.handleFileReaderLoading(this, event);
     });
-    this.reader.readAsDataURL(this.props.file);
   }
   
   public componentDidUpdate(prevProps: ImageCropProps) {
+    const {
+      file,
+      reset,
+    } = this.props;
+
     const prevFile = prevProps.file;
-    const file = this.props.file;
-    if (prevFile.name !== file.name || file.size !== prevFile.size) {
-      this.reader.readAsDataURL(this.props.file);
+    const prevReset = prevProps.reset;
+    
+    if (file && (prevFile?.name !== file?.name || file?.size !== prevFile?.size)) {
+      this.reader.readAsDataURL(file);
       this.makeClientCrop(this.state.crop);
+    }
+
+    if (!file && !prevReset && reset) {
+      this.setSrcFromImage();
     }
   }
 
@@ -109,6 +123,7 @@ export class ImageCrop extends React.Component<ImageCropProps, ImageCropState> {
     const {
       onCrop
     } = this.props;
+
     const {
       fileName
     } = this.state;
@@ -146,24 +161,45 @@ export class ImageCrop extends React.Component<ImageCropProps, ImageCropState> {
     this.imageRef = image;
   }
 
+  private setSrcFromImage = () => {
+    const {
+      config,
+      image
+    } = this.props;
+    
+    if (config) {
+      const apiUrl = config.api.createApiUrl(config.api.config);
+      apiUrl.pathname = (image && image.url) || '';
+
+      this.setState({
+        src: apiUrl.href,
+        fileName: randomHash(32),
+      });
+    }
+  }
+
   public render() {
     const { crop, src } = this.state;
+
     return (
-      <div>
-      {src && (
-        <ReactCrop
-          circularCrop={false}
-          crop={crop}
-          minHeight={300}
-          minWidth={300}
-          onChange={this.onCropChange}
-          onComplete={this.onCropComplete}
-          onImageLoaded={this.onImageLoaded}
-          ruleOfThirds={true}
-          src={src}
-        />
-      )}
-      </div>
+      <>
+        {src && (
+          <ReactCrop
+            circularCrop={false}
+            crop={crop}
+            crossorigin="anonymous"
+            minHeight={300}
+            minWidth={300}
+            onChange={this.onCropChange}
+            onComplete={this.onCropComplete}
+            onImageLoaded={this.onImageLoaded}
+            ruleOfThirds={true}
+            src={src}
+          />
+        )}
+      </>
     );
   }
 }
+
+export const ImageCrop = withConfig(ImageCropBase);

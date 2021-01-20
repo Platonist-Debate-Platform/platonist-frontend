@@ -1,12 +1,11 @@
 import './Image.scss';
 
 import { stringify } from 'querystring';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { GlobalState, Image as ImageProps, PublicRequestKeys, randomHash, RequestStatus } from '../../../Library';
-import { useAuthentication } from '../../Hooks';
+import { GlobalState, Image as ImageProps, PublicRequestKeys, RequestStatus } from '../../../Library';
 import useUser from '../../Hooks/Requests/useUser';
 import { Image } from '../Image';
 import { ProfileImageEdit } from './ImageEdit';
@@ -40,62 +39,45 @@ export const ProfileImage: FunctionComponent = () => {
     state => state[PublicRequestKeys.Router]
   );
 
-  const authentication = useAuthentication();
-  const userState = useUser(authentication[1]?.id);
+  const {
+    user: {
+      result: user,
+      status,
+    },
+    send,
+  } = useUser();
 
   const queryParameter = '?' + stringify({
     modal: 'image',
   });
 
-  const [randomKey, setRandomKey] = useState(randomHash(16));
-  const [image, setImage] = useState<ImageProps | undefined>(userState.user.result?.avatar || undefined);
-  const [imageOriginal, setImageOriginal] = useState<ImageProps | undefined>(userState.user.result?.avatarOriginal || undefined);
-
   const target = `${location.pathname}${queryParameter}`;
 
-  const handleFinished = () => {
-    setRandomKey(randomHash(16));
-
-    setImage(undefined);
-    setImageOriginal(undefined);
-  };
-
   const handleSuccess = useCallback((avatar: ImageProps, avatarOriginal: ImageProps) => {   
-    userState.send({
+    send({
         data: {
-        ...userState.user,
+        ...user,
         avatar,
         avatarOriginal,
       }, 
       method: 'PUT'
     });
-    setImage(avatar);
-    setImageOriginal(avatarOriginal)
-  }, [userState]);
+  }, [send, user]);
   
-  useEffect(() => {
-    if (userState.user.status === RequestStatus.Loaded) {
-      setImage(userState.user.result?.avatar || undefined);
-      setImageOriginal(userState.user.result?.avatarOriginal || undefined);
-    }
-  }, [image, imageOriginal, userState.user.result?.avatar, userState.user.result?.avatarOriginal, userState.user.status]);
-
   return (
     <div className="profile-image">
-      <Link key={`link_${randomKey}`} to={target}>
-        {(userState.user.status === RequestStatus.Loaded) && image ? (
-          <Image key={`img_1_${randomKey}`} {...image}/>
+      <Link to={target}>
+        {(status === RequestStatus.Loaded) && user?.avatar ? (
+          <Image {...user?.avatar}/>
         ) : (
           <Image {...noImage} isLocal={true} />
         )}
       </Link>
-      {imageOriginal && (
+      {user?.avatarOriginal && (
         <ProfileImageEdit 
           from={location.pathname}
-          key={randomKey}
-          image={imageOriginal}
+          image={user?.avatarOriginal}
           onSuccess={handleSuccess}
-          onFinished={handleFinished}
           to={target}
         />
       )}
