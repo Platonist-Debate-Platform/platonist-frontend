@@ -25,11 +25,11 @@ import {
   defaultConfig,
   GlobalState,
   history,
-  initGTM,
+  // initGTM,
 } from './Library';
 import reportWebVitals from './reportWebVitals';
 
-initGTM();
+// initGTM();
 
 const store = configureStore();
 
