@@ -141,7 +141,7 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
         reader.addEventListener('loadend', (e: ProgressEvent) => {
           const arrayBuffer = (e.target as any).result as ArrayBuffer;
           const blob = new Blob([arrayBuffer], {type: 'image/jpeg'})
-          const file = new File([blob], fileName, {type: 'image/jpeg'});
+          const file = new File([blob], randomHash(32), {type: 'image/jpeg'});
           onCrop(file);
         });
       }
