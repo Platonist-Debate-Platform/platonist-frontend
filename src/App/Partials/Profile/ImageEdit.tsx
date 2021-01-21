@@ -1,27 +1,18 @@
-import { AxiosRequestConfig } from 'axios';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import Dropzone, { DropEvent, FileRejection } from 'react-dropzone';
-import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
 import { Button } from 'reactstrap';
 
-import {
-  GlobalState,
-  Image,
-  PrivateRequestKeys,
-  ReactReduxRequestDispatch,
-  ReactReduxRequestState,
-  requestAction,
-  RequestStatus,
-  useConfig,
-} from '../../../Library';
+import { Image, RequestStatus } from '../../../Library';
+import useUser from '../../Hooks/Requests/useUser';
 import { ImageCrop } from '../Image';
 import { ModalWithRoute } from '../Modal';
 
 export interface ProfileImageEditProps {
   from: string;
   image?: Image | null;
-  onSuccess?: (image: Image, original: Image) => void;
+  imageCropped?: Image | null;
   onFinished?: () => void;
   to: string;
 }
@@ -56,42 +47,43 @@ const appendFileExtension = (fileName: string, type: string) => {
 export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
   to,
   image,
-  onSuccess,
+  imageCropped,
   onFinished,
   from
 }) => {
-  const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const uploadState: ReactReduxRequestState<Image[], AxiosRequestConfig> = useSelector<GlobalState, GlobalState[PrivateRequestKeys.Upload]>(
-    state => state.upload,
-  );
+
+  const {
+    send,
+    user: {
+      result,
+      status,
+    },
+  } = useUser();
   
   const [file, setFile] = useState<File | undefined>(undefined);
   const [formData, setFormData] = useState<FormData | undefined>(undefined);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [showDropZone, setShowDropZone] = useState(!image);
 
-  const config = useConfig();
-  const url = config.api.createApiUrl(config.api.config);
-  url.pathname = 'upload';
+  const prevUpdatedAt = usePrevious(imageCropped?.updated_at)
 
-  const handleClick = () => {
-    dispatch(requestAction.load(PrivateRequestKeys.Upload, {
-      method: 'post',
-      url: url.href,
+  const handleClick = useCallback(() => {
+    send({
+      method: 'PUT',
       data: formData,
-      withCredentials: true,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    }));
-  };
+    });
+  }, [formData, send]);
 
   const handleImageCrop = (data: File) => {
     const formData = new FormData();
-    formData.append(`files`, data, appendFileExtension(data.name, data.type));
+    formData.append(`files.avatar`, data, appendFileExtension(data.name, data.type));
     if (file && image?.name !== file.name) {
-      formData.append(`files`, file, appendFileExtension(file.name, file.type));
+      formData.append(`files.avatarOriginal`, file, appendFileExtension(file.name, file.type));
     }
+    formData.append('data', JSON.stringify({}));
     setFormData(formData);
   }
   
@@ -114,7 +106,6 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
 
   const handleModalClose = () => {
     resetStates();
-    console.log('closed');
     
     if(shouldRedirect) {
       setShouldRedirect(false);
@@ -126,18 +117,19 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
   };
   
   useEffect(() => {
-    if (uploadState.status === RequestStatus.Loaded && uploadState.result) {
-      if (onSuccess) {
-        onSuccess(uploadState.result[0], uploadState.result[1]);
-      }
-
-      dispatch(requestAction.clear(PrivateRequestKeys.Upload));
-
+    if (status === RequestStatus.Loaded && result?.avatar?.updated_at !== prevUpdatedAt) {
       if (!shouldRedirect) {
         setShouldRedirect(true);
       }
-    }    
-  }, [file, formData, uploadState.status, uploadState.result, onSuccess, shouldRedirect, dispatch]);
+    }
+
+    if (status === RequestStatus.Loaded && result?.avatar?.updated_at === prevUpdatedAt) {
+      if (shouldRedirect) {
+        setShouldRedirect(false);
+      }
+    }
+
+  }, [prevUpdatedAt, result?.avatar, result?.avatar?.updated_at, shouldRedirect, status]);
   
   return (
     <ModalWithRoute
@@ -146,7 +138,7 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
           <Button
             color="success" 
             onClick={handleClick} 
-            disabled={uploadState.status === RequestStatus.Updating}
+            disabled={status === RequestStatus.Updating}
           >
             Save
           </Button>

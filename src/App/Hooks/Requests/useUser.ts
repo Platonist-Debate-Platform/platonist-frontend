@@ -12,6 +12,13 @@ import {
 } from '../../../Library';
 import { useAuthentication } from './useAuthentication';
 
+export interface UseUserSend {
+  data?: Partial<User> | FormData, 
+  method: 'GET' | 'POST' | 'PUT', 
+  pathname?: string, search?: string,
+  headers?: {[key: string]: string}; 
+}
+
 export const useUser = (id?: string) => {
   
   const config = useConfig();
@@ -26,7 +33,7 @@ export const useUser = (id?: string) => {
     GlobalState[PrivateRequestKeys.User]
   >(state => state[PrivateRequestKeys.User]);
 
-  const send = ({data, method, pathname, search}: {data?: Partial<User>, method: 'GET' | 'POST' | 'PUT', pathname?: string, search?: string}) => {
+  const send = ({data, method, pathname, search}: UseUserSend) => {
     let sendUrl: URL | undefined;
 
     if (pathname) {

@@ -35,6 +35,7 @@ export const Image: React.FC<ImageProps & ImageDefaultProps> = (props) => {
   const config = useConfig();
   const apiUrl = config.api.createApiUrl(config.api.config);
   apiUrl.pathname = url;
+  apiUrl.search = 'time=' + Date.now()
   
   const srcSet = formats && createSrcSet(formats, apiUrl);
 

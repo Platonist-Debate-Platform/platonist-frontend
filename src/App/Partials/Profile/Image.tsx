@@ -1,17 +1,16 @@
 import './Image.scss';
 
 import { stringify } from 'querystring';
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { GlobalState, Image as ImageProps, PublicRequestKeys, RequestStatus } from '../../../Library';
+import { GlobalState, Image as ImageProps, PublicRequestKeys } from '../../../Library';
 import useUser from '../../Hooks/Requests/useUser';
 import { Image } from '../Image';
 import { ProfileImageEdit } from './ImageEdit';
 
 const noImageItem = require('../../../Assets/Images/dummy-profile.png');
-console.log(noImageItem);
 
 const noImage: ImageProps= {
     id: 9999999,
@@ -39,36 +38,37 @@ export const ProfileImage: FunctionComponent = () => {
     state => state[PublicRequestKeys.Router]
   );
 
+  
   const {
     user: {
       result: user,
       status,
     },
-    send,
   } = useUser();
+
+  const [avatar, setAvatar] = useState(user?.avatar);
 
   const queryParameter = '?' + stringify({
     modal: 'image',
   });
 
   const target = `${location.pathname}${queryParameter}`;
+  
+  const handleFinished = useCallback(() => {
+    setAvatar(undefined);
+  }, [])
 
-  const handleSuccess = useCallback((avatar: ImageProps, avatarOriginal: ImageProps) => {   
-    send({
-        data: {
-        ...user,
-        avatar,
-        avatarOriginal,
-      }, 
-      method: 'PUT'
-    });
-  }, [send, user]);
+  useEffect(() => {
+    if (!avatar && user?.avatar) {
+      setAvatar(user.avatar)
+    }
+  }, [avatar, status, user]);
   
   return (
     <div className="profile-image">
       <Link to={target}>
-        {(status === RequestStatus.Loaded) && user?.avatar ? (
-          <Image {...user?.avatar}/>
+        {avatar ? (
+          <Image {...avatar}/>
         ) : (
           <Image {...noImage} isLocal={true} />
         )}
@@ -76,7 +76,8 @@ export const ProfileImage: FunctionComponent = () => {
       <ProfileImageEdit 
         from={location.pathname}
         image={user?.avatarOriginal}
-        onSuccess={handleSuccess}
+        imageCropped={avatar}
+        onFinished={handleFinished}
         to={target}
       />
     </div>
