@@ -24,7 +24,7 @@ export const useRoles = (key: PrivateRequestKeys.Role | PrivateRequestKeys.Roles
 
   const url = config.createApiUrl(config.api.config);
   url.pathname = `users-permissions/roles${(id && '/' + id) || ''}`;
-  
+
   useEffect(() => {
     if (key === PrivateRequestKeys.Role && !id) {
       return;

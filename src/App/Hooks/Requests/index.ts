@@ -6,3 +6,4 @@ export * from './useHomepages';
 export * from './usePage';
 export * from './usePages';
 export * from './useRoles';
+export * from './useUser';
