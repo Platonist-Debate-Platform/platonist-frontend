@@ -40,16 +40,16 @@ export const hasPermission = (
 
 export interface UsePermissionProps extends HasPermissionOptions {
   id?: string,
+  state: RoleState,
 }
 
 export type UsePermission = (props: UsePermissionProps) => [boolean, Role | undefined];
 
 export const usePermission: UsePermission = ({
   id,
+  state,
   ...rest
 }) => {
-  const state = useRoles(PrivateRequestKeys.Role, id) as RoleState;
-
   const [allowed, setIsAllowed] = 
     useState(state && state.result && hasPermission(state.result.role.permissions, rest));
 

@@ -3,3 +3,5 @@ export * from './DebateList';
 export * from './DebateRoute';
 export * from './Permission';
 export * from './Settings';
+export * from './Form';
+export * from './FormData';

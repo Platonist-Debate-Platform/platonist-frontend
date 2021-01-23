@@ -14,6 +14,8 @@ export enum PublicRequestKeys {
 }
 
 export enum PrivateRequestKeys {
+  Article = 'article',
+  Articles = 'articles',
   Comment = 'comment',
   File = 'file',
   Role = 'role',

@@ -24,9 +24,11 @@
     }
   }
 
-  &-settings {
-    position: sticky;
-    position: -webkit-sticky;
-    top: 100px; /* required */
+  &-settings{
+    &-create {
+      position: sticky;
+      position: -webkit-sticky;
+      top: 100px; /* required */
+    }
   }
 }

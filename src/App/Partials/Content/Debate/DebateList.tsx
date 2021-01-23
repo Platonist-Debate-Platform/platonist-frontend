@@ -17,6 +17,7 @@ import {
 } from '../../../../Library';
 import { DebateListItem } from './DebateListItem';
 import { DebateSettings } from './Settings';
+import { DebateForm } from './Form';
 
 type DebateListType = DebateList & WithConfigProps;
 

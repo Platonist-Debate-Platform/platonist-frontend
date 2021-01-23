@@ -6,6 +6,8 @@ import { AlertState } from '../Alerts';
 import { DebateLinkState } from '../DebateLink';
 import { AvailableLanguage } from '../Localize';
 import {
+  ArticlesState,
+  ArticleState,
   AuthenticationState,
   CommentsState,
   CommentState,
@@ -49,6 +51,8 @@ export interface PublicState {
 }
 
 export interface PrivateState {
+  [PrivateRequestKeys.Article]: ArticleState;
+  [PrivateRequestKeys.Articles]: ArticlesState;
   [PrivateRequestKeys.Comment]: CommentState;
   [PrivateRequestKeys.File]: FileState;
   [PrivateRequestKeys.Permission]: PermissionState,

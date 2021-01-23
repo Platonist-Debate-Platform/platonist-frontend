@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 
-import { ApplicationKeys, RestMethodKeys, RolePermissionTypes } from '../../../../Library';
+import { ApplicationKeys, PrivateRequestKeys, RestMethodKeys, RolePermissionTypes, RoleState } from '../../../../Library';
 import { usePermission } from '../../../Hooks';
-import { useUser } from '../../../Hooks/Requests';
+import { useRoles, useUser } from '../../../Hooks/Requests';
 
 export interface DebatePermissionProps {
   method?: RestMethodKeys;
@@ -17,12 +17,14 @@ export const DebatePermission: FunctionComponent<DebatePermissionProps> = ({
       result: user,
     },
   } = useUser();
-
+  const role = useRoles(PrivateRequestKeys.Role, user?.role?.id) as RoleState;
+  
   const [hasPermission] = usePermission({
     methods: method || [RestMethodKeys.Create, RestMethodKeys.Update, RestMethodKeys.Delete],
     permission: RolePermissionTypes.Application,
     type: ApplicationKeys.Debate,
-    id: user?.role?.id
+    id: user?.role?.id,
+    state: role,
   });
   
   if (!hasPermission) {

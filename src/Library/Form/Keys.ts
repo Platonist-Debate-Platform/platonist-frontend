@@ -25,6 +25,7 @@ export enum FormValidationTypes {
   Password = 'password',
   Phone = 'phone',
   Selected = 'selected',
+  Url = 'url',
   Words = 'words',
 }
 

@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { FormattedDate } from 'react-intl';
 import { Badge, Col, Container, Row } from 'reactstrap';
-import { Debate, DebateLink } from '../../../../Library';
+import { Debate, DebateLink, RestMethodKeys } from '../../../../Library';
 import { ArticleItem } from '../../Article';
+import { DebateSettings } from './Settings';
 
 export interface DebateListItemProps extends Debate {
   pageTitle: string;
@@ -25,6 +26,12 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
   return (
     <div className="debate-list-item">
       <Container>
+        <Row>
+          <Col className="text-right">
+            <DebateSettings method={RestMethodKeys.Update} debateId={debate.id} />
+            <DebateSettings method={RestMethodKeys.Delete} debateId={debate.id} />
+          </Col>
+        </Row>
         <Row>
           <Col md={8}>
             <small>

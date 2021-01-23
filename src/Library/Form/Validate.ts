@@ -104,6 +104,16 @@ export const validate: Validate = ({type, value, comparison, options}) => {
         return `Shouldn't be more then ${wordsOptions.max} words.`
       }
       return undefined;
+    case FormValidationTypes.Url:
+      const isURLOptions: validator.IsURLOptions = {
+        require_protocol: false,
+        protocols: ['http', 'https'],
+        ...(options || {}),
+      }
+      if (!validator.isURL(value, isURLOptions)) {
+        return 'Please enter a valid URL'
+      }
+      return undefined;
     default:
       return undefined; 
   }

@@ -15,9 +15,10 @@ import {
   RequestStatus,
   RestMethodKeys,
   RolePermissionTypes,
+  RoleState,
   useConfig,
 } from '../../../Library';
-import { useCommentSocket, usePermission } from '../../Hooks';
+import { useCommentSocket, usePermission, useRoles } from '../../Hooks';
 import { CommentAdd } from './CommentAdd';
 import { CommentListItem } from './CommentListItem';
 
@@ -51,11 +52,14 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
 
   const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(state => state.user);
   
+  const role = useRoles(PrivateRequestKeys.Role, user.result?.role?.id) as RoleState;
+  
   const [canWrite] = usePermission({
     id: user.result?.role?.id,
     methods: [RestMethodKeys.Update, RestMethodKeys.Create],
     permission: RolePermissionTypes.Application,
     type: ApplicationKeys.Comment,
+    state: role
   });
 
   const url = config.api.createApiUrl(config.api.config);

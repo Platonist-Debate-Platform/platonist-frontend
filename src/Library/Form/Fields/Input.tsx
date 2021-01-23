@@ -10,8 +10,8 @@ import { ErrorTooltip } from '../UtilComponents';
 export interface InputProps<Data extends Object> {
   className?: string;
   disabled?: boolean;
-  hideLabel?: boolean;
   inputKey: keyof Data | string;
+  hideLabel?: boolean;
 }
 
 export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object>({
@@ -46,7 +46,7 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
 
       setFormValue(inputKey, newFormValue, comparison as any);
     }
-  }
+  };
 
   const handleFocus = () => {
     if (inputValue && setFormValue) {

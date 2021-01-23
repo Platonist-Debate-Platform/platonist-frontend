@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from "axios";
+import { ReactReduxRequestState } from "../ReactReduxRequest";
 import { Ratings } from "./Ratings";
 
 export interface Article {
@@ -17,3 +19,6 @@ export interface Article {
   created_at: Date | string;
   updated_at: Date | string;
 }
+
+export type ArticleState = ReactReduxRequestState<Article, AxiosRequestConfig>;
+export type ArticlesState = ReactReduxRequestState<Article[], AxiosRequestConfig>;

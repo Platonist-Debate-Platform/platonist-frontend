@@ -24,6 +24,8 @@ export const createInitialFormData = <Data extends Object>(props: CreateInitialF
 
   inputConfig.forEach((config) => {
     const key = config.key;
+    console.log(data[key]);
+    
     const value = config.type === FormInputTypes.Number && data[key] ? (data[key] as any).toString() : data[key];
     const comparison = config?.comparison as unknown;
     
