@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { FormProvider, GlobalState, PrivateRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, RestMethodKeys, useConfig, useInputValue } from '../../../../Library';
+import { createDefaultData, FormProvider, GlobalState, PrivateRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, RestMethodKeys, useConfig, useInputValue } from '../../../../Library';
 import { ModalWithRoute } from '../../Modal';
-import { debateFormData } from './FormData';
+import { DebateFormData, debateFormData } from './FormData';
 import { DebateSettingsProps } from './Settings';
 import { Button, Col, Form, FormGroup, Label, Row } from 'reactstrap';
-import { Group, Input, Text } from '../../../../Library/Form/Fields';
+import { Group, GroupBase, Input, Text } from '../../../../Library/Form/Fields';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePrevious } from 'react-use';
 
@@ -137,15 +137,15 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   ...props
 }) => {
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false
-
+  const defaultData = createDefaultData<Partial<DebateFormData>>(debateFormData);
   return (
     <ModalWithRoute
       {...props}
       header={<DebateModalHeader method={method} />}
-      size={(!isDeleteMethod && 'sm') || undefined}
+      size={(isDeleteMethod && 'lg') || 'xl'}
     >
       <FormProvider
-        data={{title: ''}} 
+        data={defaultData} 
         inputConfig={debateFormData}
       >
         <Form>
@@ -154,7 +154,10 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
           <Text inputKey="shortDescription" />
 
           <ArticleFetcher inputKey="articleAUrl" />
+          <Group inputKey="articleA" />
+          
           <ArticleFetcher inputKey="articleBUrl" />
+          <Group inputKey="articleB" />
         </Form>
 
       </FormProvider>
