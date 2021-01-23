@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { FormProvider, GlobalState, PrivateRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, RestMethodKeys, useConfig, useInputValue } from '../../../../Library';
+import { createDefaultData, FormProvider, GlobalState, PrivateRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, RestMethodKeys, useConfig, useInputValue } from '../../../../Library';
 import { ModalWithRoute } from '../../Modal';
-import { debateFormData } from './FormData';
+import { DebateFormData, debateFormData } from './FormData';
 import { DebateSettingsProps } from './Settings';
 import { Button, Col, Form, FormGroup, Label, Row } from 'reactstrap';
 import { Group, Input, Text } from '../../../../Library/Form/Fields';
@@ -137,7 +137,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   ...props
 }) => {
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false
-
+  const defaultData = createDefaultData<Partial<DebateFormData>>(debateFormData)
   return (
     <ModalWithRoute
       {...props}
@@ -145,7 +145,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       size={(!isDeleteMethod && 'sm') || undefined}
     >
       <FormProvider
-        data={{title: ''}} 
+        data={defaultData} 
         inputConfig={debateFormData}
       >
         <Form>
@@ -154,6 +154,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
           <Text inputKey="shortDescription" />
 
           <ArticleFetcher inputKey="articleAUrl" />
+          <Group inputKey="articleA" />
           <ArticleFetcher inputKey="articleBUrl" />
         </Form>
 
