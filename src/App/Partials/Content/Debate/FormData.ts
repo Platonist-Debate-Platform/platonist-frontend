@@ -1,11 +1,34 @@
-import { Debate, FormDataConfig, FormInputTypes, FormValidationTypes } from "../../../../Library";
+import { Article, Debate, FormDataConfig, FormInputTypes, FormValidationTypes } from '../../../../Library';
 
 export interface DebateFormData extends Debate {
   articleAUrl: string;
   articleBUrl: string;
 }
 
-export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] =[{
+const debateArticleGroupData: FormDataConfig<Partial<Article>>[] = [{
+  editable: false,
+  key: 'title',
+  required: true,
+  title: 'Title',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'description',
+  required: true,
+  title: 'Description',
+  type: FormInputTypes.Text,
+  validate: FormValidationTypes.Length,
+},{
+  editable: false,
+  key: 'provider',
+  required: true,
+  title: 'Provider',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}]
+
+export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] = [{
   editable: true,
   key: 'title',
   required: true,
@@ -39,19 +62,19 @@ export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] =[{
   required: true,
   title: 'Url to Article A',
   type: FormInputTypes.Group,
-  group: [{
-    editable: true,
-    key: 'title',
-    required: true,
-    title: 'Debate title',
-    type: FormInputTypes.String,
-    validate: FormValidationTypes.Length,
-  }],
+  group: debateArticleGroupData,
 }, {
   editable: true,
   key: 'articleBUrl',
   required: true,
-  title: 'Url to Article B',
+  title: 'Article A',
   type: FormInputTypes.String,
   validate: FormValidationTypes.Url,
+}, {
+  editable: true,
+  key: 'articleB',
+  required: true,
+  title: 'Article B',
+  type: FormInputTypes.Group,
+  group: debateArticleGroupData,
 }];

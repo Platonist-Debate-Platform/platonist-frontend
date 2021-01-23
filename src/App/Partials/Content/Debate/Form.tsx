@@ -1,12 +1,24 @@
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { createDefaultData, FormProvider, GlobalState, PrivateRequestKeys, ReactReduxRequestDispatch, requestAction, RequestStatus, RestMethodKeys, useConfig, useInputValue } from '../../../../Library';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePrevious } from 'react-use';
+import { Button, Col, Form, FormGroup, Label, Row } from 'reactstrap';
+
+import {
+  createDefaultData,
+  FormProvider,
+  GlobalState,
+  PrivateRequestKeys,
+  ReactReduxRequestDispatch,
+  requestAction,
+  RequestStatus,
+  RestMethodKeys,
+  useConfig,
+  useInputValue,
+} from '../../../../Library';
+import { Group, Input, Text } from '../../../../Library/Form/Fields';
 import { ModalWithRoute } from '../../Modal';
 import { DebateFormData, debateFormData } from './FormData';
 import { DebateSettingsProps } from './Settings';
-import { Button, Col, Form, FormGroup, Label, Row } from 'reactstrap';
-import { Group, Input, Text } from '../../../../Library/Form/Fields';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePrevious } from 'react-use';
 
 export interface DebateFormProps extends DebateSettingsProps {
   from: string;
@@ -137,12 +149,12 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   ...props
 }) => {
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false
-  const defaultData = createDefaultData<Partial<DebateFormData>>(debateFormData)
+  const defaultData = createDefaultData<Partial<DebateFormData>>(debateFormData);
   return (
     <ModalWithRoute
       {...props}
       header={<DebateModalHeader method={method} />}
-      size={(!isDeleteMethod && 'sm') || undefined}
+      size={(isDeleteMethod && 'lg') || 'xl'}
     >
       <FormProvider
         data={defaultData} 
@@ -155,7 +167,9 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
           <ArticleFetcher inputKey="articleAUrl" />
           <Group inputKey="articleA" />
+          
           <ArticleFetcher inputKey="articleBUrl" />
+          <Group inputKey="articleB" />
         </Form>
 
       </FormProvider>
