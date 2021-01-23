@@ -11,6 +11,7 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
+  RestMethodKeys,
   withConfig,
   WithConfigProps,
 } from '../../../../Library';
@@ -64,7 +65,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
 
   return (
     <>
-      <DebateSettings />
+      <DebateSettings method={RestMethodKeys.Create} />
       <section className="section section-debate section-debate-list">
         {debates.status === RequestStatus.Loaded && debates.result && (
           <>
