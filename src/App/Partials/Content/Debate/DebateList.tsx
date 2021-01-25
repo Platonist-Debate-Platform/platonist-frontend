@@ -16,10 +16,11 @@ import {
   withConfig,
   WithConfigProps,
 } from "../../../../Library";
-import { useDebates } from "../../../Hooks";
+import { useDebates, useDebateSocket } from "../../../Hooks";
 import { DebateListItem } from "./DebateListItem";
 import { DebateForm } from "./Form";
 import { createSettingsQuery, DebateSettings } from "./Settings";
+import { usePrevious } from "react-use";
 
 type DebateListType = DebateList & WithConfigProps;
 
@@ -38,7 +39,15 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
 }) => {
   const {
     data: { result: debates, status },
-  } = useDebates<DebatesState>(PublicRequestKeys.Debates);
+    reload,
+  } = useDebates<DebatesState>(
+    PublicRequestKeys.Debates,
+    undefined,
+    "_sort=created_at:DESC"
+  );
+
+  const debate = useDebateSocket();
+  const prevDebate = usePrevious(debate);
 
   const { location } = router;
 
@@ -50,12 +59,21 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const linkTo = `${location.pathname}?${searchQuery}`;
 
   useEffect(() => {
+    const shouldLoadInitial = debates && status === RequestStatus.Loaded;
+
+    const shouldReload =
+      (debate && debate.id) !== (prevDebate && prevDebate.id);
+
+    if (shouldLoadInitial || shouldReload) {
+      // reload();
+    }
+
     return () => {
       if (status === RequestStatus.Loaded) {
         dispatch(requestAction.clear(PublicRequestKeys.Debates));
       }
     };
-  }, [config, debates, status, dispatch, page]);
+  }, [config, debates, status, dispatch, page, debate, reload, prevDebate]);
 
   return (
     <>

@@ -16,7 +16,8 @@ import { UseRequestSendProps } from "./useUser";
 
 export const useDebates = <R extends DebateState | DebatesState>(
   key: PublicRequestKeys.Debate | PublicRequestKeys.Debates,
-  id?: number
+  id?: number,
+  search?: string
 ) => {
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
@@ -28,6 +29,7 @@ export const useDebates = <R extends DebateState | DebatesState>(
 
   const url = config.createApiUrl(config.api.config);
   url.pathname = `/debates${(id && "/" + id) || ""}`;
+  url.search = search || "";
 
   const send = ({ data, method, pathname, search }: UseRequestSendProps<R>) => {
     let sendUrl: URL | undefined;
@@ -50,6 +52,22 @@ export const useDebates = <R extends DebateState | DebatesState>(
 
   const clear = () => {
     dispatch(requestAction.clear(key));
+  };
+
+  const reload = () => {
+    if (key === PublicRequestKeys.Debate && !id) {
+      return;
+    }
+
+    if (requestState.status === RequestStatus.Loaded) {
+      dispatch(
+        requestAction.update(key, {
+          method: "GET",
+          url: url.href,
+          withCredentials: true,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -78,6 +96,7 @@ export const useDebates = <R extends DebateState | DebatesState>(
   return {
     clear,
     data: requestState as R,
+    reload,
     send,
   };
 };
