@@ -1,18 +1,29 @@
-import classNames from 'classnames';
-import React, { Fragment, FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Button, FormGroup, Label } from 'reactstrap';
+import classNames from "classnames";
+import React, {
+  Fragment,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { Button, FormGroup, Label } from "reactstrap";
 
-import { withFormValue } from '../Consumer';
-import { FormContextValue } from '../Types';
-import { createDefaultData } from '../Utils';
-import { Group } from './Group';
-import { InputProps } from './Input';
+import { withFormValue } from "../Consumer";
+import { FormContextValue } from "../Types";
+import { createDefaultData } from "../Utils";
+import { Group } from "./Group";
+import { InputProps } from "./Input";
 
 export interface MultipleGroupProps<Data> extends FormContextValue<Data> {}
 
-type MultipleGroupValues<Data extends Object = {}> = {[key in keyof Data]: Data[]};
+type MultipleGroupValues<Data extends Object = {}> = {
+  [key in keyof Data]: Data[];
+};
 
-type Remove<Item extends Object = {}> = (items: Item[], index: number) => Item[];
+type Remove<Item extends Object = {}> = (
+  items: Item[],
+  index: number
+) => Item[];
 
 const remove: Remove = (items, index) => {
   const newItems: typeof items = [];
@@ -23,63 +34,57 @@ const remove: Remove = (items, index) => {
   });
 
   return newItems;
-}
+};
 
-export const MultipleGroupBase: FunctionComponent<MultipleGroupProps<MultipleGroupValues> & InputProps<MultipleGroupValues>> = <Data extends MultipleGroupValues<Data>>(
+export const MultipleGroupBase: FunctionComponent<
+  MultipleGroupProps<MultipleGroupValues> & InputProps<MultipleGroupValues>
+> = <Data extends MultipleGroupValues<Data>>(
   props: MultipleGroupProps<Data> & InputProps<Data>
 ) => {
-  
-  const {
-    data,
-    formId,
-    inputKey,
-    setFormValue,
-  } = props;
+  const { data, formId, inputKey, setFormValue } = props;
 
-  const inputValue = data[inputKey as keyof Data]
-  const inputConfig = inputValue.config?.group ;
+  const inputValue = data[inputKey as keyof Data];
+  const inputConfig = inputValue.config?.group;
   const values = inputValue.value as MultipleGroupValues[];
-  const [actionType, setActionType] = useState<'add' | 'remove' | undefined>(undefined)
-  
-  const handleClick = useCallback((index: number) => {
-    let value = values;
-    
-    if (index === -1) {
-      value.push(createDefaultData(inputConfig || []));
-      if (!actionType) {
-        setActionType('add');
-      }
-    }
-    
-    if (index > -1) {
-      value = remove(value, index);
-      if (!actionType) {
-        setActionType('remove');
-      }
-    }
+  const [actionType, setActionType] = useState<"add" | "remove" | undefined>(
+    undefined
+  );
 
-    const defaultValue = value;
+  const handleClick = useCallback(
+    (index: number) => {
+      let value = values;
 
-    setFormValue(inputKey, {
-      ...inputValue,
-      defaultValue,
-      value,
-    });
-  }, [
-    actionType,
-    inputConfig,
-    inputKey,
-    inputValue,
-    setFormValue,
-    values
-  ]);
+      if (index === -1) {
+        value.push(createDefaultData(inputConfig || []));
+        if (!actionType) {
+          setActionType("add");
+        }
+      }
+
+      if (index > -1) {
+        value = remove(value, index);
+        if (!actionType) {
+          setActionType("remove");
+        }
+      }
+
+      const defaultValue = value;
+
+      setFormValue(inputKey, {
+        ...inputValue,
+        defaultValue,
+        value,
+      });
+    },
+    [actionType, inputConfig, inputKey, inputValue, setFormValue, values]
+  );
 
   // const handleChange = useCallback((submitData: SubmitData<Data>, index: number) => {
   //   if (actionType) {
   //     setActionType(undefined);
   //     return;
   //   }
-    
+
   //   values[index] = submitData.data;
 
   //   setFormValue(inputKey, {
@@ -89,63 +94,56 @@ export const MultipleGroupBase: FunctionComponent<MultipleGroupProps<MultipleGro
 
   // }, []);
 
-  const isValid = inputValue && (inputValue.pristine || inputValue.isValid) ? true : false;
-  
+  const isValid =
+    inputValue && (inputValue.pristine || inputValue.isValid) ? true : false;
+
   useEffect(() => {
-    // console.log('Update');
-    // console.log(actionType);
     if (actionType) {
       setActionType(undefined);
     }
-  }, [
-    actionType,
-    setActionType,
-  ]);
-  console.log(actionType);
-  
+  }, [actionType, setActionType]);
+
   return (
-    <FormGroup className={classNames(props.className, 'form-group-multi')}>
+    <FormGroup className={classNames(props.className, "form-group-multi")}>
       {!props.hideLabel && (
         <>
           <Label
             className={classNames({
-              'is-invalid': !isValid,
+              "is-invalid": !isValid,
             })}
           >
             {inputValue?.config?.title}
-          </Label>
-          {' '}
+          </Label>{" "}
         </>
       )}
 
-      {inputConfig && values.map((value, index) => {      
-        return (
-          <Fragment key={`multiple_group_${inputKey}_${formId}_${index}`}>
-            {values.length > 1 && (
-              <div className="input-group-append">
-                <Button 
-                  className="input-group-text"
-                  color="none"
-                  onClick={() => handleClick(index)}
-                  role="button"
-                  disabled={values.length === 1}
-                >
-                  <i className="fa fa-times" />
-                  {index}
-                  <span className="sr-only">
-                    Remove item
-                  </span>
-                </Button>
-              </div>
-            )}
-            <Group
-              index={index} 
-              inputKey={inputKey as string}
-              // onChange={(submitData) => handleChange(submitData as any, index)}
-            />
-          </Fragment>
-        );
-      })}
+      {inputConfig &&
+        values.map((value, index) => {
+          return (
+            <Fragment key={`multiple_group_${inputKey}_${formId}_${index}`}>
+              {values.length > 1 && (
+                <div className="input-group-append">
+                  <Button
+                    className="input-group-text"
+                    color="none"
+                    onClick={() => handleClick(index)}
+                    role="button"
+                    disabled={values.length === 1}
+                  >
+                    <i className="fa fa-times" />
+                    {index}
+                    <span className="sr-only">Remove item</span>
+                  </Button>
+                </div>
+              )}
+              <Group
+                index={index}
+                inputKey={inputKey as string}
+                // onChange={(submitData) => handleChange(submitData as any, index)}
+              />
+            </Fragment>
+          );
+        })}
       {!inputValue?.disabled && (
         <div className="btn-group text-right mt-3">
           <Button
@@ -160,6 +158,8 @@ export const MultipleGroupBase: FunctionComponent<MultipleGroupProps<MultipleGro
       )}
     </FormGroup>
   );
-}
+};
 
-export const MultipleGroup = withFormValue<InputProps<Object>>(MultipleGroupBase);
+export const MultipleGroup = withFormValue<InputProps<Object>>(
+  MultipleGroupBase
+);

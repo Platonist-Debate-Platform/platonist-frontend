@@ -1,14 +1,21 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent } from "react";
 
-import { ApplicationKeys, PrivateRequestKeys, RestMethodKeys, RolePermissionTypes, RoleState, User } from '../../../Library';
-import { usePermission, useRoles } from '../../Hooks';
+import {
+  ApplicationKeys,
+  PrivateRequestKeys,
+  RestMethodKeys,
+  RolePermissionTypes,
+  RoleState,
+  User,
+} from "../../../Library";
+import { usePermission, useRoles } from "../../Hooks";
 
 export interface HomepageSettingsProps {
   user: User;
 }
 
 export const HomepageSettings: FunctionComponent<HomepageSettingsProps> = ({
-  user
+  user,
 }) => {
   const role = useRoles(PrivateRequestKeys.Role, user?.role?.id) as RoleState;
 
@@ -21,12 +28,8 @@ export const HomepageSettings: FunctionComponent<HomepageSettingsProps> = ({
   });
 
   console.log(hasPermission);
-  
-  return (
-    <>
 
-    </>
-  );
+  return <></>;
 };
 
 export default HomepageSettings;

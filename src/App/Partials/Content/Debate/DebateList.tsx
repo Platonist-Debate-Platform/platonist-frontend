@@ -1,11 +1,12 @@
-import './DebateList.scss';
+import "./DebateList.scss";
 
-import { stringify } from 'querystring';
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { stringify } from "querystring";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 
 import {
   DebateList,
+  DebatesState,
   GlobalState,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
@@ -14,79 +15,82 @@ import {
   RestMethodKeys,
   withConfig,
   WithConfigProps,
-} from '../../../../Library';
-import { DebateListItem } from './DebateListItem';
-import { DebateSettings } from './Settings';
-import { DebateForm } from './Form';
+} from "../../../../Library";
+import { useDebates } from "../../../Hooks";
+import { DebateListItem } from "./DebateListItem";
+import { DebateForm } from "./Form";
+import { createSettingsQuery, DebateSettings } from "./Settings";
 
 type DebateListType = DebateList & WithConfigProps;
 
 export interface DebateListProps extends DebateListType {
-  [PublicRequestKeys.Debates]: GlobalState[PublicRequestKeys.Debates];
   [PublicRequestKeys.Page]: GlobalState[PublicRequestKeys.Page];
+  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
   dispatch: ReactReduxRequestDispatch;
   path: string;
 }
 
 export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   config,
-  debates,
   dispatch,
   page,
+  router,
 }) => {
+  const {
+    data: { result: debates, status },
+  } = useDebates<DebatesState>(PublicRequestKeys.Debates);
+
+  const { location } = router;
+
+  const query = createSettingsQuery({
+    method: RestMethodKeys.Create,
+  });
+
+  const searchQuery = stringify(query);
+  const linkTo = `${location.pathname}?${searchQuery}`;
 
   useEffect(() => {
-    if (debates.status === RequestStatus.Initial && config) {
-      const url = config.api.createApiUrl(config.api.config);
-      url.pathname = 'debates';
-
-      url.search = `?${stringify({
-        'page.id': page && page.result?.id,
-        _sort: 'created_at:DESC'
-      })}`;
-      
-      dispatch(
-        requestAction.load(PublicRequestKeys.Debates, {
-          url: url.href,
-        })
-      );
-    }
     return () => {
-      if (debates.status === RequestStatus.Loaded) {
+      if (status === RequestStatus.Loaded) {
         dispatch(requestAction.clear(PublicRequestKeys.Debates));
       }
-    }
-  }, [
-    config, 
-    debates,
-    debates.status, 
-    dispatch, 
-    page
-  ]);
+    };
+  }, [config, debates, status, dispatch, page]);
 
   return (
     <>
       <DebateSettings method={RestMethodKeys.Create} />
+      <DebateForm
+        from={location.pathname}
+        to={linkTo}
+        method={RestMethodKeys.Create}
+      />
       <section className="section section-debate section-debate-list">
-        {debates.status === RequestStatus.Loaded && debates.result && (
+        {status === RequestStatus.Loaded && debates && (
           <>
-            {debates.result && debates.result.length && debates.result.map((debate, index) => (page.result && debate && (
-              <DebateListItem 
-                key={`debate_list_item_${debate.id}_${index}`} 
-                pageTitle={page.result.title}
-                {...debate}
-              />
-            )) || null)}
+            {debates &&
+              debates.length &&
+              debates.map(
+                (debate, index) =>
+                  (page.result && debate && (
+                    <DebateListItem
+                      key={`debate_list_item_${debate.id}_${index}`}
+                      pageTitle={page.result.title}
+                      {...debate}
+                    />
+                  )) ||
+                  null
+              )}
           </>
         )}
       </section>
     </>
   );
-}
+};
 
 export const DebateListComponent = connect((state: GlobalState) => ({
-  [PublicRequestKeys.Debates]: state[PublicRequestKeys.Debates],
   [PublicRequestKeys.Page]: state[PublicRequestKeys.Page],
+  [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],
 }))(withConfig(DebateListBase));
 
 export default DebateListComponent;

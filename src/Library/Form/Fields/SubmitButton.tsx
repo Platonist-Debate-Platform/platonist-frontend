@@ -1,8 +1,9 @@
-import React, { FunctionComponent } from 'react';
-import { Button, ButtonProps } from 'reactstrap';
+import React, { FunctionComponent, useContext } from "react";
+import { Button, ButtonProps } from "reactstrap";
 
-import { withFormValue } from '../Consumer';
-import { FormContextValue, FormData, FormClickEvent } from '../Types';
+import { useFormValue, withFormValue } from "../Consumer";
+import { FormContext } from "../Context";
+import { FormContextValue, FormData, FormClickEvent } from "../Types";
 
 export interface SubmitButtonProps<Data> extends FormContextValue<Data> {
   className?: string;
@@ -10,9 +11,13 @@ export interface SubmitButtonProps<Data> extends FormContextValue<Data> {
   preventDefault?: boolean;
 }
 
-type SubmitButtonValues<Data extends Object = {}> = {[key in keyof Data]: FormData<Data>[keyof Data]};
+type SubmitButtonValues<Data extends Object = {}> = {
+  [key in keyof Data]: FormData<Data>[keyof Data];
+};
 
-export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonValues> & ButtonProps> = <Data extends SubmitButtonValues<Data>>(
+export const SubmitButtonBase: FunctionComponent<
+  SubmitButtonProps<SubmitButtonValues> & ButtonProps
+> = <Data extends SubmitButtonValues<Data>>(
   props: SubmitButtonProps<Data> & ButtonProps
 ) => {
   const {
@@ -28,6 +33,8 @@ export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonV
     ...rest
   } = props;
 
+  const context = useContext(FormContext);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (event && event.preventDefault && preventDefault) {
       event.preventDefault();
@@ -38,14 +45,15 @@ export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonV
         ...event,
         data,
         submitData,
-      })
+      });
     }
-  }
+  };
 
-  const isDisabled = !submitData.isValid || submitData.pristine || props.disabled;
+  const isDisabled =
+    !submitData.isValid || submitData.pristine || props.disabled;
 
   return (
-    <Button 
+    <Button
       color="none"
       type="submit"
       {...rest}
@@ -56,6 +64,5 @@ export const SubmitButtonBase: FunctionComponent<SubmitButtonProps<SubmitButtonV
     </Button>
   );
 };
-
 
 export const SubmitButton = withFormValue<ButtonProps>(SubmitButtonBase);

@@ -8,6 +8,7 @@ export interface Article {
   description: string;
   icon: string | null;
   image: string | null;
+  key?: string;
   keywords: string | null;
   title: string;
   language: string;

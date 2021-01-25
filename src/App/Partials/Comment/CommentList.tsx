@@ -1,12 +1,13 @@
-import { stringify } from 'querystring';
-import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePrevious } from 'react-use';
-import { Col, Container, Row } from 'reactstrap';
+import { stringify } from "querystring";
+import React, { FunctionComponent, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { usePrevious } from "react-use";
+import { Col, Container, Row } from "reactstrap";
 
 import {
   ApplicationKeys,
   Debate,
+  DebateState,
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
@@ -17,31 +18,31 @@ import {
   RolePermissionTypes,
   RoleState,
   useConfig,
-} from '../../../Library';
-import { useCommentSocket, usePermission, useRoles } from '../../Hooks';
-import { CommentAdd } from './CommentAdd';
-import { CommentListItem } from './CommentListItem';
+} from "../../../Library";
+import {
+  useCommentSocket,
+  useDebates,
+  usePermission,
+  useRoles,
+} from "../../Hooks";
+import { CommentAdd } from "./CommentAdd";
+import { CommentListItem } from "./CommentListItem";
 
 export interface CommentListProps {
-  debateId: Debate['id'];
+  debateId: Debate["id"];
 }
 
 export const CommentList: FunctionComponent<CommentListProps> = ({
   debateId,
 }) => {
-  const debate = useSelector<
-    GlobalState, 
-    GlobalState[PublicRequestKeys.Debate]
-  >(
-    state => state[PublicRequestKeys.Debate]
-  );
+  const {
+    data: { result: debate, status },
+  } = useDebates<DebateState>(PublicRequestKeys.Debate, debateId);
 
   const comments = useSelector<
-    GlobalState, 
+    GlobalState,
     GlobalState[PublicRequestKeys.Comments]
-  >(
-    state => state[PublicRequestKeys.Comments]
-  );
+  >((state) => state[PublicRequestKeys.Comments]);
 
   const config = useConfig();
   const comment = useCommentSocket();
@@ -50,28 +51,33 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
 
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
 
-  const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(state => state.user);
-  
-  const role = useRoles(PrivateRequestKeys.Role, user.result?.role?.id) as RoleState;
-  
+  const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(
+    (state) => state.user
+  );
+
+  const role = useRoles(
+    PrivateRequestKeys.Role,
+    user.result?.role?.id
+  ) as RoleState;
+
   const [canWrite] = usePermission({
     id: user.result?.role?.id,
     methods: [RestMethodKeys.Update, RestMethodKeys.Create],
     permission: RolePermissionTypes.Application,
     type: ApplicationKeys.Comment,
-    state: role
+    state: role,
   });
 
   const url = config.api.createApiUrl(config.api.config);
-  url.pathname = 'comments'
+  url.pathname = "comments";
 
   const query = {
-    'debate.id': debate.result?.id,
-    _sort: 'created_at:DESC',
-  }
+    "debate.id": debate?.id,
+    _sort: "created_at:DESC",
+  };
 
   url.search = `?${stringify(query)}`;
-  
+
   const handleSubmit = useCallback(() => {
     dispatch(
       requestAction.update(PublicRequestKeys.Comments, {
@@ -81,33 +87,42 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
   }, [dispatch, url.href]);
 
   useEffect(() => {
-    const shouldLoadInitial = debate.result && 
-      debate.status === RequestStatus.Loaded && 
+    const shouldLoadInitial =
+      debate &&
+      status === RequestStatus.Loaded &&
       comments.status === RequestStatus.Initial;
-    
-    const shouldReload = 
-      comment && 
-      comment.id !== (prevComment && prevComment.id) && 
+
+    const shouldReload =
+      comment &&
+      comment.id !== (prevComment && prevComment.id) &&
       (comment.debate as Debate).id === debateId;
 
     if (shouldLoadInitial || shouldReload) {
-
       dispatch(
         requestAction.load(PublicRequestKeys.Comments, {
           url: url.href,
         })
       );
     }
-
-  }, [comment, comments.status, config.api, debate.result, debate.status, debateId, dispatch, prevComment, url.href]);
+  }, [
+    comment,
+    comments.status,
+    config.api,
+    debate,
+    debateId,
+    dispatch,
+    prevComment,
+    status,
+    url.href,
+  ]);
 
   useEffect(() => {
     return () => {
       if (comments.status === RequestStatus.Loaded) {
-        dispatch(requestAction.clear(PublicRequestKeys.Comments))
+        dispatch(requestAction.clear(PublicRequestKeys.Comments));
       }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -116,15 +131,17 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
         <CommentAdd debateId={debateId} />
         <Row className="mt-3">
           <Col>
-            {(comments.result && comments.result.length && comments.result.map((item, index) => 
-              <CommentListItem 
-                canWrite={canWrite}
-                debateId={debateId}
-                key={`comment_list_item_${item.id}_${index}`}
-                onSubmit={handleSubmit}
-                {...item}
-              />
-            )) || (<>No Comments yet!</>)}
+            {(comments.result &&
+              comments.result.length &&
+              comments.result.map((item, index) => (
+                <CommentListItem
+                  canWrite={canWrite}
+                  debateId={debateId}
+                  key={`comment_list_item_${item.id}_${index}`}
+                  onSubmit={handleSubmit}
+                  {...item}
+                />
+              ))) || <>No Comments yet!</>}
           </Col>
         </Row>
       </Container>

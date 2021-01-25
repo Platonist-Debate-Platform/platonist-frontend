@@ -12,7 +12,7 @@ export interface ModalWithRouteProps {
   header?: ReactNode;
   onClosed?: () => void;
   onOpened?: () => void;
-  size?: 'sm'| 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   to: string;
 }
 

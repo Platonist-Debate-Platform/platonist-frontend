@@ -5,7 +5,7 @@ export interface DebateFormData extends Debate {
   articleBUrl: string;
 }
 
-const debateArticleGroupData: FormDataConfig<Partial<Article>>[] = [{
+const createDebateArticleGroupData = ():  FormDataConfig<Partial<Article>>[] => ([{
   editable: false,
   key: 'title',
   required: true,
@@ -19,14 +19,56 @@ const debateArticleGroupData: FormDataConfig<Partial<Article>>[] = [{
   title: 'Description',
   type: FormInputTypes.Text,
   validate: FormValidationTypes.Length,
-},{
+}, {
   editable: false,
   key: 'provider',
   required: true,
   title: 'Provider',
   type: FormInputTypes.String,
   validate: FormValidationTypes.Length,
-}]
+}, {
+  editable: false,
+  key: 'type',
+  required: true,
+  title: 'Type',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'icon',
+  required: true,
+  title: 'Icon',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'icon',
+  required: true,
+  title: 'Icon url',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'image',
+  required: true,
+  title: 'Image url',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'language',
+  required: true,
+  title: 'language',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}, {
+  editable: false,
+  key: 'keywords',
+  required: true,
+  title: 'Keywords',
+  type: FormInputTypes.String,
+  validate: FormValidationTypes.Length,
+}])
 
 export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] = [{
   editable: true,
@@ -60,14 +102,14 @@ export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] = [{
   editable: true,
   key: 'articleA',
   required: true,
-  title: 'Url to Article A',
+  title: 'Article Data',
   type: FormInputTypes.Group,
-  group: debateArticleGroupData,
+  group: createDebateArticleGroupData(),
 }, {
   editable: true,
   key: 'articleBUrl',
   required: true,
-  title: 'Article A',
+  title: 'Url to Article A',
   type: FormInputTypes.String,
   validate: FormValidationTypes.Url,
 }, {
@@ -76,5 +118,5 @@ export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] = [{
   required: true,
   title: 'Article B',
   type: FormInputTypes.Group,
-  group: debateArticleGroupData,
+  group: createDebateArticleGroupData(),
 }];

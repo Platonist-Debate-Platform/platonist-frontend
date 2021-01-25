@@ -1,178 +1,245 @@
-import React, { FunctionComponent, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePrevious } from 'react-use';
-import { Button, Col, Form, FormGroup, Label, Row } from 'reactstrap';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { Redirect } from "react-router-dom";
+import { Col, Form, Row } from "reactstrap";
 
 import {
   createDefaultData,
+  DebateState,
+  FormClickEvent,
   FormProvider,
-  GlobalState,
-  PrivateRequestKeys,
-  ReactReduxRequestDispatch,
-  requestAction,
+  PublicRequestKeys,
   RequestStatus,
   RestMethodKeys,
-  useConfig,
-  useInputValue,
-} from '../../../../Library';
-import { Group, Input, Text } from '../../../../Library/Form/Fields';
-import { ModalWithRoute } from '../../Modal';
-import { DebateFormData, debateFormData } from './FormData';
-import { DebateSettingsProps } from './Settings';
+} from "../../../../Library";
+import {
+  Group,
+  Input,
+  SubmitButton,
+  Text,
+} from "../../../../Library/Form/Fields";
+import { useDebates } from "../../../Hooks";
+import { ModalWithRoute } from "../../Modal";
+import {
+  ArticleFetcherOnClear,
+  ArticleFetcherOnReceive,
+  FormArticleFetcher,
+} from "./FormArticleFetcher";
+import { DebateFormData, debateFormData } from "./FormData";
+import { DebateSettingsProps } from "./Settings";
 
 export interface DebateFormProps extends DebateSettingsProps {
   from: string;
   to: string;
 }
 
-const DebateModalHeader: FunctionComponent<{method: DebateFormProps['method']}> = ({
-  method
-}) => {
+const DebateModalHeader: FunctionComponent<{
+  method: DebateFormProps["method"];
+}> = ({ method }) => {
   switch (method) {
     case RestMethodKeys.Create:
-      return <>Create a new Debate</>
+      return <>Create a new Debate</>;
     default:
       return null;
-  } 
+  }
 };
 
-interface ArticleFetcherProps<Data extends Object> {
-  inputKey: keyof Data | string;
-}
-
-const ArticleFetcher: FunctionComponent<ArticleFetcherProps<DebateFormProps>> = ({
-  inputKey
-}) => {
-  const config = useConfig()
-  const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const [inputValue, setFormValue] = useInputValue<DebateFormProps>(inputKey as keyof DebateFormProps);
-  const {
-    result: article,
-    status
-  } = useSelector<GlobalState, GlobalState[PrivateRequestKeys.Article]>(state => state.article);
-  console.log(inputValue);
-  
-  const prevStatus = usePrevious(status);
-
-  const handleUpload = useCallback(() => {
-    if (!inputValue) {
-      return;
-    }
-
-    const url = config.createApiUrl(config.api.config);
-    url.pathname = '/articles/fetch-url'
-
-    if (inputValue.isValid && status === RequestStatus.Initial) {
-      dispatch(requestAction.load(PrivateRequestKeys.Article, {
-        method: 'POST',
-        url: url.href,
-        withCredentials: true,
-        data: {url: inputValue.value},
-      }));
-    }
-  }, [config, dispatch, inputValue, status]);
-
-  const handleClear = useCallback(() => {
-    if (!inputValue) {
-      return;
-    }
-
-    if (status === RequestStatus.Loaded && article && article.title) {
-      dispatch(requestAction.clear(PrivateRequestKeys.Article));
-      setFormValue(inputKey, {
-        ...inputValue,
-        isValid: false,
-        pristine: true,
-        touched: false,
-        disabled: false,
-        value: '',
-      });
-    }
-  }, [article, dispatch, inputKey, inputValue, setFormValue, status])
-
-  useEffect(() => {
-    if (!inputValue) {
-      return;
-    }
-
-    if (prevStatus === RequestStatus.Updating && status === RequestStatus.Loaded && article && article.title) {
-      console.log(article);
-      setFormValue(inputKey, {
-        ...inputValue,
-        disabled: true,
-      });
-    }
-
-  }, [article, inputKey, inputValue, prevStatus, setFormValue, status]);
-  
-  if (!inputValue) {
-    return null;
-  }
-
-  return (
-    <Row>
-      <Col xs={12}>
-        <Label>
-          {inputValue.config?.title}
-        </Label>
-      </Col>
-      <Col>
-        <Input inputKey={inputKey} hideLabel={true} />
-      </Col>
-      <Col xs={3}>
-        <FormGroup>
-          <Button
-            size="sm"
-            className="w-50"
-            disabled={status === RequestStatus.Loaded && article && article.title ? false : true}
-            onClick={handleClear}
-          >
-            <i className="fa fa-times" />
-          </Button>
-          <Button
-            size="sm"
-            color="primary"
-            className="w-50"
-            disabled={!inputValue.isValid || (status === RequestStatus.Loaded && article && article.title) ? true : false}
-            onClick={handleUpload}
-          >
-            <i className="fa fa-eye" />
-          </Button>
-        </FormGroup>
-      </Col>
-    </Row>
-  );
-}
 export const DebateForm: FunctionComponent<DebateFormProps> = ({
   method,
   debateId,
   ...props
 }) => {
-  const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false
-  const defaultData = createDefaultData<Partial<DebateFormData>>(debateFormData);
+  const {
+    clear,
+    data: { result: debate, status },
+    send,
+  } = useDebates<DebateState>(PublicRequestKeys.Debate);
+
+  const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false;
+
+  const [defaultData, setDefaultData] = useState(
+    createDefaultData<Partial<DebateFormData>>(debateFormData)
+  );
+
+  const [formData, setFormData] = useState(debateFormData);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [resetGroups, setResetGroups] = useState<string | undefined>();
+
+  const handleSubmit = useCallback(
+    (event: FormClickEvent<Partial<DebateFormData>>) => {
+      const { data: submitData, isValid } = event.submitData;
+      if (submitData.articleAUrl) {
+        delete submitData.articleAUrl;
+      }
+      if (submitData.articleBUrl) {
+        delete submitData.articleBUrl;
+      }
+
+      if (status === RequestStatus.Initial && isValid && submitData) {
+        send({
+          method: (method === RestMethodKeys.Create && "POST") || "PUT",
+          data: submitData as any,
+        });
+      }
+    },
+    [method, send, status]
+  );
+
+  const handelReceive: ArticleFetcherOnReceive<DebateFormData> = useCallback(
+    (key, data) => {
+      setDefaultData({
+        ...defaultData,
+        [key]: data,
+      });
+
+      const index = debateFormData.findIndex(
+        (formData) => formData.key === key
+      );
+      const config = index > 0 && formData[index];
+
+      if (config && config.group && config.key === key) {
+        config.group.map((conf) => {
+          conf.editable = true;
+          return conf;
+        });
+
+        setFormData((prevFormData) => {
+          prevFormData[index] = config;
+          return prevFormData;
+        });
+      }
+
+      if (!resetGroups) {
+        setResetGroups(key);
+      }
+    },
+    [defaultData, formData, resetGroups]
+  );
+
+  const handleClear: ArticleFetcherOnClear<DebateFormData> = useCallback(
+    (key, [inputValue, setInputValue]) => {
+      const index = debateFormData.findIndex(
+        (formData) => formData.key === key
+      );
+
+      const config = index > 0 && formData[index];
+
+      if (config && config.group) {
+        const defaults = {
+          ...defaultData,
+          [key]: createDefaultData(config.group),
+        };
+
+        setDefaultData(defaults);
+
+        if (inputValue) {
+          setInputValue(key, {
+            ...inputValue,
+            isValid: false,
+            pristine: true,
+            touched: false,
+            disabled: false,
+            defaultValue: defaults[key] as any,
+            value: defaults[key] as any,
+          });
+        }
+
+        config.group.map((conf) => {
+          conf.editable = false;
+          return conf;
+        });
+
+        setFormData((prevFormData) => {
+          prevFormData[index] = config;
+          return prevFormData;
+        });
+      }
+
+      if (!resetGroups) {
+        setResetGroups(key);
+      }
+    },
+    [defaultData, formData, resetGroups]
+  );
+
+  useEffect(() => {
+    if (resetGroups) {
+      setResetGroups(undefined);
+    }
+
+    if (status === RequestStatus.Loaded && debate) {
+      clear();
+      if (!shouldRedirect) {
+        setShouldRedirect(true);
+      }
+    }
+
+    if (shouldRedirect) {
+      setShouldRedirect(false);
+    }
+  }, [clear, debate, defaultData, resetGroups, shouldRedirect, status]);
+
   return (
-    <ModalWithRoute
-      {...props}
-      header={<DebateModalHeader method={method} />}
-      size={(isDeleteMethod && 'lg') || 'xl'}
+    <FormProvider
+      data={defaultData}
+      inputConfig={formData}
+      reset={shouldRedirect}
     >
-      <FormProvider
-        data={defaultData} 
-        inputConfig={debateFormData}
+      <ModalWithRoute
+        {...props}
+        footer={
+          <SubmitButton
+            color="success"
+            onClick={handleSubmit}
+            disabled={status === RequestStatus.Updating}
+          >
+            Save
+          </SubmitButton>
+        }
+        header={<DebateModalHeader method={method} />}
+        size={isDeleteMethod ? "xl" : "sm"}
       >
         <Form>
-          <Input inputKey="title" />
-          <Input inputKey="subTitle" />
-          <Text inputKey="shortDescription" />
-
-          <ArticleFetcher inputKey="articleAUrl" />
-          <Group inputKey="articleA" />
-          
-          <ArticleFetcher inputKey="articleBUrl" />
-          <Group inputKey="articleB" />
+          <Row>
+            <Col sm={7}>
+              <Input inputKey="title" />
+              <Input inputKey="subTitle" />
+              <Text inputKey="shortDescription" />
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={6}>
+              <FormArticleFetcher
+                dataKey="articleA"
+                inputKey="articleAUrl"
+                onClear={handleClear}
+                onReceive={handelReceive}
+              />
+              <Group
+                inputKey="articleA"
+                reset={resetGroups === "articleA" ? true : false}
+              />
+            </Col>
+            <Col sm={6}>
+              <FormArticleFetcher
+                dataKey="articleB"
+                inputKey="articleBUrl"
+                onClear={handleClear}
+                onReceive={handelReceive}
+              />
+              <Group
+                inputKey="articleB"
+                reset={resetGroups === "articleB" ? true : false}
+              />
+            </Col>
+          </Row>
         </Form>
-
-      </FormProvider>
-    </ModalWithRoute>
+      </ModalWithRoute>
+      {shouldRedirect && <Redirect to={props.from} />}
+    </FormProvider>
   );
 };

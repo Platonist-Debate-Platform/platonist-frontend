@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'reactstrap';
 
 import { ApplicationKeys, Debate, GlobalState, PublicRequestKeys, RestMethodKeys } from '../../../../Library';
-import { DebateForm } from './Form';
 import { DebatePermission } from './Permission';
 
 export interface DebateSettingsProps {
@@ -17,6 +16,7 @@ export const createSettingsQuery = ({
   method,
   debateId,
 }: DebateSettingsProps) => {
+  
   const query = {
     modal: ApplicationKeys.Debate,
     method,
@@ -48,12 +48,6 @@ export const DebateSettings: FunctionComponent<DebateSettingsProps> = ({
 
   return (
     <DebatePermission method={method}>
-      <DebateForm
-        from={location.pathname}
-        to={linkTo}
-        debateId={debateId}
-        method={method}
-      />
       {method === RestMethodKeys.Create && (
         <div className="debate-settings debate-settings-create py-3">
           <Container fluid={true}>
