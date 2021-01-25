@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePrevious } from "react-use";
@@ -22,6 +23,7 @@ import {
   useInputValue,
 } from "../../../../Library";
 import { Input } from "../../../../Library/Form/Fields";
+import { ArticleItem } from "../../Article";
 import { DebateFormData } from "./FormData";
 
 export type ArticleFetcherOnReceive<Data extends Object> = (
@@ -63,6 +65,8 @@ export const FormArticleFetcher: FunctionComponent<
 
   const hasArticle =
     article && article.title && article.key === dataKey ? true : false;
+
+  const [articleState, setArticleState] = useState(article);
 
   const handleUpload = useCallback(() => {
     if (!inputValue) {
@@ -107,15 +111,20 @@ export const FormArticleFetcher: FunctionComponent<
       if (onClear) {
         onClear(dataKey, articleInputValue);
       }
+
+      if (articleState) {
+        setArticleState(undefined);
+      }
     }
   }, [
-    dataKey,
-    dispatch,
-    inputKey,
     inputValue,
-    onClear,
-    articleInputValue,
+    dispatch,
     setFormValue,
+    inputKey,
+    onClear,
+    articleState,
+    dataKey,
+    articleInputValue,
   ]);
 
   useEffect(() => {
@@ -164,7 +173,7 @@ export const FormArticleFetcher: FunctionComponent<
           }
         }
       }
-
+      setArticleState(article);
       dispatch(requestAction.clear(PrivateRequestKeys.Article));
     }
   }, [
@@ -186,39 +195,44 @@ export const FormArticleFetcher: FunctionComponent<
   }
 
   return (
-    <Row>
-      <Col xs={12}>
-        <Label>{inputValue.config?.title}</Label>
-      </Col>
-      <Col>
-        <Input inputKey={inputKey} hideLabel={true} />
-      </Col>
-      <Col xs={3}>
-        <FormGroup>
-          <Button
-            size="sm"
-            className="w-50"
-            disabled={!inputValue.disabled}
-            onClick={handleClear}
-          >
-            <i className="fa fa-times" />
-          </Button>
-          <Button
-            size="sm"
-            color="primary"
-            className="w-50"
-            disabled={
-              !inputValue.isValid ||
-              (status === RequestStatus.Loaded && hasArticle)
-                ? true
-                : false
-            }
-            onClick={handleUpload}
-          >
-            <i className="fa fa-eye" />
-          </Button>
-        </FormGroup>
-      </Col>
-    </Row>
+    <>
+      <Row>
+        <Col xs={12}>
+          <Label>{inputValue.config?.title}</Label>
+        </Col>
+        <Col>
+          <Input inputKey={inputKey} hideLabel={true} />
+        </Col>
+        <Col xs={3}>
+          <FormGroup>
+            <Button
+              size="sm"
+              className="w-50"
+              disabled={!inputValue.disabled}
+              onClick={handleClear}
+            >
+              <i className="fa fa-times" />
+            </Button>
+            <Button
+              size="sm"
+              color="primary"
+              className="w-50"
+              disabled={
+                !inputValue.isValid ||
+                (status === RequestStatus.Loaded && hasArticle)
+                  ? true
+                  : false
+              }
+              onClick={handleUpload}
+            >
+              <i className="fa fa-eye" />
+            </Button>
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col>{articleState && <ArticleItem {...articleState} />}</Col>
+      </Row>
+    </>
   );
 };
