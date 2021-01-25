@@ -59,13 +59,13 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const linkTo = `${location.pathname}?${searchQuery}`;
 
   useEffect(() => {
-    const shouldLoadInitial = debates && status === RequestStatus.Loaded;
-
     const shouldReload =
-      (debate && debate.id) !== (prevDebate && prevDebate.id);
+      debate && (debate && debate.id) !== (prevDebate && prevDebate.id)
+        ? true
+        : false;
 
-    if (shouldLoadInitial || shouldReload) {
-      // reload();
+    if (shouldReload) {
+      reload();
     }
 
     return () => {

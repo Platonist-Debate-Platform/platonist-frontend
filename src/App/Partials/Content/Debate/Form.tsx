@@ -202,6 +202,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         }
         header={<DebateModalHeader method={method} />}
         size={isDeleteMethod ? "xl" : "sm"}
+        onClosed={() => !resetGroups && setResetGroups(undefined)}
       >
         <Form>
           <Row>
