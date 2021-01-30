@@ -1,9 +1,14 @@
-import React, { FunctionComponent } from 'react';
-import { FormattedDate } from 'react-intl';
-import { Badge, Col, Container, Row } from 'reactstrap';
-import { Debate, DebateLink, RestMethodKeys } from '../../../../Library';
-import { ArticleItem } from '../../Article';
-import { DebateSettings } from './Settings';
+import React, { FunctionComponent } from "react";
+import { FormattedDate } from "react-intl";
+import { Badge, Col, Container, Row } from "reactstrap";
+import {
+  Article,
+  Debate,
+  DebateLink,
+  RestMethodKeys,
+} from "../../../../Library";
+import { ArticleItem } from "../../Article";
+import { DebateSettings } from "./Settings";
 
 export interface DebateListItemProps extends Debate {
   pageTitle: string;
@@ -13,14 +18,7 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
   pageTitle,
   ...debate
 }) => {
-  const {
-    articleA,
-    articleB,
-    comments,
-    created_at,
-    subTitle,
-    title,
-  } = debate;
+  const { articleA, articleB, comments, created_at, subTitle, title } = debate;
 
   const href = encodeURI(`/${pageTitle}/${debate.title}`);
   return (
@@ -28,25 +26,28 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
       <Container>
         <Row>
           <Col className="text-right">
-            <DebateSettings method={RestMethodKeys.Update} debateId={debate.id} />
-            <DebateSettings method={RestMethodKeys.Delete} debateId={debate.id} />
+            <DebateSettings
+              method={RestMethodKeys.Update}
+              debateId={debate.id}
+            />
+            <DebateSettings
+              method={RestMethodKeys.Delete}
+              debateId={debate.id}
+            />
           </Col>
         </Row>
         <Row>
           <Col md={8}>
             <small>
-              <FormattedDate 
-                value={created_at} 
+              <FormattedDate
+                value={created_at}
                 day="numeric"
                 month="long"
                 year="numeric"
               />
             </small>
             <h4 className="mb-3">
-              <DebateLink 
-                debate={debate}
-                to={href}
-              >
+              <DebateLink debate={debate} to={href}>
                 {title} <small>{subTitle}</small>
               </DebateLink>
             </h4>
@@ -57,21 +58,13 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
             </small>
           </Col>
           <Col md={6}>
-            {articleA && (
-              <ArticleItem {...articleA} />
-            )}
+            {articleA && <ArticleItem {...(articleA as Article)} />}
           </Col>
           <Col md={6}>
-            {articleB && (
-              <ArticleItem {...articleB} />
-            )}
+            {articleB && <ArticleItem {...(articleB as Article)} />}
           </Col>
           <Col className="text-right" md={12}>
-            <DebateLink 
-              className="btn btn-primary"
-              debate={debate}
-              to={href}
-            >
+            <DebateLink className="btn btn-primary" debate={debate} to={href}>
               Debate now <i className="fa fa-comments" />
             </DebateLink>
           </Col>
@@ -79,4 +72,4 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
       </Container>
     </div>
   );
-}
+};

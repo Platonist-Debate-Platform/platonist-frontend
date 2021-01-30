@@ -3,6 +3,7 @@ import "./DebateList.scss";
 import { stringify } from "querystring";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { usePrevious } from "react-use";
 
 import {
   DebateList,
@@ -18,9 +19,8 @@ import {
 } from "../../../../Library";
 import { useDebates, useDebateSocket } from "../../../Hooks";
 import { DebateListItem } from "./DebateListItem";
-import { DebateForm } from "./Form";
+import { DebateFormEdit } from "./FormEdit";
 import { createSettingsQuery, DebateSettings } from "./Settings";
-import { usePrevious } from "react-use";
 
 type DebateListType = DebateList & WithConfigProps;
 
@@ -50,6 +50,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const prevDebate = usePrevious(debate);
 
   const { location } = router;
+  const prevLocation = usePrevious(location);
 
   const query = createSettingsQuery({
     method: RestMethodKeys.Create,
@@ -69,39 +70,58 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
     }
 
     return () => {
-      if (status === RequestStatus.Loaded) {
+      if (
+        status === RequestStatus.Loaded &&
+        location.pathname !== prevLocation?.pathname
+      ) {
         dispatch(requestAction.clear(PublicRequestKeys.Debates));
       }
     };
-  }, [config, debates, status, dispatch, page, debate, reload, prevDebate]);
+  }, [
+    config,
+    debates,
+    status,
+    dispatch,
+    page,
+    debate,
+    reload,
+    prevDebate,
+    location.pathname,
+    prevLocation?.pathname,
+  ]);
 
   return (
     <>
       <DebateSettings method={RestMethodKeys.Create} />
-      <DebateForm
-        from={location.pathname}
-        to={linkTo}
-        method={RestMethodKeys.Create}
-      />
-      <section className="section section-debate section-debate-list">
-        {status === RequestStatus.Loaded && debates && (
-          <>
-            {debates &&
-              debates.length &&
-              debates.map(
-                (debate, index) =>
-                  (page.result && debate && (
-                    <DebateListItem
-                      key={`debate_list_item_${debate.id}_${index}`}
-                      pageTitle={page.result.title}
-                      {...debate}
-                    />
-                  )) ||
-                  null
-              )}
-          </>
-        )}
-      </section>
+      {status === RequestStatus.Loaded && (
+        <>
+          {/* <DebateForm
+            from={location.pathname}
+            to={linkTo}
+            method={RestMethodKeys.Create}
+          /> */}
+          <DebateFormEdit debates={debates} from={location.pathname} />
+          <section className="section section-debate section-debate-list">
+            {debates && (
+              <>
+                {debates &&
+                  debates.length &&
+                  debates.map(
+                    (debate, index) =>
+                      (page.result && debate && (
+                        <DebateListItem
+                          key={`debate_list_item_${debate.id}_${index}`}
+                          pageTitle={page.result.title}
+                          {...debate}
+                        />
+                      )) ||
+                      null
+                  )}
+              </>
+            )}
+          </section>
+        </>
+      )}
     </>
   );
 };
