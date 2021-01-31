@@ -6,13 +6,13 @@ import React, {
   useState,
 } from 'react';
 import { Redirect } from 'react-router-dom';
-// import { usePrevious } from "react-use";
 import { Col, Form, Row } from 'reactstrap';
 
 import {
   createDefaultData,
   DebateState,
   FormClickEvent,
+  FormContextValue,
   FormProvider,
   PublicRequestKeys,
   RequestStatus,
@@ -56,7 +56,6 @@ const DebateModalHeader: FunctionComponent<{
 export const DebateForm: FunctionComponent<DebateFormProps> = ({
   debateDefault,
   method,
-  // debateId,
   ...props
 }) => {
   const {
@@ -94,6 +93,8 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         delete submitData.articleBUrl;
       }
 
+      console.log(submitData);
+
       if (status === RequestStatus.Initial && isValid && submitData) {
         send({
           method: (method === RestMethodKeys.Create && 'POST') || 'PUT',
@@ -106,14 +107,15 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
   const handelReceive: ArticleFetcherOnReceive<DebateFormData> = useCallback(
     (key, data) => {
-      setDefaultData({
+      const newDefaultData = {
         ...defaultData,
         [key]: data,
-      });
+      };
 
       const index = debateFormData.findIndex(
         (formData) => formData.key === key,
       );
+
       const config = index > 0 && formData[index];
 
       if (config && config.group && config.key === key) {
@@ -128,11 +130,13 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         });
       }
 
-      if (!resetGroups) {
-        setResetGroups(key);
+      setDefaultData(newDefaultData);
+
+      if (!resetForm) {
+        setResetForm(true);
       }
     },
-    [defaultData, formData, resetGroups],
+    [defaultData, formData, resetForm],
   );
 
   const handleClear: ArticleFetcherOnClear<DebateFormData> = useCallback(
@@ -193,6 +197,20 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     }
   }, [resetForm, resetGroups]);
 
+  const handleChange = useCallback(
+    (context: FormContextValue<DebateFormData>) => {
+      const { submitData } = context;
+
+      if (submitData) {
+        setDefaultData({
+          ...defaultData,
+          ...submitData.data,
+        });
+      }
+    },
+    [defaultData],
+  );
+
   useEffect(() => {
     if (
       (!defaultData && debateDefault) ||
@@ -247,6 +265,8 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       data={defaultData}
       inputConfig={formData}
       reset={resetForm || shouldRedirect}
+      onChange={handleChange}
+      name="baseForm"
     >
       <ModalWithRoute
         {...props}
@@ -279,10 +299,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
                 onClear={handleClear}
                 onReceive={handelReceive}
               />
-              <Group
-                inputKey="articleA"
-                reset={resetForm || resetGroups === 'articleA' ? true : false}
-              />
+              <Group inputKey="articleA" />
             </Col>
             <Col sm={6}>
               <FormArticleFetcher
@@ -291,10 +308,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
                 onClear={handleClear}
                 onReceive={handelReceive}
               />
-              <Group
-                inputKey="articleB"
-                reset={resetForm || resetGroups === 'articleB' ? true : false}
-              />
+              <Group inputKey="articleB" />
             </Col>
           </Row>
         </Form>

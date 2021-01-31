@@ -1,14 +1,14 @@
-import React, { FunctionComponent, useContext } from "react";
-import { Button, ButtonProps } from "reactstrap";
+import React, { FunctionComponent } from 'react';
+import { Button, ButtonProps } from 'reactstrap';
 
-import { useFormValue, withFormValue } from "../Consumer";
-import { FormContext } from "../Context";
-import { FormContextValue, FormData, FormClickEvent } from "../Types";
+import { withFormValue } from '../Consumer';
+import { FormClickEvent, FormContextValue, FormData } from '../Types';
 
 export interface SubmitButtonProps<Data> extends FormContextValue<Data> {
   className?: string;
   onClick?: <D>(event: FormClickEvent<D>) => void;
   preventDefault?: boolean;
+  checkPristine?: boolean;
 }
 
 type SubmitButtonValues<Data extends Object = {}> = {
@@ -18,50 +18,55 @@ type SubmitButtonValues<Data extends Object = {}> = {
 export const SubmitButtonBase: FunctionComponent<
   SubmitButtonProps<SubmitButtonValues> & ButtonProps
 > = <Data extends SubmitButtonValues<Data>>(
-  props: SubmitButtonProps<Data> & ButtonProps
+  props: SubmitButtonProps<Data> & ButtonProps,
 ) => {
-    const {
-      children,
-      data,
-      disabled,
-      formId,
-      options,
-      preventDefault,
-      setFormValue,
-      submitData,
-      onClick,
-      reset,
-      ...rest
-    } = props;
+  const {
+    children,
+    checkPristine,
+    data,
+    disabled,
+    formId,
+    options,
+    preventDefault,
+    setFormValue,
+    submitData,
+    onClick,
+    reset,
+    ...rest
+  } = props;
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (event && event.preventDefault && preventDefault) {
-        event.preventDefault();
-      }
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (event && event.preventDefault && preventDefault) {
+      event.preventDefault();
+    }
 
-      if (onClick) {
-        onClick({
-          ...event,
-          data,
-          submitData,
-        });
-      }
-    };
-
-    const isDisabled =
-      !submitData.isValid || submitData.pristine || props.disabled;
-
-    return (
-      <Button
-        color="none"
-        type="submit"
-        {...rest}
-        disabled={isDisabled}
-        onClick={handleClick}
-      >
-        {children}
-      </Button>
-    );
+    if (onClick) {
+      onClick({
+        ...event,
+        data,
+        submitData,
+      });
+    }
   };
+
+  const shouldBePristine = checkPristine ? true : false;
+
+  const isDisabled =
+    !submitData.isValid ||
+    (!shouldBePristine && submitData.pristine) ||
+    props.disabled;
+
+  return (
+    <Button
+      color="none"
+      type="submit"
+      {...rest}
+      disabled={isDisabled}
+      onClick={handleClick}
+    >
+      {children}
+    </Button>
+  );
+};
 
 export const SubmitButton = withFormValue<ButtonProps>(SubmitButtonBase);

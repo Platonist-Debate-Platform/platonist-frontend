@@ -42,7 +42,6 @@ const debateToFormData = (
     : createDefaultData(debateArticleGroupData);
 
   const defaultData = getDefaultDataFromResult(debate, debateFormData);
-  console.log(debate.articleA);
 
   return {
     ...defaultData,

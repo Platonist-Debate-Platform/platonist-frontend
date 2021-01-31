@@ -1,9 +1,8 @@
-import "./DebateList.scss";
+import './DebateList.scss';
 
-import { stringify } from "querystring";
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { usePrevious } from "react-use";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { usePrevious } from 'react-use';
 
 import {
   DebateList,
@@ -16,11 +15,11 @@ import {
   RestMethodKeys,
   withConfig,
   WithConfigProps,
-} from "../../../../Library";
-import { useDebates, useDebateSocket } from "../../../Hooks";
-import { DebateListItem } from "./DebateListItem";
-import { DebateFormEdit } from "./FormEdit";
-import { createSettingsQuery, DebateSettings } from "./Settings";
+} from '../../../../Library';
+import { useDebates, useDebateSocket } from '../../../Hooks';
+import { DebateListItem } from './DebateListItem';
+import { DebateFormEdit } from './FormEdit';
+import { DebateSettings } from './Settings';
 
 type DebateListType = DebateList & WithConfigProps;
 
@@ -43,7 +42,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   } = useDebates<DebatesState>(
     PublicRequestKeys.Debates,
     undefined,
-    "_sort=created_at:DESC"
+    '_sort=created_at:DESC',
   );
 
   const debate = useDebateSocket();
@@ -51,13 +50,6 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
 
   const { location } = router;
   const prevLocation = usePrevious(location);
-
-  const query = createSettingsQuery({
-    method: RestMethodKeys.Create,
-  });
-
-  const searchQuery = stringify(query);
-  const linkTo = `${location.pathname}?${searchQuery}`;
 
   useEffect(() => {
     const shouldReload =
@@ -95,11 +87,6 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
       <DebateSettings method={RestMethodKeys.Create} />
       {status === RequestStatus.Loaded && (
         <>
-          {/* <DebateForm
-            from={location.pathname}
-            to={linkTo}
-            method={RestMethodKeys.Create}
-          /> */}
           <DebateFormEdit debates={debates} from={location.pathname} />
           <section className="section section-debate section-debate-list">
             {debates && (
@@ -115,7 +102,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
                           {...debate}
                         />
                       )) ||
-                      null
+                      null,
                   )}
               </>
             )}

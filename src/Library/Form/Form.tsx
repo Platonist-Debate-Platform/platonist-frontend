@@ -3,16 +3,16 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
-} from "react";
-import { Form as FormElement } from "reactstrap";
+} from 'react';
+import { Form as FormElement } from 'reactstrap';
 
-import { FormContext } from "./Context";
-import { FormResolver } from "./FormResolver";
-import { FormContextValue, FormData, FormEvent } from "./Types";
+import { FormContext } from './Context';
+import { FormResolver } from './FormResolver';
+import { FormContextValue, FormData, FormEvent } from './Types';
 
 export type OnContextChange<D> = (
   key: string,
-  data: FormContextValue<D>
+  data: FormContextValue<D>,
 ) => void;
 export interface FormProps<Data extends Object = {}> {
   asForm: boolean;
@@ -28,7 +28,7 @@ export interface FormProps<Data extends Object = {}> {
 export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
   Data extends Object
 >(
-  props: PropsWithChildren<FormProps<Data>>
+  props: PropsWithChildren<FormProps<Data>>,
 ) => {
   const {
     asForm,
@@ -43,7 +43,7 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
   } = props;
 
   const context = useContext(
-    FormContext as React.Context<FormContextValue<Data> | undefined>
+    FormContext as React.Context<FormContextValue<Data> | undefined>,
   );
 
   const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
@@ -74,11 +74,11 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
 
   let formData: FormData<Data>;
   if (!(context && context.data)) {
-    console.warn("Context Provider is missing, using data from ");
+    console.warn('Context Provider is missing, using data from ');
     if (data) {
       formData = data;
     } else {
-      console.warn("Could not render Form, data property is missing.");
+      console.warn('Could not render Form, data property is missing.');
       return null;
     }
   } else {
@@ -111,7 +111,7 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
                 value={item.value}
               />
             );
-          }
+          },
         )}
         {children}
       </FormElement>
@@ -135,7 +135,7 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
                 value={item.value}
               />
             );
-          }
+          },
         )}
         {children}
       </div>

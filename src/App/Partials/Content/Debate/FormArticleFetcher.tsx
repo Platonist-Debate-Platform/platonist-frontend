@@ -4,14 +4,15 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { usePrevious } from "react-use";
-import { Button, Col, FormGroup, Label, Row } from "reactstrap";
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePrevious } from 'react-use';
+import { Button, Col, FormGroup, Label, Row } from 'reactstrap';
 
 import {
   Article,
   FormContext,
+  FormContextValue,
   FormDataItem,
   GlobalState,
   PrivateRequestKeys,
@@ -21,19 +22,19 @@ import {
   SetFormValueFn,
   useConfig,
   useInputValue,
-} from "../../../../Library";
-import { Input } from "../../../../Library/Form/Fields";
-import { ArticleItem } from "../../Article";
-import { DebateFormData } from "./FormData";
+} from '../../../../Library';
+import { Input } from '../../../../Library/Form/Fields';
+import { ArticleItem } from '../../Article';
+import { DebateFormData } from './FormData';
 
 export type ArticleFetcherOnReceive<Data extends Object> = (
   key: keyof Data,
-  data: Data
+  data: Data,
 ) => void;
 
 export type ArticleFetcherOnClear<Data extends Object> = (
   key: keyof Data,
-  cb: [FormDataItem<Article> | undefined, SetFormValueFn<Article>, string]
+  cb: [FormDataItem<Article> | undefined, SetFormValueFn<Article>, string],
 ) => void;
 
 export interface FormArticleFetcherProps<Data extends Object> {
@@ -48,10 +49,12 @@ export const FormArticleFetcher: FunctionComponent<
 > = ({ dataKey, inputKey, onReceive, onClear }) => {
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const context = useContext(FormContext);
+  const context = useContext(
+    FormContext as React.Context<FormContextValue<Article> | undefined>,
+  );
 
-  const [inputValue, setFormValue] = useInputValue<DebateFormData>(
-    inputKey as keyof DebateFormData
+  const [inputValue, setFormValue] = useInputValue<Article>(
+    inputKey as keyof Article,
   );
 
   const articleInputValue = useInputValue<Article>(dataKey as keyof Article);
@@ -74,19 +77,19 @@ export const FormArticleFetcher: FunctionComponent<
     }
 
     const url = config.createApiUrl(config.api.config);
-    url.pathname = "/articles/fetch-url";
+    url.pathname = '/articles/fetch-url';
 
     if (inputValue.isValid && status === RequestStatus.Initial) {
       dispatch(
         requestAction.load(PrivateRequestKeys.Article, {
-          method: "POST",
+          method: 'POST',
           url: url.href,
           withCredentials: true,
           data: {
             key: dataKey,
             url: inputValue.value,
           },
-        })
+        }),
       );
     }
   }, [config, dataKey, dispatch, inputValue, status]);
@@ -105,7 +108,7 @@ export const FormArticleFetcher: FunctionComponent<
         pristine: true,
         touched: false,
         disabled: false,
-        value: "",
+        value: '',
       });
 
       if (onClear) {
@@ -137,27 +140,22 @@ export const FormArticleFetcher: FunctionComponent<
       status === RequestStatus.Loaded &&
       hasArticle
     ) {
-      setFormValue(inputKey, {
-        ...inputValue,
-        disabled: true,
-      });
+      const formData = context?.data[dataKey as keyof Partial<Article>];
+      const formValue = formData?.value as string;
 
-      const formData = context?.data[dataKey] as any;
-      const formValue = formData?.value as any;
-
-      const newData: FormDataItem<any>["value"] = {};
+      const newData: FormDataItem<any>['value'] = {};
 
       if (formValue && formData && article) {
         Object.keys(article).forEach((key: string) => {
           const item = article[key as keyof Article];
-          const formItem = formValue[key as keyof Article];
+          const formItem = formValue[key as any];
           const hasData =
-            (formItem || typeof formItem === "string") && item ? true : false;
+            (formItem || typeof formItem === 'string') && item ? true : false;
 
           if (hasData) {
             Object.assign(newData, {
               [key]:
-                key === "keywords" ? item && (item as any).join(", ") : item,
+                key === 'keywords' ? item && (item as any).join(', ') : item,
             });
           }
         });
