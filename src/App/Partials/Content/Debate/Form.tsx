@@ -76,8 +76,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   const [resetGroups, setResetGroups] = useState<string | undefined>();
   const [resetForm, setResetForm] = useState<boolean>(false);
 
-  // const prevDebateId = usePrevious(debateId);
-
   const handleSubmit = useCallback(
     (event: FormClickEvent<Partial<DebateFormData>>) => {
       const { data: submitData, isValid } = event.submitData;
@@ -293,10 +291,10 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
                 onClear={handleClear}
                 onReceive={handelReceive}
               />
-              {/* <Group
+              <Group
                 inputKey="articleB"
                 reset={resetForm || resetGroups === 'articleB' ? true : false}
-              /> */}
+              />
             </Col>
           </Row>
         </Form>

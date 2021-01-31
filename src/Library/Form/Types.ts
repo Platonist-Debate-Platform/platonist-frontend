@@ -15,7 +15,7 @@ export interface FormClickEvent<Data> extends React.MouseEvent<HTMLButtonElement
 
 export type SubmitFn<Data> = (event: FormClickEvent<Data> | FormEvent<Data>) => void;
 
-export type SetFormValue<Data> = (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void; 
+export type SetFormValue<Data> = (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void;
 
 export interface SubmitData<Data> {
   data: Data,
@@ -30,6 +30,7 @@ export interface FormContextValue<Data> {
   data: FormData<Data>;
   formId: string;
   options: FormOptions;
+  reset: boolean;
   setFormValue: SetFormValueFn<Data>;
   submitData: SubmitData<Data>;
   // validateFormValue: (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void;
@@ -48,7 +49,7 @@ export interface FormDataConfig<Data> {
   placeholder?: string;
   preValidate?: boolean;
   required: boolean;
-  selectValues?: string[], 
+  selectValues?: string[],
   title: string;
   type: FormInputTypes,
   validate?: FormValidationTypes | FormValidationTypes[];
@@ -59,7 +60,7 @@ export interface FormDataItem<Data> {
   config?: FormDataConfig<Data>;
   defaultValue: Data[keyof Data];
   disabled: boolean;
-  error: string | string [] | undefined;
+  error: string | string[] | undefined;
   isValid: boolean;
   name: keyof Data;
   pristine: boolean,
@@ -68,7 +69,7 @@ export interface FormDataItem<Data> {
   value: Data[keyof Data],
 }
 
-export type FormData<Data> = {[key in keyof Data]: FormDataItem<Data>};
+export type FormData<Data> = { [key in keyof Data]: FormDataItem<Data> };
 
 export interface FormOptions {
   isProtected: boolean;
@@ -92,7 +93,7 @@ export type ValidateValue = string | string[] | boolean;
 
 export type HandleValidationProps = {
   comparison?: string | string[];
-  options?: ValidateBaseProps['options']; 
+  options?: ValidateBaseProps['options'];
   types: FormValidationTypes | FormValidationTypes[] | undefined;
   value: string;
 }

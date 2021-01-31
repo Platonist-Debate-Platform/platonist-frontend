@@ -20,49 +20,48 @@ export const SubmitButtonBase: FunctionComponent<
 > = <Data extends SubmitButtonValues<Data>>(
   props: SubmitButtonProps<Data> & ButtonProps
 ) => {
-  const {
-    children,
-    data,
-    disabled,
-    formId,
-    options,
-    preventDefault,
-    setFormValue,
-    submitData,
-    onClick,
-    ...rest
-  } = props;
+    const {
+      children,
+      data,
+      disabled,
+      formId,
+      options,
+      preventDefault,
+      setFormValue,
+      submitData,
+      onClick,
+      reset,
+      ...rest
+    } = props;
 
-  const context = useContext(FormContext);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (event && event.preventDefault && preventDefault) {
+        event.preventDefault();
+      }
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (event && event.preventDefault && preventDefault) {
-      event.preventDefault();
-    }
+      if (onClick) {
+        onClick({
+          ...event,
+          data,
+          submitData,
+        });
+      }
+    };
 
-    if (onClick) {
-      onClick({
-        ...event,
-        data,
-        submitData,
-      });
-    }
+    const isDisabled =
+      !submitData.isValid || submitData.pristine || props.disabled;
+
+    return (
+      <Button
+        color="none"
+        type="submit"
+        {...rest}
+        disabled={isDisabled}
+        onClick={handleClick}
+      >
+        {children}
+      </Button>
+    );
   };
-
-  const isDisabled =
-    !submitData.isValid || submitData.pristine || props.disabled;
-
-  return (
-    <Button
-      color="none"
-      type="submit"
-      {...rest}
-      disabled={isDisabled}
-      onClick={handleClick}
-    >
-      {children}
-    </Button>
-  );
-};
 
 export const SubmitButton = withFormValue<ButtonProps>(SubmitButtonBase);
