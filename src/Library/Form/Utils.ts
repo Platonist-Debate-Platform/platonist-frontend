@@ -77,7 +77,6 @@ export const getSubmitData = <Data extends Object>(
   const formDataAsArray = Object.keys(formData).map(
     (key) => formData[key as keyof FormData<Data>],
   );
-  console.log(formDataAsArray);
 
   const newData: Data | {} = {};
 

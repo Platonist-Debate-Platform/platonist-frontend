@@ -49,12 +49,8 @@ export const SubmitButtonBase: FunctionComponent<
     }
   };
 
-  const shouldBePristine = checkPristine ? true : false;
-
   const isDisabled =
-    !submitData.isValid ||
-    (!shouldBePristine && submitData.pristine) ||
-    props.disabled;
+    !submitData.isValid || submitData.pristine || props.disabled;
 
   return (
     <Button

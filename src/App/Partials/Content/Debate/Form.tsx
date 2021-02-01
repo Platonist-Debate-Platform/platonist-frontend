@@ -72,7 +72,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
   const [formData, setFormData] = useState(debateFormData);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [resetGroups, setResetGroups] = useState<string | undefined>();
   const [resetForm, setResetForm] = useState<boolean>(false);
 
   const handleSubmit = useCallback(
@@ -92,8 +91,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         }
         delete submitData.articleBUrl;
       }
-
-      console.log(submitData);
 
       if (status === RequestStatus.Initial && isValid && submitData) {
         send({
@@ -177,25 +174,17 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
           return prevFormData;
         });
       }
-
-      if (!resetGroups) {
-        setResetGroups(key);
-      }
     },
-    [defaultData, formData, resetGroups],
+    [defaultData, formData],
   );
 
   const handleModalClose = useCallback(() => {
-    if (!resetGroups) {
-      setResetGroups(undefined);
-    }
-
     setDefaultData(createDefaultData<Partial<DebateFormData>>(debateFormData));
 
     if (!resetForm) {
       setResetForm(true);
     }
-  }, [resetForm, resetGroups]);
+  }, [resetForm]);
 
   const handleChange = useCallback(
     (context: FormContextValue<DebateFormData>) => {
@@ -212,6 +201,10 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   );
 
   useEffect(() => {
+    if (resetForm) {
+      setResetForm(false);
+      return;
+    }
     if (
       (!defaultData && debateDefault) ||
       (debateDefault && defaultData.id !== debateDefault?.id)
@@ -219,19 +212,11 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       setDefaultData(debateDefault);
     }
 
-    if (resetGroups) {
-      setResetGroups(undefined);
-    }
-
     if (status === RequestStatus.Loaded && debate) {
       clear();
       if (!shouldRedirect) {
         setShouldRedirect(true);
       }
-    }
-
-    if (resetForm) {
-      setResetForm(false);
     }
 
     if (shouldRedirect) {
@@ -255,7 +240,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     debateDefault,
     defaultData,
     resetForm,
-    resetGroups,
     shouldRedirect,
     status,
   ]);
