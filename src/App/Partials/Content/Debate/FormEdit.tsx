@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import {
   ApplicationKeys,
-  Article,
   createDefaultData,
   Debate,
   getDefaultDataFromResult,
@@ -17,7 +16,6 @@ import {
   debateArticleGroupData,
   DebateFormData,
   debateFormData,
-  createDebateArticleGroupData,
 } from './FormData';
 
 const cleanParsedSearch = (search: string) => {

@@ -1,14 +1,15 @@
-import React, { FunctionComponent } from "react";
-import { FormattedDate } from "react-intl";
-import { Badge, Col, Container, Row } from "reactstrap";
+import { isEmpty } from 'lodash';
+import React, { FunctionComponent } from 'react';
+import { FormattedDate } from 'react-intl';
+import { Badge, Col, Container, Row } from 'reactstrap';
 import {
   Article,
   Debate,
   DebateLink,
   RestMethodKeys,
-} from "../../../../Library";
-import { ArticleItem } from "../../Article";
-import { DebateSettings } from "./Settings";
+} from '../../../../Library';
+import { ArticleItem } from '../../Article';
+import { DebateSettings } from './Settings';
 
 export interface DebateListItemProps extends Debate {
   pageTitle: string;
@@ -58,10 +59,14 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
             </small>
           </Col>
           <Col md={6}>
-            {articleA && <ArticleItem {...(articleA as Article)} />}
+            {articleA && !isEmpty(articleA) && (
+              <ArticleItem {...(articleA as Article)} />
+            )}
           </Col>
           <Col md={6}>
-            {articleB && <ArticleItem {...(articleB as Article)} />}
+            {articleB && !isEmpty(articleB) && (
+              <ArticleItem {...(articleB as Article)} />
+            )}
           </Col>
           <Col className="text-right" md={12}>
             <DebateLink className="btn btn-primary" debate={debate} to={href}>

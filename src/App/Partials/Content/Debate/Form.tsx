@@ -13,6 +13,7 @@ import {
   DebateState,
   FormClickEvent,
   FormContextValue,
+  FormDataConfig,
   FormProvider,
   PublicRequestKeys,
   RequestStatus,
@@ -53,8 +54,20 @@ const DebateModalHeader: FunctionComponent<{
   }
 };
 
+const makeInputsEditable = <Data extends Object>(
+  configs: FormDataConfig<Data>[],
+): FormDataConfig<Data>[] =>
+  configs.map((config) => {
+    config.editable = true;
+    if (config.group) {
+      config.group = makeInputsEditable(config.group);
+    }
+    return config;
+  });
+
 export const DebateForm: FunctionComponent<DebateFormProps> = ({
   debateDefault,
+  debateId,
   method,
   ...props
 }) => {
@@ -70,7 +83,9 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     debateDefault || createDefaultData<Partial<DebateFormData>>(debateFormData),
   );
 
-  const [formData, setFormData] = useState(debateFormData);
+  const [formData, setFormData] = useState(
+    (debateDefault && makeInputsEditable(debateFormData)) || debateFormData,
+  );
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [resetForm, setResetForm] = useState<boolean>(false);
 
@@ -78,16 +93,16 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     (event: FormClickEvent<Partial<DebateFormData>>) => {
       const { data: submitData, isValid } = event.submitData;
 
-      if (submitData.articleAUrl) {
-        if (submitData.articleA?.url) {
-          submitData.articleA.url = submitData.articleAUrl;
+      if (defaultData.articleAUrl) {
+        if (submitData.articleA) {
+          submitData.articleA.url = defaultData.articleAUrl;
         }
         delete submitData.articleAUrl;
       }
 
-      if (submitData.articleBUrl) {
-        if (submitData.articleB?.url) {
-          submitData.articleB.url = submitData.articleBUrl;
+      if (defaultData.articleBUrl) {
+        if (submitData.articleB) {
+          submitData.articleB.url = defaultData.articleBUrl;
         }
         delete submitData.articleBUrl;
       }
@@ -96,10 +111,18 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         send({
           method: (method === RestMethodKeys.Create && 'POST') || 'PUT',
           data: submitData as any,
+          pathname: `debates/${debateId}`,
         });
       }
     },
-    [method, send, status],
+    [
+      debateId,
+      defaultData.articleAUrl,
+      defaultData.articleBUrl,
+      method,
+      send,
+      status,
+    ],
   );
 
   const handelReceive: ArticleFetcherOnReceive<DebateFormData> = useCallback(
@@ -190,14 +213,14 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     (context: FormContextValue<DebateFormData>) => {
       const { submitData } = context;
 
-      if (submitData) {
+      if (submitData && !debateDefault) {
         setDefaultData({
           ...defaultData,
           ...submitData.data,
         });
       }
     },
-    [defaultData],
+    [debateDefault, defaultData],
   );
 
   useEffect(() => {
@@ -205,11 +228,16 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       setResetForm(false);
       return;
     }
+
     if (
       (!defaultData && debateDefault) ||
       (debateDefault && defaultData.id !== debateDefault?.id)
     ) {
       setDefaultData(debateDefault);
+    }
+
+    if (status === RequestStatus.Error) {
+      clear();
     }
 
     if (status === RequestStatus.Loaded && debate) {
@@ -248,9 +276,9 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     <FormProvider
       data={defaultData}
       inputConfig={formData}
-      reset={resetForm || shouldRedirect}
       onChange={handleChange}
-      name="baseForm"
+      preValidate={true}
+      reset={resetForm || shouldRedirect}
     >
       <ModalWithRoute
         {...props}
