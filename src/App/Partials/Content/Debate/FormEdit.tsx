@@ -11,6 +11,7 @@ import {
   PublicRequestKeys,
   RestMethodKeys,
 } from '../../../../Library';
+import { DebateDelete } from './Delete';
 import { DebateForm } from './Form';
 import {
   debateArticleGroupData,
@@ -90,6 +91,15 @@ export const DebateFormEdit: FunctionComponent<DebateFormItemProps> = ({
       setDebate(newDebate);
     }
   }, [currentSearch.id, debate?.id, debates]);
+
+  if (currentSearch.method === RestMethodKeys.Delete) {
+    return (
+      <DebateDelete
+        from={from}
+        to={`${location.pathname}?${stringify(currentSearch)}`}
+      />
+    );
+  }
 
   return (
     <DebateForm

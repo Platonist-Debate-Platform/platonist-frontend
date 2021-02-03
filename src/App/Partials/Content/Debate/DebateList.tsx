@@ -85,9 +85,9 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   return (
     <>
       <DebateSettings method={RestMethodKeys.Create} />
+      <DebateFormEdit debates={debates} from={location.pathname} />
       {status === RequestStatus.Loaded && (
         <>
-          <DebateFormEdit debates={debates} from={location.pathname} />
           <section className="section section-debate section-debate-list">
             {debates && (
               <>
