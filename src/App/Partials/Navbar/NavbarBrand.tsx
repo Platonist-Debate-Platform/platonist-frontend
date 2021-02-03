@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { useConfig } from '../../../Library';
 import { Logo } from '../../../Library/Models';
-import logoBw from '../../../Assets/Images/Logo/global-ct-logo-neg.svg'
-import logoPos from '../../../Assets/Images/Logo/global-ct-logo-pos.svg'
+import logoBw from '../../../Assets/Images/Logo/platonist-logo-full-white.svg';
+import logoPos from '../../../Assets/Images/Logo/platonist-logo.svg';
 
 export interface NavbarBrandProps extends Logo {
   title: string;
@@ -21,9 +21,9 @@ export const NavbarBrand: React.FC<NavbarBrandProps> = ({
   url.pathname = (image.formats && image.formats.thumbnail.url) || '';
 
   return (
-    <Link className="navbar-brand" to="/" title={title} >
+    <Link className="navbar-brand" to="/" title={title}>
       {isHomepage && (
-        <img 
+        <img
           className="navbar-brand-bw"
           src={logoBw}
           alt={image.alternativeText}
@@ -31,11 +31,11 @@ export const NavbarBrand: React.FC<NavbarBrandProps> = ({
           width={image.width}
         />
       )}
-      <img 
+      <img
         className="navbar-brand-regular"
-        src={(image.formats && url.href) || logoPos} 
-        alt={image.alternativeText} 
-        height={image.height} 
+        src={(image.formats && url.href) || logoPos}
+        alt={image.alternativeText}
+        height={image.height}
         width={image.width}
       />
     </Link>
