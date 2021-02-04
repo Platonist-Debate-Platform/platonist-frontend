@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   DebatesState,
@@ -10,26 +10,32 @@ import {
   requestAction,
   RequestStatus,
   useConfig,
-} from "../../../Library";
-import { useAuthentication } from "./useAuthentication";
-import { UseRequestSendProps } from "./useUser";
+} from '../../../Library';
+import { useAuthentication } from './useAuthentication';
+import { UseRequestSendProps } from './useUser';
 
-export const useDebates = <R extends DebateState | DebatesState>(
-  key: PublicRequestKeys.Debate | PublicRequestKeys.Debates,
-  id?: number,
-  search?: string
-) => {
+export const useDebates = <R extends DebateState | DebatesState>({
+  key,
+  id,
+  ignoreInitial,
+  search,
+}: {
+  key: PublicRequestKeys.Debate | PublicRequestKeys.Debates;
+  id?: number;
+  ignoreInitial?: boolean;
+  search?: string;
+}) => {
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
   const [isAuthenticated, state] = useAuthentication();
 
   const requestState = useSelector<GlobalState, GlobalState[typeof key]>(
-    (state) => state[key]
+    (state) => state[key],
   );
 
   const url = config.createApiUrl(config.api.config);
-  url.pathname = `/debates${(id && "/" + id) || ""}`;
-  url.search = search || "";
+  url.pathname = `/debates${(id && '/' + id) || ''}`;
+  url.search = search || '';
 
   const send = ({ data, method, pathname, search }: UseRequestSendProps<R>) => {
     let sendUrl: URL | undefined;
@@ -37,7 +43,7 @@ export const useDebates = <R extends DebateState | DebatesState>(
     if (pathname) {
       sendUrl = config.createApiUrl(config.api.config);
       sendUrl.pathname = pathname;
-      sendUrl.search = search || "";
+      sendUrl.search = search || '';
     }
 
     dispatch(
@@ -46,12 +52,25 @@ export const useDebates = <R extends DebateState | DebatesState>(
         url: sendUrl?.href || url.href,
         data,
         withCredentials: true,
-      })
+      }),
     );
   };
 
   const clear = () => {
     dispatch(requestAction.clear(key));
+  };
+
+  const remove = () => {
+    if (!id) {
+      return;
+    }
+    dispatch(
+      requestAction.load(key, {
+        method: 'delete',
+        url: url.href,
+        withCredentials: true,
+      }),
+    );
   };
 
   const reload = () => {
@@ -62,25 +81,25 @@ export const useDebates = <R extends DebateState | DebatesState>(
     if (requestState.status === RequestStatus.Loaded) {
       dispatch(
         requestAction.update(key, {
-          method: "GET",
+          method: 'GET',
           url: url.href,
           withCredentials: true,
-        })
+        }),
       );
     }
   };
 
   useEffect(() => {
-    if (key === PublicRequestKeys.Debate && !id) {
+    if ((key === PublicRequestKeys.Debate && !id) || ignoreInitial) {
       return;
     }
     if (requestState.status === RequestStatus.Initial) {
       dispatch(
         requestAction.load(key, {
-          method: "GET",
+          method: 'GET',
           url: url.href,
           withCredentials: true,
-        })
+        }),
       );
     }
   }, [
@@ -91,12 +110,14 @@ export const useDebates = <R extends DebateState | DebatesState>(
     url.href,
     state?.status,
     id,
+    ignoreInitial,
   ]);
 
   return {
     clear,
     data: requestState as R,
     reload,
+    remove,
     send,
   };
 };

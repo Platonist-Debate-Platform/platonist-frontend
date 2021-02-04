@@ -1,8 +1,8 @@
-import { stringify } from "querystring";
-import React, { FunctionComponent, useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { usePrevious } from "react-use";
-import { Col, Container, Row } from "reactstrap";
+import { stringify } from 'querystring';
+import React, { FunctionComponent, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePrevious } from 'react-use';
+import { Col, Container, Row } from 'reactstrap';
 
 import {
   ApplicationKeys,
@@ -18,18 +18,18 @@ import {
   RolePermissionTypes,
   RoleState,
   useConfig,
-} from "../../../Library";
+} from '../../../Library';
 import {
   useCommentSocket,
   useDebates,
   usePermission,
   useRoles,
-} from "../../Hooks";
-import { CommentAdd } from "./CommentAdd";
-import { CommentListItem } from "./CommentListItem";
+} from '../../Hooks';
+import { CommentAdd } from './CommentAdd';
+import { CommentListItem } from './CommentListItem';
 
 export interface CommentListProps {
-  debateId: Debate["id"];
+  debateId: Debate['id'];
 }
 
 export const CommentList: FunctionComponent<CommentListProps> = ({
@@ -37,7 +37,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
 }) => {
   const {
     data: { result: debate, status },
-  } = useDebates<DebateState>(PublicRequestKeys.Debate, debateId);
+  } = useDebates<DebateState>({ key: PublicRequestKeys.Debate, id: debateId });
 
   const comments = useSelector<
     GlobalState,
@@ -52,12 +52,12 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
 
   const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const role = useRoles(
     PrivateRequestKeys.Role,
-    user.result?.role?.id
+    user.result?.role?.id,
   ) as RoleState;
 
   const [canWrite] = usePermission({
@@ -69,11 +69,11 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
   });
 
   const url = config.api.createApiUrl(config.api.config);
-  url.pathname = "comments";
+  url.pathname = 'comments';
 
   const query = {
-    "debate.id": debate?.id,
-    _sort: "created_at:DESC",
+    'debate.id': debate?.id,
+    _sort: 'created_at:DESC',
   };
 
   url.search = `?${stringify(query)}`;
@@ -82,7 +82,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
     dispatch(
       requestAction.update(PublicRequestKeys.Comments, {
         url: url.href,
-      })
+      }),
     );
   }, [dispatch, url.href]);
 
@@ -101,7 +101,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
       dispatch(
         requestAction.load(PublicRequestKeys.Comments, {
           url: url.href,
-        })
+        }),
       );
     }
   }, [

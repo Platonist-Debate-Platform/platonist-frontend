@@ -39,11 +39,10 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const {
     data: { result: debates, status },
     reload,
-  } = useDebates<DebatesState>(
-    PublicRequestKeys.Debates,
-    undefined,
-    '_sort=created_at:DESC',
-  );
+  } = useDebates<DebatesState>({
+    key: PublicRequestKeys.Debates,
+    search: '_sort=created_at:DESC',
+  });
 
   const debate = useDebateSocket();
   const prevDebate = usePrevious(debate);

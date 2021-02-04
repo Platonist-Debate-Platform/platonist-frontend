@@ -19,7 +19,7 @@ import {
   debateFormData,
 } from './FormData';
 
-const cleanParsedSearch = (search: string) => {
+export const cleanParsedSearch = (search: string) => {
   if (search.charAt(0) === '?') {
     return search.substring(1);
   }
@@ -95,6 +95,7 @@ export const DebateFormEdit: FunctionComponent<DebateFormItemProps> = ({
   if (currentSearch.method === RestMethodKeys.Delete) {
     return (
       <DebateDelete
+        debate={debate}
         from={from}
         to={`${location.pathname}?${stringify(currentSearch)}`}
       />

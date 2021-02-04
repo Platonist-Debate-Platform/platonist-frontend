@@ -75,7 +75,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     clear,
     data: { result: debate, status },
     send,
-  } = useDebates<DebateState>(PublicRequestKeys.Debate);
+  } = useDebates<DebateState>({ key: PublicRequestKeys.Debate });
 
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false;
 

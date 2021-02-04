@@ -1,8 +1,8 @@
-import React, { FunctionComponent, useEffect } from "react";
-import { connect } from "react-redux";
-import { match as Match, RouteComponentProps } from "react-router-dom";
-import { usePrevious } from "react-use";
-import { Col, Container, Row } from "reactstrap";
+import React, { FunctionComponent, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { match as Match, RouteComponentProps } from 'react-router-dom';
+import { usePrevious } from 'react-use';
+import { Col, Container, Row } from 'reactstrap';
 
 import {
   clearDebateLink,
@@ -16,9 +16,9 @@ import {
   RequestStatus,
   withConfig,
   WithConfigProps,
-} from "../../../../Library";
-import { useDebates } from "../../../Hooks";
-import { CommentList } from "../../Comment";
+} from '../../../../Library';
+import { useDebates } from '../../../Hooks';
+import { CommentList } from '../../Comment';
 
 export interface DebateDetailProps extends WithConfigProps {
   [PublicRequestKeys.DebateLink]: GlobalState[PublicRequestKeys.DebateLink];
@@ -37,7 +37,10 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
 }) => {
   const {
     data: { result: debate, status },
-  } = useDebates<DebateState>(PublicRequestKeys.Debate, Number(debateLink.id));
+  } = useDebates<DebateState>({
+    key: PublicRequestKeys.Debate,
+    id: Number(debateLink.id),
+  });
   const prevRouterProps = usePrevious(routeProps);
 
   useEffect(() => {
@@ -52,7 +55,7 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
         dispatch(
           requestAction.load(PublicRequestKeys.Debate, {
             url: url.href,
-          })
+          }),
         );
         if (debateLink.id) {
         }
