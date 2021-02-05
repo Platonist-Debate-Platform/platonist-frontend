@@ -5,12 +5,18 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
 import { Col, Form, Row } from 'reactstrap';
 
 import {
+  alertAction,
+  AlertActions,
+  AlertTypes,
   createDefaultData,
   DebateState,
+  Dispatch,
   FormClickEvent,
   FormContextValue,
   FormDataConfig,
@@ -18,6 +24,7 @@ import {
   PublicRequestKeys,
   RequestStatus,
   RestMethodKeys,
+  ToggleType,
 } from '../../../../Library';
 import {
   Group,
@@ -79,6 +86,8 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false;
 
+  const dispatch = useDispatch<Dispatch<AlertActions>>();
+
   const [defaultData, setDefaultData] = useState(
     debateDefault || createDefaultData<Partial<DebateFormData>>(debateFormData),
   );
@@ -86,8 +95,11 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
   const [formData, setFormData] = useState(
     (debateDefault && makeInputsEditable(debateFormData)) || debateFormData,
   );
+
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [resetForm, setResetForm] = useState<boolean>(false);
+
+  const prevDebateId = usePrevious(debateId);
 
   const handleSubmit = useCallback(
     (event: FormClickEvent<Partial<DebateFormData>>) => {
@@ -95,14 +107,22 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
       if (defaultData.articleAUrl) {
         if (submitData.articleA) {
-          submitData.articleA.url = defaultData.articleAUrl;
+          submitData.articleA = {
+            ...submitData.articleA,
+            url: defaultData.articleAUrl,
+            isOffline: false,
+          };
         }
         delete submitData.articleAUrl;
       }
 
       if (defaultData.articleBUrl) {
         if (submitData.articleB) {
-          submitData.articleB.url = defaultData.articleBUrl;
+          submitData.articleB = {
+            ...submitData.articleB,
+            url: defaultData.articleBUrl,
+            isOffline: false,
+          };
         }
         delete submitData.articleBUrl;
       }
@@ -111,7 +131,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         send({
           method: (method === RestMethodKeys.Create && 'POST') || 'PUT',
           data: submitData as any,
-          pathname: `debates/${debateId}`,
+          pathname: `debates${debateId ? '/' + debateId : ''}`,
         });
       }
     },
@@ -242,6 +262,17 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
     if (status === RequestStatus.Loaded && debate) {
       clear();
+      dispatch(
+        alertAction.add({
+          id: `${method}_debate_success`,
+          message: `Debate successfully ${
+            (method && RestMethodKeys.Update && 'updated') || 'created'
+          }`,
+          state: ToggleType.Show,
+          type: AlertTypes.Success,
+        }),
+      );
+
       if (!shouldRedirect) {
         setShouldRedirect(true);
       }
@@ -262,11 +293,44 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         setResetForm(true);
       }
     }
+
+    // console.log('dataIsEqual', dataIsEqual);
+    // console.log(debateDefault);
+
+    // console.log(
+    //   !dataIsEqual &&
+    //     method === RestMethodKeys.Create &&
+    //     !isEqual(
+    //       defaultData,
+    //       createDefaultData<Partial<DebateFormData>>(debateFormData),
+    //     ),
+    // );
+
+    // if (
+    //   !dataIsEqual &&
+    //   !debateDefault &&
+    //   method === RestMethodKeys.Create &&
+    //   !isEqual(
+    //     defaultData,
+    //     createDefaultData<Partial<DebateFormData>>(debateFormData),
+    //   )
+    // ) {
+    //   setDefaultData(
+    //     createDefaultData<Partial<DebateFormData>>(debateFormData),
+    //   );
+    //   if (!resetForm) {
+    //     setResetForm(true);
+    //   }
+    // }
   }, [
     clear,
     debate,
     debateDefault,
+    debateId,
     defaultData,
+    dispatch,
+    method,
+    prevDebateId,
     resetForm,
     shouldRedirect,
     status,

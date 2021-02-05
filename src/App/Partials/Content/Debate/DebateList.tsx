@@ -44,19 +44,17 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
     search: '_sort=created_at:DESC',
   });
 
-  const debate = useDebateSocket();
+  const [debate, meta] = useDebateSocket();
   const prevDebate = usePrevious(debate);
+  const prevHash = usePrevious(meta.hash);
 
   const { location } = router;
   const prevLocation = usePrevious(location);
 
   useEffect(() => {
-    const shouldReload =
-      debate && (debate && debate.id) !== (prevDebate && prevDebate.id)
-        ? true
-        : false;
+    const shouldReload = meta.hash !== prevHash && debate ? true : false;
 
-    if (shouldReload) {
+    if (shouldReload && status === RequestStatus.Loaded) {
       reload();
     }
 
@@ -79,6 +77,9 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
     prevDebate,
     location.pathname,
     prevLocation?.pathname,
+    prevHash,
+    meta.hash,
+    meta,
   ]);
 
   return (

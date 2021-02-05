@@ -87,7 +87,7 @@ export const DebateDelete: FunctionComponent<DebateDeleteProps> = ({
     if (shouldRedirect) {
       setShouldRedirect(false);
     }
-  }, [clear, dispatch, shouldRedirect, status]);
+  }, [clear, currentSearch, dispatch, location, shouldRedirect, status]);
 
   if (!debate || Number(currentSearch.id) !== debate?.id) {
     return null;

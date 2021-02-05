@@ -87,10 +87,19 @@ export const DebateFormEdit: FunctionComponent<DebateFormItemProps> = ({
         ? debates.find((d) => d.id === Number(currentSearch.id))
         : undefined;
 
-    if (newDebate?.id !== debate?.id) {
+    const hastSearchId = currentSearch && currentSearch.id ? true : false;
+
+    if (hastSearchId && newDebate && !debate) {
       setDebate(newDebate);
     }
-  }, [currentSearch.id, debate?.id, debates]);
+
+    // if (newDebate?.id !== debate?.id && location.search.length > 0) {
+    //   setDebate(newDebate);
+    // }
+    // if (!currentSearch.id && debate) {
+    //   setDebate(undefined);
+    // }
+  }, [currentSearch, currentSearch.id, debate, debate?.id, debates, location]);
 
   if (currentSearch.method === RestMethodKeys.Delete) {
     return (
@@ -104,7 +113,11 @@ export const DebateFormEdit: FunctionComponent<DebateFormItemProps> = ({
 
   return (
     <DebateForm
-      debateDefault={debateToFormData(debate)}
+      debateDefault={
+        (currentSearch.method === RestMethodKeys.Update &&
+          debateToFormData(debate)) ||
+        undefined
+      }
       debateId={currentSearch?.id ? Number(currentSearch.id) : undefined}
       from={from}
       method={currentSearch.method}
