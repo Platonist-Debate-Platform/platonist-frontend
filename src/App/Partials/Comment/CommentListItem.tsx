@@ -19,7 +19,7 @@ import {
   PublicRequestKeys,
   User,
 } from '../../../Library';
-import { CollapseWithRoute } from '../Collapse';
+
 import { CommentForm } from './CommentForm';
 import { CommentReplies } from './CommentReplies';
 import { DismissButton } from './DismissButton';
