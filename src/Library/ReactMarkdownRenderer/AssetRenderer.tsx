@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { apiConfig, createApiUrl } from '../Config';
+import { Position } from 'react-markdown';
 
 export interface MarkdownFilRendererNode {
   alt: string;
@@ -18,9 +19,9 @@ export interface MarkdownFilRendererProps {
   src: string;
 }
 
-export const getFileExtension = (filename: string) =>  {
-  return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-}
+export const getFileExtension = (filename: string) => {
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+};
 
 export enum ImageFileExtensions {
   JPEG = 'JPEG',
@@ -34,7 +35,7 @@ export enum ImageFileExtensions {
   ICO = 'ICO',
 }
 
-export const assetRenderer = (props: MarkdownFilRendererProps): JSX.Element => {  
+export const assetRenderer = (props: MarkdownFilRendererProps): JSX.Element => {
   const api = createApiUrl(apiConfig);
   api.pathname = props.src;
 
@@ -56,22 +57,22 @@ export const assetRenderer = (props: MarkdownFilRendererProps): JSX.Element => {
   }
 
   if (isImage) {
-    return (
-      <img src={api.href} alt={props.alt} />
-    );
+    return <img src={api.href} alt={props.alt} />;
   }
-  
-  return <a 
-    className={classNames(
-      'link', 
-      'link-download',
-      `link-download-${fileExtension}`,
-    )}
-    href={api.href}
-    rel="download"
-    title={props.node.title}
-    target={fileExtension === 'pdf' ? '_blank' : '_top'}
-  >
-    <i className="fa fa-file" /> {props.node.title || props.alt}
-  </a>;
-}
+
+  return (
+    <a
+      className={classNames(
+        'link',
+        'link-download',
+        `link-download-${fileExtension}`,
+      )}
+      href={api.href}
+      rel="download"
+      title={props.node.title}
+      target={fileExtension === 'pdf' ? '_blank' : '_top'}
+    >
+      <i className="fa fa-file" /> {props.node.title || props.alt}
+    </a>
+  );
+};
