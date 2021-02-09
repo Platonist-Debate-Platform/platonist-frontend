@@ -27,6 +27,7 @@ import { DismissButton } from './DismissButton';
 export interface CommentListItemProps extends Comment {
   canWrite: boolean;
   debateId: Debate['id'];
+  isReply?: boolean;
   onSubmit?: () => void;
 }
 
@@ -46,7 +47,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     GlobalState[PublicRequestKeys.Router]
   >((state) => state[PublicRequestKeys.Router]);
 
-  const prevLocation = usePrevious(location);
+  console.log(props);
 
   const editQuery =
     '?' +
@@ -87,6 +88,9 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
   }, [onSubmit, shouldRedirect]);
 
   useEffect(() => {
+    if (props.isReply) {
+      return;
+    }
     if (canWrite !== (props.canWrite && user.result?.id === author?.id)) {
       setCanWrite(!canWrite);
     }
@@ -98,11 +102,11 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     author?.id,
     canWrite,
     location.search,
-    prevLocation?.search,
     props.canWrite,
     editQuery,
     shouldRedirect,
     user.result?.id,
+    props.isReply,
   ]);
 
   return (
@@ -184,14 +188,12 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                       className="p-0 mr-3 btn btn-none btn-sm"
                       title="Show relies"
                     >
-                      <Badge>
-                        {(props.replies && props.replies.length) || 0}
-                      </Badge>{' '}
-                      Replies <i className="fa fa-chevron-right" />
+                      <Badge>{props.replyCount}</Badge> Replies{' '}
+                      <i className="fa fa-chevron-right" />
                     </Link>
                   </Col>
                   <Col className="text-right">
-                    {canWrite && location.search !== editQuery && (
+                    {canWrite && (
                       <>
                         <Link
                           to={location.pathname + replyQuery}
@@ -199,21 +201,39 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                         >
                           <i className="fa fa-reply" /> Reply
                         </Link>
-                        <Link
-                          to={location.pathname + editQuery}
-                          className="p-0 btn btn-none btn-sm"
-                        >
-                          <i className="fa fa-edit" /> Edit
-                        </Link>
+                        {location.search !== editQuery && (
+                          <Link
+                            to={location.pathname + editQuery}
+                            className="p-0 btn btn-none btn-sm"
+                          >
+                            <i className="fa fa-edit" /> Edit
+                          </Link>
+                        )}
                       </>
                     )}
                   </Col>
                 </Row>
               </div>
-              <CommentReplies
-                from={location.pathname}
-                to={location.pathname + viewReplyQuery}
-              />
+              {!props.isReply && (
+                <>
+                  {canWrite && (
+                    <CommentReplies
+                      canWrite={canWrite}
+                      from={location.pathname}
+                      isForForm={true}
+                      parent={props.id}
+                      to={location.pathname + replyQuery}
+                    />
+                  )}
+
+                  <CommentReplies
+                    canWrite={canWrite}
+                    from={location.pathname}
+                    parent={props.id}
+                    to={location.pathname + viewReplyQuery}
+                  />
+                </>
+              )}
             </CardBody>
           </Card>
         </Col>

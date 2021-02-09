@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Homepage, ContentKeys } from "../../../Library";
+import { Page, Homepage, ContentKeys } from '../../../Library';
 import { ContentResolverItem, PageResolver } from '../../Partials';
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
 
@@ -10,11 +10,7 @@ export interface PageRoutesProps {
 }
 
 export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
-  const {
-    isAdmin,
-    pages,
-    parentPath,
-  } = props;
+  const { isAdmin, pages, parentPath } = props;
 
   const routes: RouteProps[] = [];
 
@@ -32,47 +28,55 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
     routes.push({
       exact: true,
       path,
-      render: () => <PageResolver pageId={page.id} path={path} isAdmin={isAdmin} />,
+      render: () => (
+        <PageResolver pageId={page.id} path={path} isAdmin={isAdmin} />
+      ),
     });
 
     if (page.content && page.content.length > 0) {
       page.content.forEach((item, index) => {
         if (item) {
-          switch(item.__component) {
+          switch (item.__component) {
             case ContentKeys.DebateList:
               routes.push({
                 exact: true,
                 path: `${path}/:title`,
-                render: (props: RouteComponentProps) => <ContentResolverItem
+                render: (props: RouteComponentProps) => (
+                  <ContentResolverItem
                     {...item}
-                    isAdmin={isAdmin} 
-                    path={path} 
-                    routeProps={props} 
-                />
+                    isAdmin={isAdmin}
+                    path={path}
+                    routeProps={props}
+                  />
+                ),
               });
               break;
             default:
               break;
           }
         }
-      })
+      });
     }
 
     if (page.pages && page.pages.length > 0) {
-      routes.push(...createRoutes({pages: page.pages, parentPath: path, isAdmin}));
+      routes.push(
+        ...createRoutes({ pages: page.pages, parentPath: path, isAdmin }),
+      );
     }
-
   });
 
   return routes;
-}
+};
 
-export const concatPages = (homepages: Homepage[]):Page[] => {
+export const concatPages = (homepages: Homepage[]): Page[] => {
   const pages: Page[] = [];
-  homepages.forEach(homepage => 
-    homepage.pages && homepage.pages.forEach(page => page && pages.push(page))
+  homepages.forEach(
+    (homepage) =>
+      homepage.pages &&
+      homepage.pages.forEach((page) => page && pages.push(page)),
   );
   return pages;
-}
+};
 
-export const useRoutes = (props: PageRoutesProps): RouteProps[] => createRoutes(props);
+export const useRoutes = (props: PageRoutesProps): RouteProps[] =>
+  createRoutes(props);

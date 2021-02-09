@@ -1,6 +1,10 @@
 import classNames from 'classnames';
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+  FunctionComponent,
+  ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 import { usePrevious } from 'react-use';
 import { Form } from 'reactstrap';
 
@@ -12,24 +16,22 @@ import {
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
-  GlobalState,
   PrivateRequestKeys,
-  ReactReduxRequestDispatch,
-  requestAction,
   RequestStatus,
-  useConfig,
 } from '../../../Library';
 import { SubmitButton, Text } from '../../../Library/Form/Fields';
-import { useAuthentication } from '../../Hooks';
+import { useAuthentication, useComments } from '../../Hooks';
 
-const commentFormData: FormDataConfig<Partial<Comment>>[] =[{
-  editable: true,
-  key: 'comment',
-  required: true,
-  title: 'Create a new comment',
-  type: FormInputTypes.Text,
-  validate: FormValidationTypes.Words,
-}];
+const commentFormData: FormDataConfig<Partial<Comment>>[] = [
+  {
+    editable: true,
+    key: 'comment',
+    required: true,
+    title: 'Create a new comment',
+    type: FormInputTypes.Text,
+    validate: FormValidationTypes.Words,
+  },
+];
 
 export interface CommentFormProps {
   commentId?: Comment['id'];
@@ -37,6 +39,7 @@ export interface CommentFormProps {
   defaultData?: Partial<Comment>;
   dismissElement?: ReactElement<any, any>;
   onSuccess?: (isNew: boolean) => void;
+  parent?: Comment['id'];
   reset?: boolean;
 }
 
@@ -46,85 +49,103 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
   defaultData,
   dismissElement,
   onSuccess,
+  parent,
   reset,
 }) => {
-
   const [isAuthenticated, state] = useAuthentication();
-  const comment = useSelector<GlobalState, GlobalState[PrivateRequestKeys.Comment]>(
-    state => state[PrivateRequestKeys.Comment]
-  );
-  
-  const config = useConfig();
-  const dispatch = useDispatch<ReactReduxRequestDispatch>();
-  const url = config.createApiUrl(config.api.config);
-  url.pathname = `/comments${commentId ? '/' + commentId : ''}`;
+  const [shouldReset, setShouldReset] = useState(false);
+  const {
+    clear,
+    send,
+    state: { status, result: comment },
+  } = useComments<Comment>({
+    key: PrivateRequestKeys.Comment,
+    stateOnly: true,
+  });
 
-  const prevComment = usePrevious(comment);
+  const prevStatus = usePrevious(status);
 
   const handleSubmit = (event: FormClickEvent<Partial<Comment>>) => {
     if (!isAuthenticated && !state && !event.submitData.isValid) {
       return;
     }
-    
+
     const data = {
       ...event.submitData.data,
-      debate: debateId,
+      debate: (!parent && debateId) || undefined,
       user: state?.id,
       created_by: state?.id,
       updated_by: state?.id,
     };
-    
-    dispatch(requestAction.load(PrivateRequestKeys.Comment, {
+
+    if (parent) {
+      data.parent = parent;
+    }
+
+    send({
       data,
-      method: defaultData ? 'put' : 'post',
-      url: url.href,
-      withCredentials: state?.status === 'Authenticated',
-    }));
-  }
+      method: defaultData ? 'PUT' : 'POST',
+      pathname: `/comments${commentId ? '/' + commentId : ''}`,
+    });
+  };
 
   useEffect(() => {
     if (
-      prevComment?.status === RequestStatus.Updating && 
-      comment.status === RequestStatus.Loaded && 
-      comment.result
+      prevStatus === RequestStatus.Updating &&
+      status === RequestStatus.Loaded &&
+      comment
     ) {
-      dispatch(requestAction.clear(PrivateRequestKeys.Comment));
+      clear();
+
+      if (!shouldReset) {
+        setShouldReset(true);
+      }
 
       if (onSuccess) {
         onSuccess(!defaultData && !commentId);
       }
     }
-  }, [comment.result, comment.status, commentId, defaultData, dispatch, onSuccess, prevComment?.status]);
 
+    if (shouldReset) {
+      setShouldReset(false);
+    }
+  }, [
+    clear,
+    comment,
+    commentId,
+    defaultData,
+    onSuccess,
+    prevStatus,
+    shouldReset,
+    status,
+  ]);
 
-  return (isAuthenticated && (
-    <FormProvider
-      data={defaultData || {comment: ''}} 
-      inputConfig={commentFormData}
-      reset={reset}
-    >
-      <Form>
-        <Text 
-          inputKey="comment"
-          hideLabel={defaultData ? true : false}
-        />
-        <div className="text-right">
-          {dismissElement && (
-            <>{dismissElement}</>
-          )}
-          <SubmitButton
-            className={classNames('btn-success', {
-              'btn-sm': defaultData
-            })}
-            disabled={comment?.status === RequestStatus.Updating} 
-            onClick={handleSubmit}
-            preventDefault={true}
-            type="submit"
-          >
-            Save Debate <i className="fa fa-cloud-upload-alt" />
-          </SubmitButton>
-        </div>
-      </Form>
-    </FormProvider>
-  )) || null;
-}
+  return (
+    (isAuthenticated && (
+      <FormProvider
+        data={defaultData || { comment: '' }}
+        inputConfig={commentFormData}
+        reset={shouldReset || reset}
+      >
+        <Form>
+          <Text inputKey="comment" hideLabel={defaultData ? true : false} />
+          <div className="text-right">
+            {dismissElement && <>{dismissElement}</>}
+            <SubmitButton
+              className={classNames('btn-success', {
+                'btn-sm': defaultData,
+              })}
+              disabled={status === RequestStatus.Updating}
+              onClick={handleSubmit}
+              preventDefault={true}
+              type="submit"
+            >
+              Save Comment <i className="fa fa-cloud-upload-alt" />
+            </SubmitButton>
+          </div>
+        </Form>
+      </FormProvider>
+    )) ||
+    null
+  );
+};

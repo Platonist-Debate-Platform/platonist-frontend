@@ -15,6 +15,8 @@ export interface CollapseWithRouteProps {
   children: ReactNode;
   close?: boolean;
   from: string;
+  onEntered?: () => void;
+  onExited?: () => void;
   to: string;
 }
 
@@ -22,6 +24,8 @@ export const CollapseWithRoute: FunctionComponent<CollapseWithRouteProps> = ({
   children,
   close,
   from,
+  onEntered,
+  onExited,
   to,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -61,7 +65,9 @@ export const CollapseWithRoute: FunctionComponent<CollapseWithRouteProps> = ({
 
   return (
     <>
-      <Collapse isOpen={isOpen}>{children}</Collapse>
+      <Collapse isOpen={isOpen} onEntered={onEntered} onExited={onExited}>
+        {children}
+      </Collapse>
       {shouldRedirect && (
         <Redirect from={getCurrentUrlFromLocation(router.location)} to={from} />
       )}

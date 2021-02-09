@@ -38,13 +38,14 @@ export interface RouterState {
 export interface PublicState {
   [PublicRequestKeys.Alerts]: AlertState;
   [PublicRequestKeys.Authentication]: AuthenticationState;
+  [PublicRequestKeys.CommentReplies]: CommentsState;
   [PublicRequestKeys.Comments]: CommentsState;
   [PublicRequestKeys.Debate]: DebateState;
   [PublicRequestKeys.DebateLink]: DebateLinkState;
   [PublicRequestKeys.Debates]: DebatesState;
   [PublicRequestKeys.Homepage]: HomepageState;
   [PublicRequestKeys.Homepages]: HomepagesState;
-  [PublicRequestKeys.Locals]: AvailableLanguage,
+  [PublicRequestKeys.Locals]: AvailableLanguage;
   [PublicRequestKeys.Page]: PageState;
   [PublicRequestKeys.Pages]: PagesState;
   [PublicRequestKeys.Router]: RouterState;
@@ -55,12 +56,12 @@ export interface PrivateState {
   [PrivateRequestKeys.Articles]: ArticlesState;
   [PrivateRequestKeys.Comment]: CommentState;
   [PrivateRequestKeys.File]: FileState;
-  [PrivateRequestKeys.Permission]: PermissionState,
-  [PrivateRequestKeys.Permissions]: PermissionsState,
-  [PrivateRequestKeys.Role]: RoleState,
-  [PrivateRequestKeys.Roles]: RolesState,
+  [PrivateRequestKeys.Permission]: PermissionState;
+  [PrivateRequestKeys.Permissions]: PermissionsState;
+  [PrivateRequestKeys.Role]: RoleState;
+  [PrivateRequestKeys.Roles]: RolesState;
   [PrivateRequestKeys.Upload]: ReactReduxRequestState<any, AxiosRequestConfig>;
-  [PrivateRequestKeys.User]: UserState,
+  [PrivateRequestKeys.User]: UserState;
 }
 
 export type GlobalState = PublicState & PrivateState;

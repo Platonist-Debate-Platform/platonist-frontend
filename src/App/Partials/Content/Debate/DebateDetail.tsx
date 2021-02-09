@@ -66,10 +66,12 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
     ) {
       request(requestProps);
     }
-
-    dispatch(clearDebateLink(undefined));
+    if (debateLink && debateLink.id) {
+      dispatch(clearDebateLink(undefined));
+    }
   }, [
     config,
+    debateLink,
     debateLink.id,
     dispatch,
     prevRouterProps,

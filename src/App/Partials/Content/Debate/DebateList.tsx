@@ -49,7 +49,6 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const prevHash = usePrevious(meta.hash);
 
   const { location } = router;
-  const prevLocation = usePrevious(location);
 
   useEffect(() => {
     const shouldReload = meta.hash !== prevHash && debate ? true : false;
