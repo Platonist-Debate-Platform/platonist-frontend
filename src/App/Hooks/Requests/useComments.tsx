@@ -14,6 +14,11 @@ import {
 } from '../../../Library';
 import { UseRequestBaseProps, useRequest } from './useRequest';
 
+/**
+ * Deprecated
+ * @param userId
+ * @param queryParameter
+ */
 export const useUserComments = (
   userId?: User['id'],
   queryParameter: QueryParameter = {
@@ -25,6 +30,7 @@ export const useUserComments = (
     GlobalState,
     GlobalState[PublicRequestKeys.Comments]
   >((state) => state[PublicRequestKeys.Comments]);
+
   const config = useConfig();
 
   useEffect(() => {
@@ -44,6 +50,10 @@ export const useUserComments = (
   return comments;
 };
 
+/**
+ *
+ * @param props
+ */
 export const useComments = <Model,>(props: UseRequestBaseProps) => {
   const request = useRequest<Model>({
     ...props,

@@ -19,7 +19,9 @@ import {
   PublicRequestKeys,
   User,
 } from '../../../Library';
+import { CollapseWithRoute } from '../Collapse';
 import { CommentForm } from './CommentForm';
+import { CommentReplies } from './CommentReplies';
 import { DismissButton } from './DismissButton';
 
 export interface CommentListItemProps extends Comment {
@@ -173,7 +175,12 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                 <Row>
                   <Col>
                     <Link
-                      to={location.pathname + viewReplyQuery}
+                      to={
+                        location.pathname + location.search ===
+                        location.pathname + viewReplyQuery
+                          ? location.pathname
+                          : location.pathname + viewReplyQuery
+                      }
                       className="p-0 mr-3 btn btn-none btn-sm"
                       title="Show relies"
                     >
@@ -203,6 +210,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                   </Col>
                 </Row>
               </div>
+              <CommentReplies
+                from={location.pathname}
+                to={location.pathname + viewReplyQuery}
+              />
             </CardBody>
           </Card>
         </Col>

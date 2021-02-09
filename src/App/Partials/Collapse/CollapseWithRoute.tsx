@@ -1,0 +1,70 @@
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
+import { Collapse } from 'reactstrap';
+
+import { GlobalState, PublicRequestKeys } from '../../../Library';
+
+export interface CollapseWithRouteProps {
+  children: ReactNode;
+  close?: boolean;
+  from: string;
+  to: string;
+}
+
+export const CollapseWithRoute: FunctionComponent<CollapseWithRouteProps> = ({
+  children,
+  close,
+  from,
+  to,
+}) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const prevClose = usePrevious(close);
+
+  const router = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state.router);
+
+  const getCurrentUrlFromLocation = (
+    location: GlobalState[PublicRequestKeys.Router]['location'],
+  ) => `${location.pathname}${location.search}`;
+
+  useEffect(() => {
+    const currentUrl = getCurrentUrlFromLocation(router.location);
+    const isFromUrl = from === currentUrl;
+    const isToUrl = to === currentUrl;
+
+    if (isOpen && currentUrl !== to) {
+      setIsOpen(false);
+    }
+
+    if (isFromUrl && !isToUrl && isOpen) {
+      setIsOpen(false);
+      setShouldRedirect(false);
+    }
+    if (isToUrl && !isFromUrl && !isOpen) {
+      setIsOpen(true);
+    }
+
+    if (!prevClose && close) {
+      setIsOpen(false);
+    }
+  }, [close, from, isOpen, prevClose, router, to]);
+
+  return (
+    <>
+      <Collapse isOpen={isOpen}>{children}</Collapse>
+      {shouldRedirect && (
+        <Redirect from={getCurrentUrlFromLocation(router.location)} to={from} />
+      )}
+    </>
+  );
+};
