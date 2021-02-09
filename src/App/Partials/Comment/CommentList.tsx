@@ -1,18 +1,17 @@
 import { stringify } from 'querystring';
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { usePrevious } from 'react-use';
+import { usePrevious, useUnmount } from 'react-use';
 import { Col, Container, Row } from 'reactstrap';
 
 import {
   ApplicationKeys,
+  Comment,
   Debate,
-  DebateState,
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
-  requestAction,
   RequestStatus,
   RestMethodKeys,
   RolePermissionTypes,
@@ -20,6 +19,7 @@ import {
   useConfig,
 } from '../../../Library';
 import {
+  useComments,
   useCommentSocket,
   useDebates,
   usePermission,
@@ -36,16 +36,16 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
   debateId,
 }) => {
   const {
-    data: { result: debate, status },
-  } = useDebates<DebateState>({ key: PublicRequestKeys.Debate, id: debateId });
-
-  const comments = useSelector<
-    GlobalState,
-    GlobalState[PublicRequestKeys.Comments]
-  >((state) => state[PublicRequestKeys.Comments]);
+    state: { result: debate, status: debateStatus },
+  } = useDebates<Debate>({
+    key: PublicRequestKeys.Debate,
+    id: debateId,
+    stateOnly: true,
+  });
 
   const config = useConfig();
-  const comment = useCommentSocket();
+  const [comment, meta] = useCommentSocket();
+  const prevHash = usePrevious(meta.hash);
 
   const prevComment = usePrevious(comment);
 
@@ -68,62 +68,51 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
     state: role,
   });
 
-  const url = config.api.createApiUrl(config.api.config);
-  url.pathname = 'comments';
-
   const query = {
-    'debate.id': debate?.id,
+    'debate.id': debateId,
     _sort: 'created_at:DESC',
   };
 
-  url.search = `?${stringify(query)}`;
+  const {
+    clear,
+    load,
+    state: { status, result: comments },
+    reload,
+  } = useComments<Comment[]>({
+    key: PublicRequestKeys.Comments,
+    search: `?${stringify(query)}`,
+  });
 
   const handleSubmit = useCallback(() => {
-    dispatch(
-      requestAction.update(PublicRequestKeys.Comments, {
-        url: url.href,
-      }),
-    );
-  }, [dispatch, url.href]);
+    reload();
+  }, [reload]);
 
   useEffect(() => {
-    const shouldLoadInitial =
-      debate &&
-      status === RequestStatus.Loaded &&
-      comments.status === RequestStatus.Initial;
+    const shouldReload = meta.hash !== prevHash && comment ? true : false;
 
-    const shouldReload =
-      comment &&
-      comment.id !== (prevComment && prevComment.id) &&
-      (comment.debate as Debate).id === debateId;
-
-    if (shouldLoadInitial || shouldReload) {
-      dispatch(
-        requestAction.load(PublicRequestKeys.Comments, {
-          url: url.href,
-        }),
-      );
+    if (shouldReload && status === RequestStatus.Loaded) {
+      reload();
     }
   }, [
     comment,
-    comments.status,
+    status,
     config.api,
     debate,
     debateId,
+    debateStatus,
     dispatch,
     prevComment,
-    status,
-    url.href,
+    load,
+    meta.hash,
+    prevHash,
+    reload,
   ]);
 
-  useEffect(() => {
-    return () => {
-      if (comments.status === RequestStatus.Loaded) {
-        dispatch(requestAction.clear(PublicRequestKeys.Comments));
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useUnmount(() => {
+    if (status === RequestStatus.Loaded) {
+      clear();
+    }
+  });
 
   return (
     <div className="comments-list">
@@ -131,9 +120,9 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
         <CommentAdd debateId={debateId} />
         <Row className="mt-3">
           <Col>
-            {(comments.result &&
-              comments.result.length &&
-              comments.result.map((item, index) => (
+            {(comments &&
+              comments.length &&
+              comments.map((item, index) => (
                 <CommentListItem
                   canWrite={canWrite}
                   debateId={debateId}

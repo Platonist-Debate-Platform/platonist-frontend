@@ -44,12 +44,12 @@ export const DebateDelete: FunctionComponent<DebateDeleteProps> = ({
 
   const {
     clear,
-    data: { status },
     remove,
+    state: { status },
   } = useDebates({
     key: PublicRequestKeys.Debate,
     id: debate?.id,
-    ignoreInitial: true,
+    stateOnly: true,
   });
 
   const currentSearch = parse(

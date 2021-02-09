@@ -1,14 +1,15 @@
+import { method } from 'lodash';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { match as Match, RouteComponentProps } from 'react-router-dom';
-import { usePrevious } from 'react-use';
+import { usePrevious, useUnmount } from 'react-use';
 import { Col, Container, Row } from 'reactstrap';
 
 import {
   clearDebateLink,
+  Debate,
   DebateLinkDispatch,
   DebateList,
-  DebateState,
   GlobalState,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
@@ -17,7 +18,7 @@ import {
   withConfig,
   WithConfigProps,
 } from '../../../../Library';
-import { useDebates } from '../../../Hooks';
+import { RequestSendProps, useDebates } from '../../../Hooks';
 import { CommentList } from '../../Comment';
 
 export interface DebateDetailProps extends WithConfigProps {
@@ -36,35 +37,28 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
   routeProps,
 }) => {
   const {
-    data: { result: debate, status },
-  } = useDebates<DebateState>({
+    clear,
+    state: { result: debate, status },
+    send: request,
+  } = useDebates<Debate>({
     key: PublicRequestKeys.Debate,
     id: Number(debateLink.id),
+    stateOnly: true,
   });
+
   const prevRouterProps = usePrevious(routeProps);
 
   useEffect(() => {
-    const request = () => {
-      if (config) {
-        const url = config.api.createApiUrl(config.api.config);
-        const match = routeProps.match as Match<{ title: string }>;
-        url.pathname = debateLink.id
-          ? `debates/${debateLink.id}`
-          : `debates/findByTitle/${match.params.title}`;
-
-        dispatch(
-          requestAction.load(PublicRequestKeys.Debate, {
-            url: url.href,
-          }),
-        );
-        if (debateLink.id) {
-        }
-        dispatch(clearDebateLink(undefined));
-      }
+    const match = routeProps.match as Match<{ title: string }>;
+    const requestProps: RequestSendProps<Debate> = {
+      pathname: debateLink.id
+        ? `debates/${debateLink.id}`
+        : `debates/findByTitle/${match.params.title}`,
+      method: 'GET',
     };
 
     if (status === RequestStatus.Initial) {
-      request();
+      request(requestProps);
     }
 
     if (
@@ -72,26 +66,26 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
         (prevRouterProps && prevRouterProps.location.pathname) &&
       status !== RequestStatus.Initial
     ) {
-      request();
+      request(requestProps);
     }
 
-    // return () => {
-    //   if (
-    //       debate.status === RequestStatus.Loaded &&
-    //       routeProps.location.pathname !== (prevRouterProps && prevRouterProps.location.pathname)
-    //   ) {
-    //     dispatch(requestAction.clear(PublicRequestKeys.Debate));
-    //   }
-    // }
+    dispatch(clearDebateLink(undefined));
   }, [
     config,
     debateLink.id,
     dispatch,
     prevRouterProps,
+    request,
     routeProps.location.pathname,
     routeProps.match,
     status,
   ]);
+
+  useUnmount(() => {
+    if (status === RequestStatus.Loaded) {
+      clear();
+    }
+  });
 
   return (
     <>
@@ -103,7 +97,9 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
                 <div className="jumbotron-inner">
                   <Row>
                     <Col col={12} className="text-center">
-                      <h1>{debate?.title}</h1>
+                      <h1>
+                        {debate?.title} {debate.id}
+                      </h1>
                       <h3>{debate?.subTitle}</h3>
                     </Col>
                   </Row>

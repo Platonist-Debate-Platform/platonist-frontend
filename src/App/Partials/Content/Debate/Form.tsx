@@ -80,9 +80,12 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 }) => {
   const {
     clear,
-    data: { result: debate, status },
     send,
-  } = useDebates<DebateState>({ key: PublicRequestKeys.Debate });
+    state: { result: debate, status },
+  } = useDebates<DebateState>({
+    key: PublicRequestKeys.Debate,
+    stateOnly: true,
+  });
 
   const isDeleteMethod = method !== RestMethodKeys.Delete ? true : false;
 
@@ -262,16 +265,18 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
 
     if (status === RequestStatus.Loaded && debate) {
       clear();
-      dispatch(
-        alertAction.add({
-          id: `${method}_debate_success`,
-          message: `Debate successfully ${
-            (method && RestMethodKeys.Update && 'updated') || 'created'
-          }`,
-          state: ToggleType.Show,
-          type: AlertTypes.Success,
-        }),
-      );
+      if (method) {
+        dispatch(
+          alertAction.add({
+            id: `${method}_debate_success`,
+            message: `Debate successfully ${
+              (method && RestMethodKeys.Update && 'updated') || 'created'
+            }`,
+            state: ToggleType.Show,
+            type: AlertTypes.Success,
+          }),
+        );
+      }
 
       if (!shouldRedirect) {
         setShouldRedirect(true);
