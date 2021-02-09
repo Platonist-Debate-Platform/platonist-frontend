@@ -12,7 +12,6 @@ import {
   RequestStatus,
   useConfig,
 } from '../../../Library';
-import { UseRequestSendProps } from './useUser';
 
 export interface UseRequestBaseProps {
   id?: number;

@@ -1,6 +1,6 @@
 import './DebateList.scss';
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { usePrevious, useUnmount } from 'react-use';
 

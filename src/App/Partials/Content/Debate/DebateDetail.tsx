@@ -1,4 +1,3 @@
-import { method } from 'lodash';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { match as Match, RouteComponentProps } from 'react-router-dom';
@@ -13,7 +12,6 @@ import {
   GlobalState,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
-  requestAction,
   RequestStatus,
   withConfig,
   WithConfigProps,
