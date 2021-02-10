@@ -8,7 +8,6 @@ import React, {
 import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import TimeAgo from 'react-timeago';
-import { usePrevious } from 'react-use';
 import { Badge, Card, CardBody, CardSubtitle, Col, Row } from 'reactstrap';
 
 import {
@@ -17,15 +16,21 @@ import {
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
+  RestMethodKeys,
   User,
+  RolePermissionTypes,
+  ApplicationKeys,
+  RoleState,
 } from '../../../Library';
+import { usePermission, useRoles, useUser } from '../../Hooks';
 
 import { CommentForm } from './CommentForm';
 import { CommentReplies } from './CommentReplies';
 import { DismissButton } from './DismissButton';
 
 export interface CommentListItemProps extends Comment {
-  canWrite: boolean;
+  canComment?: boolean;
+  canWrite?: boolean;
   debateId: Debate['id'];
   isReply?: boolean;
   onSubmit?: () => void;
@@ -38,9 +43,9 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
 
   const author = props.user as User;
 
-  const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(
-    (state) => state[PrivateRequestKeys.User],
-  );
+  const {
+    user: { result: user },
+  } = useUser();
 
   const { location } = useSelector<
     GlobalState,
@@ -71,8 +76,19 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     });
 
   const [canWrite, setCanWrite] = useState(
-    props.canWrite && user.result?.id === author?.id,
+    props.canWrite && user?.id === author?.id,
   );
+
+  const roleState = useRoles(PrivateRequestKeys.Role, user?.id) as RoleState;
+
+  const [canComment] = usePermission({
+    id: user?.role?.id,
+    methods: [RestMethodKeys.Create, RestMethodKeys.Update],
+    permission: RolePermissionTypes.Application,
+    state: roleState,
+    type: ApplicationKeys.Comment,
+  });
+
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const createdAt = new Date(props.created_at).toUTCString();
@@ -91,7 +107,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     if (props.isReply) {
       return;
     }
-    if (canWrite !== (props.canWrite && user.result?.id === author?.id)) {
+    if (canWrite !== (props.canWrite && user?.id === author?.id)) {
       setCanWrite(!canWrite);
     }
 
@@ -105,7 +121,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     props.canWrite,
     editQuery,
     shouldRedirect,
-    user.result?.id,
+    user?.id,
     props.isReply,
   ]);
 
@@ -119,15 +135,9 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                 <small>
                   {author && (
                     <Link
-                      to={`/user/${
-                        user.result?.id === author?.id ? 'me' : author.id
-                      }`}
+                      to={`/user/${user?.id === author?.id ? 'me' : author.id}`}
                     >
-                      {user.result?.id === author?.id ? (
-                        'You'
-                      ) : (
-                        <>{author.username}</>
-                      )}
+                      {user?.id === author?.id ? 'You' : <>{author.username}</>}
                     </Link>
                   )}{' '}
                   <span>
@@ -193,32 +203,30 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                     </Link>
                   </Col>
                   <Col className="text-right">
-                    {canWrite && (
-                      <>
-                        <Link
-                          to={location.pathname + replyQuery}
-                          className="p-0 mr-3 btn btn-none btn-sm"
-                        >
-                          <i className="fa fa-reply" /> Reply
-                        </Link>
-                        {location.search !== editQuery && (
-                          <Link
-                            to={location.pathname + editQuery}
-                            className="p-0 btn btn-none btn-sm"
-                          >
-                            <i className="fa fa-edit" /> Edit
-                          </Link>
-                        )}
-                      </>
+                    {canComment && (
+                      <Link
+                        to={location.pathname + replyQuery}
+                        className="p-0 mr-3 btn btn-none btn-sm"
+                      >
+                        <i className="fa fa-reply" /> Reply
+                      </Link>
+                    )}
+                    {canWrite && location.search !== editQuery && (
+                      <Link
+                        to={location.pathname + editQuery}
+                        className="p-0 btn btn-none btn-sm"
+                      >
+                        <i className="fa fa-edit" /> Edit
+                      </Link>
                     )}
                   </Col>
                 </Row>
               </div>
               {!props.isReply && (
                 <>
-                  {canWrite && (
+                  {canComment && (
                     <CommentReplies
-                      canWrite={canWrite}
+                      canComment={canComment}
                       from={location.pathname}
                       isForForm={true}
                       parent={props.id}
@@ -227,7 +235,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                   )}
 
                   <CommentReplies
-                    canWrite={canWrite}
+                    canComment={canComment}
                     from={location.pathname}
                     parent={props.id}
                     to={location.pathname + viewReplyQuery}

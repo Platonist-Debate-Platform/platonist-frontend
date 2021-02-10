@@ -1,5 +1,5 @@
-import { isArray } from "lodash";
-import { useEffect, useState } from "react";
+import { isArray } from 'lodash';
+import { useEffect, useState } from 'react';
 
 import {
   ApplicationController,
@@ -10,7 +10,8 @@ import {
   RolePermissions,
   RolePermissionTypes,
   RoleState,
-} from "../../../Library";
+} from '../../../Library';
+import { useRoles } from '../Requests';
 
 export interface HasPermissionOptions {
   methods: RestMethodKeys | RestMethodKeys[];
@@ -20,14 +21,14 @@ export interface HasPermissionOptions {
 
 export const hasPermission = (
   permissions: RolePermissions,
-  options: HasPermissionOptions
+  options: HasPermissionOptions,
 ): boolean => {
   if (isArray(options.methods)) {
     return options.methods.some((methods) =>
       hasPermission(permissions, {
         ...options,
         methods,
-      })
+      }),
     );
   }
 
@@ -47,12 +48,12 @@ export interface UsePermissionProps extends HasPermissionOptions {
 }
 
 export type UsePermission = (
-  props: UsePermissionProps
+  props: UsePermissionProps,
 ) => [boolean, Role | undefined];
 
 export const usePermission: UsePermission = ({ id, state, ...rest }) => {
   const [allowed, setIsAllowed] = useState(
-    state && state.result && hasPermission(state.result.role.permissions, rest)
+    state && state.result && hasPermission(state.result.role.permissions, rest),
   );
 
   useEffect(() => {

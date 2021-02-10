@@ -12,7 +12,7 @@ import { CommentForm } from './CommentForm';
 import { CommentListItem } from './CommentListItem';
 
 export interface CommentRepliesProps {
-  canWrite: boolean;
+  canComment?: boolean;
   from: string;
   isForForm?: boolean;
   parent: Comment['id'];
@@ -20,7 +20,7 @@ export interface CommentRepliesProps {
 }
 
 export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
-  canWrite,
+  canComment,
   isForForm,
   parent,
   ...props
@@ -75,7 +75,7 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
             comments.length &&
             comments.map((item, index) => (
               <CommentListItem
-                canWrite={canWrite}
+                canComment={canComment ? true : false}
                 debateId={debate.id}
                 isReply={true}
                 key={`comment_list_item_reply_${parent}_${item.id}_${index}`}
