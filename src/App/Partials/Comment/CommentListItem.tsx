@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+import { stringify } from 'qs';
 import React, {
   FunctionComponent,
   useCallback,
@@ -52,7 +52,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     GlobalState[PublicRequestKeys.Router]
   >((state) => state[PublicRequestKeys.Router]);
 
-  console.log(props);
+  // console.log(props);
 
   const editQuery =
     '?' +
@@ -61,19 +61,35 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
       id: props.id,
     });
 
-  const replyQuery =
-    '?' +
-    stringify({
-      edit: 'reply',
-      id: props.id,
-    });
+  const replyQuery = unescape(
+    !props.isReply
+      ? '?' +
+          stringify({
+            edit: 'reply',
+            id: props.id,
+          })
+      : '?' +
+          stringify({
+            view: 'replies',
+            id: (props.parent as Comment | undefined)?.id,
+            child: { edit: 'reply', id: props.id },
+          }),
+  );
 
-  const viewReplyQuery =
-    '?' +
-    stringify({
-      view: 'replies',
-      id: props.id,
-    });
+  const viewReplyQuery = unescape(
+    !props.isReply
+      ? '?' +
+          stringify({
+            view: 'replies',
+            id: props.id,
+          })
+      : '?' +
+          stringify({
+            view: 'replies',
+            id: (props.parent as Comment | undefined)?.id,
+            child: { id: props.id },
+          }),
+  );
 
   const [canWrite, setCanWrite] = useState(
     props.canWrite && user?.id === author?.id,
@@ -190,8 +206,9 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                   <Col>
                     <Link
                       to={
-                        location.pathname + location.search ===
-                        location.pathname + viewReplyQuery
+                        (location.pathname + location.search).indexOf(
+                          location.pathname + viewReplyQuery,
+                        ) > -1
                           ? location.pathname
                           : location.pathname + viewReplyQuery
                       }

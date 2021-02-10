@@ -44,9 +44,10 @@ export const CollapseWithRoute: FunctionComponent<CollapseWithRouteProps> = ({
   useEffect(() => {
     const currentUrl = getCurrentUrlFromLocation(router.location);
     const isFromUrl = from === currentUrl;
-    const isToUrl = to === currentUrl;
+    const isToUrl = currentUrl.indexOf(to) > -1;
+    console.table([currentUrl, from, to, isToUrl]);
 
-    if (isOpen && currentUrl !== to) {
+    if (isOpen && !isToUrl) {
       setIsOpen(false);
     }
 

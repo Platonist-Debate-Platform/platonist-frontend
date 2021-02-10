@@ -1,4 +1,4 @@
-import { parse, ParsedUrlQuery, stringify } from 'querystring';
+import { parse, ParsedQs, stringify } from 'qs';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -56,7 +56,7 @@ export interface DebateFormItemProps {
   from: string;
 }
 
-export interface CurrentSearchProps extends ParsedUrlQuery {
+export interface CurrentSearchProps extends ParsedQs {
   modal: ApplicationKeys;
   method: RestMethodKeys;
   id: string;

@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+import { stringify } from 'qs';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

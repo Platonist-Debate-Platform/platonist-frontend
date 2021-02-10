@@ -77,7 +77,7 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
               <CommentListItem
                 canComment={canComment ? true : false}
                 debateId={debate.id}
-                isReply={true}
+                isReply={item.parent ? true : false}
                 key={`comment_list_item_reply_${parent}_${item.id}_${index}`}
                 {...item}
               />

@@ -1,6 +1,11 @@
 import classNames from 'classnames';
-import { stringify } from 'querystring';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { stringify } from 'qs';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Col, Collapse, Row } from 'reactstrap';
@@ -16,27 +21,30 @@ export interface CommentAddProps {
 }
 
 export const CommentAdd: FunctionComponent<CommentAddProps> = ({
-  debateId
+  debateId,
 }) => {
-
   const [isAuthenticated] = useAuthentication();
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const {
-    location,
-  } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(
-    state => state[PublicRequestKeys.Router]
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state[PublicRequestKeys.Router]);
+
+  const searchQuery =
+    '?' +
+    stringify({
+      edit: 'comment',
+      id: 'new',
+    });
+
+  const toggle = useCallback(
+    (shouldToggle) => {
+      if (shouldToggle && !shouldRedirect) {
+        setShouldRedirect(true);
+      }
+    },
+    [shouldRedirect],
   );
-
-  const searchQuery = '?' + stringify({
-    edit: 'comment',
-    id: 'new'
-  });
-
-  const toggle = useCallback((shouldToggle) => {
-    if (shouldToggle && !shouldRedirect) {
-      setShouldRedirect(true);
-    }
-  }, [shouldRedirect]);
 
   useEffect(() => {
     if (shouldRedirect && location.search.length === 0) {
@@ -54,9 +62,9 @@ export const CommentAdd: FunctionComponent<CommentAddProps> = ({
             title="Cancel"
           />
           {isAuthenticated && (
-            <CommentForm 
-              debateId={debateId} 
-              onSuccess={toggle} 
+            <CommentForm
+              debateId={debateId}
+              onSuccess={toggle}
               reset={location.search !== searchQuery}
               dismissElement={
                 <DismissButton
@@ -70,21 +78,23 @@ export const CommentAdd: FunctionComponent<CommentAddProps> = ({
           )}
         </Collapse>
       </Col>
-      <Col 
+      <Col
         ms={12}
         className={classNames('text-right', {
           'd-none': location.search === searchQuery,
         })}
       >
-        <AuthenticationButton  
-          component={<>Participate <i className="fa fa-comment" /></>} 
+        <AuthenticationButton
+          component={
+            <>
+              Participate <i className="fa fa-comment" />
+            </>
+          }
           onClick={toggle}
           pathToAction={location.pathname + searchQuery}
         />
       </Col>
-      {shouldRedirect && (
-        <Redirect to={location.pathname} />
-      )}
+      {shouldRedirect && <Redirect to={location.pathname} />}
     </Row>
   );
 };

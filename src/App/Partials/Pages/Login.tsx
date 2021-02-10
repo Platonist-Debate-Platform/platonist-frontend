@@ -1,4 +1,4 @@
-import { parse } from 'querystring';
+import { parse } from 'qs';
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -17,16 +17,14 @@ export const PageLogin: FunctionComponent<PageLoginProps> = ({
   infoText,
   target,
 }) => {
-
   const [isAuthenticated] = useAuthentication();
 
-  const {
-    location,
-  } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(
-    state => state[PublicRequestKeys.Router]
-  );
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state[PublicRequestKeys.Router]);
 
-  const query = parse(location.search.slice(1)) as {target?: string};
+  const query = parse(location.search.slice(1)) as { target?: string };
   const redirectTo = query.target || target || '/';
 
   if (!isAuthenticated) {
@@ -35,9 +33,7 @@ export const PageLogin: FunctionComponent<PageLoginProps> = ({
         <Container>
           <Row>
             <Col md={8} className="offset-md-2">
-              <h2>
-                Sign in / up
-              </h2>
+              <h2>Sign in / up</h2>
               <Authentication infoText={infoText} />
             </Col>
           </Row>
@@ -46,9 +42,7 @@ export const PageLogin: FunctionComponent<PageLoginProps> = ({
     );
   }
 
-  return (
-    <Redirect to={redirectTo} />
-  );
+  return <Redirect to={redirectTo} />;
 };
 
 export default PageLogin;

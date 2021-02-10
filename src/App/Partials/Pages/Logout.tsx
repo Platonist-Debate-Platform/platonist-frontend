@@ -1,4 +1,4 @@
-import { parse } from 'querystring';
+import { parse } from 'qs';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -20,21 +20,23 @@ import {
 import { useAuthentication } from '../../Hooks';
 
 export const PageLogout: FunctionComponent = () => {
-  const authentication = useSelector<GlobalState, GlobalState[PublicRequestKeys.Authentication]>(
-    state => state[PublicRequestKeys.Authentication]
-  );
+  const authentication = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Authentication]
+  >((state) => state[PublicRequestKeys.Authentication]);
 
   const config = useConfig();
-  const dispatch = useDispatch<Dispatch<ReactReduxRequestActions | AlertActions>>();
+  const dispatch = useDispatch<
+    Dispatch<ReactReduxRequestActions | AlertActions>
+  >();
   const [isAuthenticated] = useAuthentication();
 
-  const {
-    location,
-  } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(
-    state => state[PublicRequestKeys.Router]
-  );
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state[PublicRequestKeys.Router]);
 
-  const query = parse(location.search.slice(1)) as {target?: string};
+  const query = parse(location.search.slice(1)) as { target?: string };
   const redirectTo = query.target || '/auth/login';
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
@@ -44,26 +46,33 @@ export const PageLogout: FunctionComponent = () => {
 
   useEffect(() => {
     if (
-        (isAuthenticated && authentication.status === RequestStatus.Initial) || 
-        (isAuthenticated && authentication.status === RequestStatus.Loaded && authentication.result?.status !== 'Unauthorized')
+      (isAuthenticated && authentication.status === RequestStatus.Initial) ||
+      (isAuthenticated &&
+        authentication.status === RequestStatus.Loaded &&
+        authentication.result?.status !== 'Unauthorized')
     ) {
-      dispatch(requestAction.load(PublicRequestKeys.Authentication, {
-        method: 'post',
-        url: url.href,
-        withCredentials: true,
-      }));
+      dispatch(
+        requestAction.load(PublicRequestKeys.Authentication, {
+          method: 'post',
+          url: url.href,
+          withCredentials: true,
+        }),
+      );
     }
 
     if (
-      !isAuthenticated && authentication.status === RequestStatus.Loaded && authentication.result?.status === 'Unauthorized'
+      !isAuthenticated &&
+      authentication.status === RequestStatus.Loaded &&
+      authentication.result?.status === 'Unauthorized'
     ) {
-      
-      dispatch(alertAction.add({
-        id: 'logout_success',
-        message: 'You have been logged out successful',
-        state: ToggleType.Show,
-        type: AlertTypes.Success,
-      }));
+      dispatch(
+        alertAction.add({
+          id: 'logout_success',
+          message: 'You have been logged out successful',
+          state: ToggleType.Show,
+          type: AlertTypes.Success,
+        }),
+      );
 
       dispatch(requestAction.clear(PublicRequestKeys.Authentication));
 
@@ -79,9 +88,14 @@ export const PageLogout: FunctionComponent = () => {
     if (shouldRedirect) {
       setShouldRedirect(false);
     }
-  }, [authentication.result?.status, authentication.status, dispatch, isAuthenticated, shouldRedirect, url.href]);
+  }, [
+    authentication.result?.status,
+    authentication.status,
+    dispatch,
+    isAuthenticated,
+    shouldRedirect,
+    url.href,
+  ]);
 
-  return shouldRedirect ? (
-    <Redirect to={redirectTo} />
-  ) : null;
-}
+  return shouldRedirect ? <Redirect to={redirectTo} /> : null;
+};

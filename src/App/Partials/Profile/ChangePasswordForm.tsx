@@ -1,22 +1,28 @@
-import { stringify } from 'querystring';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { stringify } from 'qs';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { GlobalState, PublicRequestKeys } from '../../../Library';
 import { ChangePassword } from '../Authentication';
 import { ModalWithRoute } from '../Modal';
 
 export const ProfileChangePasswordForm: FunctionComponent = () => {
-  const {
-    location,
-  } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(
-    state => state[PublicRequestKeys.Router]
-  );
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state[PublicRequestKeys.Router]);
 
   const [shouldReset, setShouldReset] = useState(false);
 
-  const queryParameter = '?' + stringify({
-    modal: 'change-password',
-  });
+  const queryParameter =
+    '?' +
+    stringify({
+      modal: 'change-password',
+    });
 
   const handleClose = useCallback(() => {
     if (!shouldReset) {
@@ -28,7 +34,7 @@ export const ProfileChangePasswordForm: FunctionComponent = () => {
     if (shouldReset) {
       setShouldReset(false);
     }
-  }, [shouldReset])
+  }, [shouldReset]);
 
   return (
     <ModalWithRoute
@@ -37,10 +43,7 @@ export const ProfileChangePasswordForm: FunctionComponent = () => {
       onClosed={handleClose}
       to={location.pathname + queryParameter}
     >
-      <ChangePassword 
-        redirectTarget={location.pathname} 
-        reset={shouldReset}
-      />
+      <ChangePassword redirectTarget={location.pathname} reset={shouldReset} />
     </ModalWithRoute>
   );
 };
