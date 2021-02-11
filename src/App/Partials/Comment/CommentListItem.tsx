@@ -7,40 +7,40 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import TimeAgo from 'react-timeago';
-import { Badge, Card, CardBody, CardSubtitle, Col, Row } from 'reactstrap';
+import { Badge, Card, CardBody, Col, Row } from 'reactstrap';
 
 import {
+  ApplicationKeys,
   Comment,
   Debate,
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
   RestMethodKeys,
-  User,
   RolePermissionTypes,
-  ApplicationKeys,
   RoleState,
+  User,
 } from '../../../Library';
 import { usePermission, useRoles, useUser } from '../../Hooks';
-
-import { CommentForm } from './CommentForm';
+import { CommentItem } from './CommentItem';
 import { CommentReplies } from './CommentReplies';
-import { DismissButton } from './DismissButton';
 
 export interface CommentListItemProps extends Comment {
-  canComment?: boolean;
-  canWrite?: boolean;
+  canCreate?: boolean;
+  canEdit?: boolean;
   debateId: Debate['id'];
   isReply?: boolean;
   onSubmit?: () => void;
 }
 
-export const CommentListItem: FunctionComponent<CommentListItemProps> = (
-  props,
-) => {
-  const { onSubmit } = props;
-
+export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
+  canCreate,
+  canEdit,
+  debateId,
+  isReply,
+  onSubmit,
+  ...props
+}) => {
   const author = props.user as User;
 
   const {
@@ -52,8 +52,6 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     GlobalState[PublicRequestKeys.Router]
   >((state) => state[PublicRequestKeys.Router]);
 
-  // console.log(props);
-
   const editQuery =
     '?' +
     stringify({
@@ -62,7 +60,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     });
 
   const replyQuery = unescape(
-    !props.isReply
+    !isReply
       ? '?' +
           stringify({
             edit: 'reply',
@@ -77,7 +75,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
   );
 
   const viewReplyQuery = unescape(
-    !props.isReply
+    !isReply
       ? '?' +
           stringify({
             view: 'replies',
@@ -91,9 +89,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
           }),
   );
 
-  const [canWrite, setCanWrite] = useState(
-    props.canWrite && user?.id === author?.id,
-  );
+  const [canWrite, setCanWrite] = useState(canEdit && user?.id === author?.id);
 
   const roleState = useRoles(PrivateRequestKeys.Role, user?.id) as RoleState;
 
@@ -107,9 +103,6 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  const createdAt = new Date(props.created_at).toUTCString();
-  const updatedAt = new Date(props.updated_at).toUTCString();
-
   const handleSuccess = useCallback(() => {
     if (!shouldRedirect) {
       setShouldRedirect(true);
@@ -120,10 +113,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
   }, [onSubmit, shouldRedirect]);
 
   useEffect(() => {
-    if (props.isReply) {
+    if (isReply) {
       return;
     }
-    if (canWrite !== (props.canWrite && user?.id === author?.id)) {
+    if (canWrite !== (canEdit && user?.id === author?.id)) {
       setCanWrite(!canWrite);
     }
 
@@ -134,11 +127,11 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
     author?.id,
     canWrite,
     location.search,
-    props.canWrite,
+    canEdit,
     editQuery,
     shouldRedirect,
     user?.id,
-    props.isReply,
+    isReply,
   ]);
 
   return (
@@ -147,60 +140,13 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
         <Col>
           <Card>
             <CardBody>
-              <CardSubtitle>
-                <small>
-                  {author && (
-                    <Link
-                      to={`/user/${user?.id === author?.id ? 'me' : author.id}`}
-                    >
-                      {user?.id === author?.id ? 'You' : <>{author.username}</>}
-                    </Link>
-                  )}{' '}
-                  <span>
-                    commented{' '}
-                    <i>
-                      <TimeAgo date={props.created_at} />
-                    </i>{' '}
-                    {createdAt !== updatedAt && (
-                      <>
-                        and edited this debate{' '}
-                        <i>
-                          <TimeAgo date={props.updated_at} />
-                        </i>
-                        .
-                      </>
-                    )}{' '}
-                  </span>
-                </small>
-              </CardSubtitle>
-              <div className={'card-text'}>
-                {location.search !== editQuery ? (
-                  <p>{props.comment}</p>
-                ) : (
-                  <>
-                    <DismissButton
-                      isBtn={false}
-                      pathname={location.pathname}
-                      title="Cancel"
-                    />
-                    <CommentForm
-                      commentId={props.id}
-                      debateId={props.debateId}
-                      defaultData={{ comment: props.comment }}
-                      dismissElement={
-                        <DismissButton
-                          className="btn-sm mr-3"
-                          isBtn={true}
-                          pathname={location.pathname}
-                          title="Cancel"
-                        />
-                      }
-                      onSuccess={handleSuccess}
-                      reset={false}
-                    />
-                  </>
-                )}
-              </div>
+              <CommentItem
+                debateId={debateId}
+                editQuery={editQuery}
+                handleSuccess={handleSuccess}
+                item={props}
+                user={user}
+              />
               <div className="comment-list-item-settings">
                 <Row>
                   <Col>
@@ -239,7 +185,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = (
                   </Col>
                 </Row>
               </div>
-              {!props.isReply && (
+              {!isReply && (
                 <>
                   {canComment && (
                     <CommentReplies

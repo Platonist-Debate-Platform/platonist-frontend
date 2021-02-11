@@ -124,7 +124,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
               comments.length &&
               comments.map((item, index) => (
                 <CommentListItem
-                  canWrite={canWrite}
+                  canEdit={canWrite}
                   debateId={debateId}
                   key={`comment_list_item_${item.id}_${index}`}
                   onSubmit={handleSubmit}

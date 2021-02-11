@@ -11,7 +11,6 @@ import {
   RolePermissionTypes,
   RoleState,
 } from '../../../Library';
-import { useRoles } from '../Requests';
 
 export interface HasPermissionOptions {
   methods: RestMethodKeys | RestMethodKeys[];

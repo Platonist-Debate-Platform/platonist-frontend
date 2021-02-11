@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { match as Match, RouteComponentProps } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { usePrevious, useUnmount } from 'react-use';
 import { Col, Container, Row } from 'reactstrap';
 
 import {
+  Article,
   clearDebateLink,
   Debate,
   DebateLinkDispatch,
@@ -17,6 +19,7 @@ import {
   WithConfigProps,
 } from '../../../../Library';
 import { RequestSendProps, useDebates } from '../../../Hooks';
+import { ArticleItem } from '../../Article';
 import { CommentList } from '../../Comment';
 
 export interface DebateDetailProps extends WithConfigProps {
@@ -96,11 +99,21 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
               <Container>
                 <div className="jumbotron-inner">
                   <Row>
-                    <Col col={12} className="text-center">
+                    <Col md={12} className="text-center">
                       <h1>
-                        {debate?.title} {debate.id}
+                        {debate.title} {debate.id}
                       </h1>
-                      <h3>{debate?.subTitle}</h3>
+                      <h3>{debate.subTitle}</h3>
+                    </Col>
+                    <Col md={6}>
+                      {debate.articleA && !isEmpty(debate.articleA) && (
+                        <ArticleItem {...(debate.articleA as Article)} />
+                      )}
+                    </Col>
+                    <Col md={6}>
+                      {debate.articleB && !isEmpty(debate.articleB) && (
+                        <ArticleItem {...(debate.articleB as Article)} />
+                      )}
                     </Col>
                   </Row>
                 </div>
