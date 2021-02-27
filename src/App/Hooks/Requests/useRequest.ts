@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+import { stringify } from 'qs';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,6 +7,7 @@ import {
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
+  QueryParameterBase,
   ReactReduxRequestDispatch,
   ReactReduxRequestState,
   requestAction,
@@ -17,14 +19,14 @@ export interface UseRequestBaseProps {
   id?: number;
   stateOnly?: boolean;
   key: PublicRequestKeys | PrivateRequestKeys;
-  search?: string;
+  query?: QueryParameterBase;
 }
 
 export interface RequestSendProps<Data extends Object> {
   data?: Partial<Data>;
-  method: 'GET' | 'POST' | 'PUT';
+  method?: 'GET' | 'POST' | 'PUT';
   pathname?: string;
-  search?: string;
+  query?: QueryParameterBase;
   headers?: { [key: string]: string };
 }
 
@@ -37,7 +39,7 @@ export const useRequest = <Model>({
   stateOnly,
   key,
   path,
-  search,
+  query,
 }: UseRequestProps) => {
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
@@ -49,20 +51,17 @@ export const useRequest = <Model>({
 
   const url = config.createApiUrl(config.api.config);
   url.pathname = `${path}${(id && '/' + id) || ''}`;
-  url.search = search || '';
+  url.search = (query && stringify(query)) || '';
 
-  const send = ({
-    data,
-    method,
-    pathname,
-    search,
-  }: RequestSendProps<Model>) => {
+  const send = ({ data, method, pathname, query }: RequestSendProps<Model>) => {
     let sendUrl: URL | undefined;
 
     if (pathname) {
       sendUrl = config.createApiUrl(config.api.config);
       sendUrl.pathname = pathname;
-      sendUrl.search = search || '';
+      sendUrl.search = (query && stringify(query)) || '';
+    } else {
+      url.search = (query && stringify(query)) || '';
     }
 
     dispatch(

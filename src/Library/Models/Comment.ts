@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 import { User } from '../Models';
-import { ReactReduxRequestState } from '../ReactReduxRequest';
+import { ReactReduxRequestState, RequestWithPager } from '../ReactReduxRequest';
 import { Debate } from './Debate';
 
 export interface CommentMeta {
@@ -16,7 +16,7 @@ export interface Comment {
   debate: Debate['id'] | Debate;
   id: string;
   meta?: CommentMeta;
-  published_at: Date | string;
+  published_at: number;
   replies: (Comment | null)[] | null;
   replyCount: number;
   timestamp: Date | string;
@@ -28,6 +28,6 @@ export interface Comment {
 
 export type CommentState = ReactReduxRequestState<Comment, AxiosRequestConfig>;
 export type CommentsState = ReactReduxRequestState<
-  Comment[],
+  RequestWithPager<Comment[]>,
   AxiosRequestConfig
 >;

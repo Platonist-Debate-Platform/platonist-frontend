@@ -8,6 +8,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { Badge, Card, CardBody, Col, Row } from 'reactstrap';
+import { match as Match } from 'react-router-dom';
 
 import {
   ApplicationKeys,
@@ -29,16 +30,22 @@ export interface CommentListItemProps extends Comment {
   canCreate?: boolean;
   canEdit?: boolean;
   debateId: Debate['id'];
+  isDetail: boolean;
   isReply?: boolean;
+  match?: Match<{ commentId?: string }>;
   onSubmit?: () => void;
+  path: string;
 }
 
 export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   canCreate,
   canEdit,
   debateId,
+  isDetail,
   isReply,
+  match,
   onSubmit,
+  path,
   ...props
 }) => {
   const author = props.user as User;
@@ -60,33 +67,19 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
     });
 
   const replyQuery = unescape(
-    !isReply
-      ? '?' +
-          stringify({
-            edit: 'reply',
-            id: props.id,
-          })
-      : '?' +
-          stringify({
-            view: 'replies',
-            id: (props.parent as Comment | undefined)?.id,
-            child: { edit: 'reply', id: props.id },
-          }),
+    '?' +
+      stringify({
+        edit: 'reply',
+        id: props.id,
+      }),
   );
 
   const viewReplyQuery = unescape(
-    !isReply
-      ? '?' +
-          stringify({
-            view: 'replies',
-            id: props.id,
-          })
-      : '?' +
-          stringify({
-            view: 'replies',
-            id: (props.parent as Comment | undefined)?.id,
-            child: { id: props.id },
-          }),
+    '?' +
+      stringify({
+        view: 'replies',
+        id: props.id,
+      }),
   );
 
   const [canWrite, setCanWrite] = useState(canEdit && user?.id === author?.id);
@@ -152,9 +145,11 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                   <Col>
                     <Link
                       to={
-                        (location.pathname + location.search).indexOf(
-                          location.pathname + viewReplyQuery,
-                        ) > -1
+                        isDetail
+                          ? `${path}/${props.id}`
+                          : (location.pathname + location.search).indexOf(
+                              location.pathname + viewReplyQuery,
+                            ) > -1
                           ? location.pathname
                           : location.pathname + viewReplyQuery
                       }
@@ -168,7 +163,11 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                   <Col className="text-right">
                     {canComment && (
                       <Link
-                        to={location.pathname + replyQuery}
+                        to={
+                          (isDetail
+                            ? `${path}/${props.id}`
+                            : location.pathname) + replyQuery
+                        }
                         className="p-0 mr-3 btn btn-none btn-sm"
                       >
                         <i className="fa fa-reply" /> Reply
@@ -191,8 +190,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                     <CommentReplies
                       canComment={canComment}
                       from={location.pathname}
+                      isDetail={true}
                       isForForm={true}
                       parent={props.id}
+                      path={path}
                       to={location.pathname + replyQuery}
                     />
                   )}
@@ -200,7 +201,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                   <CommentReplies
                     canComment={canComment}
                     from={location.pathname}
+                    isDetail={true}
+                    match={match}
                     parent={props.id}
+                    path={path}
                     to={location.pathname + viewReplyQuery}
                   />
                 </>

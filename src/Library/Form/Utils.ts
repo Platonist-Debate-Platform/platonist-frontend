@@ -23,7 +23,9 @@ export const createInitialFormData = <Data extends Object>(
   inputConfig.forEach((config) => {
     const key = config.key;
     const value =
-      config.type === FormInputTypes.Number && data[key]
+      (config.type === FormInputTypes.Number ||
+        config.type === FormInputTypes.Checkbox) &&
+      data[key]
         ? (data[key] as any).toString()
         : data[key];
     const comparison = config?.comparison as unknown;
@@ -82,7 +84,10 @@ export const getSubmitData = <Data extends Object>(
 
   formDataAsArray.forEach((data) =>
     Object.assign(newData, {
-      [data.name]: data.value || data.defaultValue || '',
+      [data.name]:
+        typeof data === 'boolean'
+          ? (data as any).value
+          : data.value || data.defaultValue || '',
     }),
   );
 
@@ -226,7 +231,7 @@ export const createDefaultData = <Data extends Object = {}>(
         break;
       case FormInputTypes.Checkbox:
         Object.assign(newData, {
-          [d.key]: false,
+          [d.key]: 'false',
         });
         break;
       case FormInputTypes.List:

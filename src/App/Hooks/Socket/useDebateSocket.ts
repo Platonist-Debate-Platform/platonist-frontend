@@ -1,3 +1,4 @@
+import { clear } from 'console';
 import { useEffect, useState } from 'react';
 import { Debate, randomHash } from '../../../Library';
 import { SocketKeys, SocketMethod } from './Keys';
@@ -10,9 +11,17 @@ export interface UseDebateSocketMeta {
   updateTime: number;
 }
 
+const setMetaDefaults = () => ({
+  createTime: Date.now(),
+  method: undefined,
+  hash: randomHash(32),
+  updateTime: Date.now(),
+});
+
 export const useDebateSocket = (): [
   Debate | undefined,
   UseDebateSocketMeta,
+  () => void,
 ] => {
   const [create, createTime] = useSocket<Debate>({
     key: SocketKeys.Debate,
@@ -30,12 +39,12 @@ export const useDebateSocket = (): [
   });
 
   const [data, setData] = useState(create || update);
-  const [meta, setMeta] = useState<UseDebateSocketMeta>({
-    createTime: Date.now(),
-    method: undefined,
-    hash: randomHash(32),
-    updateTime: Date.now(),
-  });
+  const [meta, setMeta] = useState<UseDebateSocketMeta>(setMetaDefaults());
+
+  const clear = () => {
+    setData(undefined);
+    setMeta(setMetaDefaults());
+  };
 
   useEffect(() => {
     const newMeta: UseDebateSocketMeta = {
@@ -68,5 +77,5 @@ export const useDebateSocket = (): [
     updateTime,
   ]);
 
-  return [data, meta];
+  return [data, meta, clear];
 };

@@ -1,6 +1,6 @@
-import { stringify } from 'qs';
 import React, { FunctionComponent, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { match as Match } from 'react-router-dom';
 import { usePrevious, useUnmount } from 'react-use';
 import { Col, Container, Row } from 'reactstrap';
 
@@ -11,6 +11,7 @@ import {
   GlobalState,
   PrivateRequestKeys,
   PublicRequestKeys,
+  QueryParameterBase,
   ReactReduxRequestDispatch,
   RequestStatus,
   RestMethodKeys,
@@ -30,10 +31,14 @@ import { CommentListItem } from './CommentListItem';
 
 export interface CommentListProps {
   debateId: Debate['id'];
+  match: Match<{ commentId?: string }>;
+  path: string;
 }
 
 export const CommentList: FunctionComponent<CommentListProps> = ({
   debateId,
+  match,
+  path,
 }) => {
   const {
     state: { result: debate, status: debateStatus },
@@ -68,10 +73,21 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
     state: role,
   });
 
-  const query = {
-    'debate.id': debateId,
+  const query: QueryParameterBase = {
+    id: match?.params?.commentId,
     _sort: 'created_at:DESC',
+    // _limit: 3,
+    // _start: 0,
   };
+
+  Object.assign(
+    query,
+    !query.id
+      ? {
+          'debate.id': debateId,
+        }
+      : {},
+  );
 
   const {
     clear,
@@ -80,7 +96,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
     reload,
   } = useComments<Comment[]>({
     key: PublicRequestKeys.Comments,
-    search: `?${stringify(query)}`,
+    query,
   });
 
   const handleSubmit = useCallback(() => {
@@ -126,8 +142,11 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
                 <CommentListItem
                   canEdit={canWrite}
                   debateId={debateId}
+                  isDetail={false}
                   key={`comment_list_item_${item.id}_${index}`}
+                  match={match}
                   onSubmit={handleSubmit}
+                  path={path}
                   {...item}
                 />
               ))) || <>No Comments yet!</>}

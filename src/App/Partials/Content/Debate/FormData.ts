@@ -93,6 +93,32 @@ export const debateArticleGroupData = createDebateArticleGroupData();
 export const debateFormData: FormDataConfig<Partial<DebateFormData>>[] = [
   {
     editable: true,
+    key: 'published',
+    required: false,
+    title: 'Published',
+    type: FormInputTypes.Checkbox,
+  },
+  {
+    editable: true,
+    key: 'archived',
+    required: false,
+    title: 'Archive debate',
+    type: FormInputTypes.Checkbox,
+  },
+  {
+    editable: true,
+    key: 'archiveDate',
+    datePickerSettings: {
+      showTimeSelect: true,
+      dateFormat: 'dd/MM/yyyy-HH:mm',
+      timeFormat: 'HH:mm',
+    },
+    required: false,
+    title: 'Archive Date',
+    type: FormInputTypes.Date,
+  },
+  {
+    editable: true,
     key: 'title',
     required: true,
     title: 'Debate title',

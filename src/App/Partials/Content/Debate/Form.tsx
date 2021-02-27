@@ -27,6 +27,8 @@ import {
   ToggleType,
 } from '../../../../Library';
 import {
+  Checkbox,
+  DateInput,
   Group,
   Input,
   SubmitButton,
@@ -129,6 +131,9 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         }
         delete submitData.articleBUrl;
       }
+
+      submitData.published = Boolean(submitData.published);
+      console.log(submitData);
 
       if (status === RequestStatus.Initial && isValid && submitData) {
         send({
@@ -298,35 +303,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         setResetForm(true);
       }
     }
-
-    // console.log('dataIsEqual', dataIsEqual);
-    // console.log(debateDefault);
-
-    // console.log(
-    //   !dataIsEqual &&
-    //     method === RestMethodKeys.Create &&
-    //     !isEqual(
-    //       defaultData,
-    //       createDefaultData<Partial<DebateFormData>>(debateFormData),
-    //     ),
-    // );
-
-    // if (
-    //   !dataIsEqual &&
-    //   !debateDefault &&
-    //   method === RestMethodKeys.Create &&
-    //   !isEqual(
-    //     defaultData,
-    //     createDefaultData<Partial<DebateFormData>>(debateFormData),
-    //   )
-    // ) {
-    //   setDefaultData(
-    //     createDefaultData<Partial<DebateFormData>>(debateFormData),
-    //   );
-    //   if (!resetForm) {
-    //     setResetForm(true);
-    //   }
-    // }
   }, [
     clear,
     debate,
@@ -351,6 +327,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
     >
       <ModalWithRoute
         {...props}
+        backdrop="static"
         footer={
           <SubmitButton
             color="success"
@@ -367,6 +344,15 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
         <Form>
           <Row>
             <Col sm={7}>
+              <Row>
+                <Col>
+                  <Checkbox inputKey="published" />
+                </Col>
+                <Col>
+                  <Checkbox inputKey="archived" />
+                </Col>
+              </Row>
+              <DateInput inputKey="archiveDate" />
               <Input inputKey="title" />
               <Input inputKey="subTitle" />
               <Text inputKey="shortDescription" />

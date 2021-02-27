@@ -1,5 +1,7 @@
 import React, { FunctionComponent, useCallback } from 'react';
+import { match as Match } from 'react-router-dom';
 import { useUnmount } from 'react-use';
+
 import {
   Comment,
   Debate,
@@ -14,15 +16,21 @@ import { CommentListItem } from './CommentListItem';
 export interface CommentRepliesProps {
   canComment?: boolean;
   from: string;
+  isDetail: boolean;
   isForForm?: boolean;
+  match?: Match<{ commentId?: string }>;
   parent: Comment['id'];
+  path: string;
   to: string;
 }
 
 export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
   canComment,
+  isDetail,
   isForForm,
+  match,
   parent,
+  path,
   ...props
 }) => {
   const {
@@ -46,7 +54,7 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
       send({
         method: 'GET',
         pathname: 'comments',
-        search: `parent.id=${parent}`,
+        query: { 'parent.id': parent },
       });
     }
   }, [parent, send, status]);
@@ -77,8 +85,11 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
               <CommentListItem
                 canCreate={canComment ? true : false}
                 debateId={debate.id}
+                isDetail={isDetail}
                 isReply={item.parent ? true : false}
                 key={`comment_list_item_reply_${parent}_${item.id}_${index}`}
+                match={match}
+                path={path}
                 {...item}
               />
             ))) || <>No Comments yet!</>}

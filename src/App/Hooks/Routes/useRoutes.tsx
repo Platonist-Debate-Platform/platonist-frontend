@@ -39,7 +39,7 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
           switch (item.__component) {
             case ContentKeys.DebateList:
               routes.push({
-                exact: true,
+                exact: false,
                 path: `${path}/:title`,
                 render: (props: RouteComponentProps) => (
                   <ContentResolverItem

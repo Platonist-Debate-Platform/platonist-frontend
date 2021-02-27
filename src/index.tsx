@@ -8,7 +8,6 @@ import 'core-js/es/object/set-prototype-of';
 import 'core-js/es/object/values';
 import 'core-js/es/set';
 import 'raf/polyfill';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { ConnectedRouter } from 'connected-react-router';
 import React from 'react';

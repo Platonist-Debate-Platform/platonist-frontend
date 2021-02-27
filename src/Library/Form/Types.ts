@@ -1,30 +1,41 @@
+import { ReactDatePickerProps } from 'react-datepicker';
 import validator from 'validator';
 
 import { AutocompleteKeys, FormInputTypes, FormValidationTypes } from './Keys';
 import { ValidateBaseProps } from './Validate';
 
 export interface FormEvent<Data> extends React.FormEvent<HTMLFormElement> {
-  data: FormData<Data>,
+  data: FormData<Data>;
   submitData: SubmitData<Data>;
 }
 
-export interface FormClickEvent<Data> extends React.MouseEvent<HTMLButtonElement, MouseEvent> {
-  data: FormData<Data>,
+export interface FormClickEvent<Data>
+  extends React.MouseEvent<HTMLButtonElement, MouseEvent> {
+  data: FormData<Data>;
   submitData: SubmitData<Data>;
 }
 
-export type SubmitFn<Data> = (event: FormClickEvent<Data> | FormEvent<Data>) => void;
+export type SubmitFn<Data> = (
+  event: FormClickEvent<Data> | FormEvent<Data>,
+) => void;
 
-export type SetFormValue<Data> = (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void;
+export type SetFormValue<Data> = (
+  key: keyof Data,
+  value: FormData<Data>[keyof FormData<Data>],
+) => void;
 
 export interface SubmitData<Data> {
-  data: Data,
+  data: Data;
   isValid: boolean;
-  pristine: boolean,
+  pristine: boolean;
   touched: boolean;
 }
 
-export type SetFormValueFn<Data> = (key: keyof Data | string, value: FormData<Data>[keyof FormData<Data>], comparison?: string | string[]) => void;
+export type SetFormValueFn<Data> = (
+  key: keyof Data | string,
+  value: FormData<Data>[keyof FormData<Data>],
+  comparison?: string | string[],
+) => void;
 
 export interface FormContextValue<Data> {
   data: FormData<Data>;
@@ -36,22 +47,25 @@ export interface FormContextValue<Data> {
   // validateFormValue: (key: keyof Data, value: FormData<Data>[keyof FormData<Data>]) => void;
 }
 
-export type ValidateOptions = validator.IsLengthOptions | validator.IsEmailOptions | validator.IsNumericOptions;
+export type ValidateOptions =
+  | validator.IsLengthOptions
+  | validator.IsEmailOptions
+  | validator.IsNumericOptions;
 
 export interface FormDataConfig<Data> {
   autocomplete?: AutocompleteKeys;
-  compareKey?: (keyof Data);
+  compareKey?: keyof Data;
   comparison?: Data[keyof Data];
+  datePickerSettings?: Partial<ReactDatePickerProps>;
   editable: boolean;
-  format?: string;
   group?: FormDataConfig<any>[];
-  key: (keyof Data);
+  key: keyof Data;
   placeholder?: string;
   preValidate?: boolean;
   required: boolean;
-  selectValues?: string[],
+  selectValues?: string[];
   title: string;
-  type: FormInputTypes,
+  type: FormInputTypes;
   validate?: FormValidationTypes | FormValidationTypes[];
   validateOptions?: ValidateOptions;
 }
@@ -63,10 +77,10 @@ export interface FormDataItem<Data> {
   error: string | string[] | undefined;
   isValid: boolean;
   name: keyof Data;
-  pristine: boolean,
+  pristine: boolean;
   shouldRender: boolean;
   touched: boolean;
-  value: Data[keyof Data],
+  value: Data[keyof Data];
 }
 
 export type FormData<Data> = { [key in keyof Data]: FormDataItem<Data> };
@@ -78,7 +92,9 @@ export interface FormOptions {
 
 export type KeyOfFormData<Data> = keyof FormData<Data>;
 
-export type UseFormValue = <Data extends Object>(key: KeyOfFormData<Data>) => [FormData<Data>[KeyOfFormData<Data>] | undefined, SetFormValue<Data>];
+export type UseFormValue = <Data extends Object>(
+  key: KeyOfFormData<Data>,
+) => [FormData<Data>[KeyOfFormData<Data>] | undefined, SetFormValue<Data>];
 
 export interface CreateInitialFormDataProps<Data> {
   data: Data;
@@ -87,7 +103,9 @@ export interface CreateInitialFormDataProps<Data> {
   preValidate: boolean;
 }
 
-export type CreateInitialFormData<Data extends Object = {}> = (props: CreateInitialFormDataProps<Data>) => FormData<Data>;
+export type CreateInitialFormData<Data extends Object = {}> = (
+  props: CreateInitialFormDataProps<Data>,
+) => FormData<Data>;
 
 export type ValidateValue = string | string[] | boolean;
 
@@ -96,12 +114,11 @@ export type HandleValidationProps = {
   options?: ValidateBaseProps['options'];
   types: FormValidationTypes | FormValidationTypes[] | undefined;
   value: string;
-}
+};
 
 export type HandleValidationFn = (
   props: HandleValidationProps,
 ) => string | string[] | undefined;
-
 
 export type PrepareValidationValuesProps = {
   comparison?: string | string[];
@@ -109,8 +126,8 @@ export type PrepareValidationValuesProps = {
   group?: FormDataConfig<any>[];
   types: FormValidationTypes | FormValidationTypes[] | undefined;
   value: ValidateValue;
-}
+};
 
 export type PrepareValidationValuesFn = (
   props: PrepareValidationValuesProps,
-) => string | string[] | undefined; 
+) => string | string[] | undefined;

@@ -12,7 +12,7 @@ import {
   useConfig,
   User,
 } from '../../../Library';
-import { UseRequestBaseProps, useRequest } from './useRequest';
+import { useRequest, UseRequestBaseProps } from './useRequest';
 
 /**
  * Deprecated

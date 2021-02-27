@@ -8,32 +8,31 @@ import { InputProps } from './Input';
 
 export interface CheckboxProps<Data> extends FormContextValue<Data> {}
 
-type CheckboxValues<Data extends Object = {}> = {[key in keyof Data]: boolean};
+type CheckboxValues<Data extends Object = {}> = {
+  [key in keyof Data]: 'true' | 'false';
+};
 
-export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & InputProps<CheckboxValues>> = <Data extends CheckboxValues<Data>>(
-    props: CheckboxProps<Data> & InputProps<Data>
+export const CheckboxBase: FunctionComponent<
+  CheckboxProps<CheckboxValues> & InputProps<CheckboxValues>
+> = <Data extends CheckboxValues<Data>>(
+  props: CheckboxProps<Data> & InputProps<Data>,
 ) => {
-  const {
-    data,
-    inputKey,
-    setFormValue,
-  } = props;
+  const { data, inputKey, setFormValue } = props;
 
   const formValue = data[inputKey as keyof Data];
   const inputValue = formValue.value;
-  
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.checked;
-    
+
     if (setFormValue) {
-      
       const newFormValue = {
         ...formValue,
-        value,
+        value: value.toString(),
       };
       setFormValue(inputKey, newFormValue);
     }
-  }
+  };
 
   const handleFocus = () => {
     if (setFormValue) {
@@ -49,7 +48,7 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
 
   return (
     <FormGroup className="form-group" check={true}>
-      <Label 
+      <Label
         className={classNames({
           'is-invalid': !isValid,
         })}
@@ -59,8 +58,12 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
           className={classNames({
             'is-invalid': !isValid,
           })}
-          disabled={props.disabled || (formValue && formValue.disabled) ? true : false}
-          checked={inputValue ? true : false}
+          disabled={
+            props.disabled || (formValue && formValue.disabled) ? true : false
+          }
+          checked={
+            (inputValue === 'true' && true) || (inputValue === 'false' && false)
+          }
           value={inputValue ? 'true' : 'false'}
           onChange={handleChange}
           onFocus={handleFocus}
@@ -69,10 +72,8 @@ export const CheckboxBase: FunctionComponent<CheckboxProps<CheckboxValues> & Inp
         />
         {formValue?.config?.title}
         {!isValid && (
-        <span className="invalid-feedback">
-          {formValue.error}
-        </span>
-      )}
+          <span className="invalid-feedback">{formValue.error}</span>
+        )}
       </Label>
     </FormGroup>
   );

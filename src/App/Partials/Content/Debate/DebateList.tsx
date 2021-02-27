@@ -1,6 +1,6 @@
 import './DebateList.scss';
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { usePrevious, useUnmount } from 'react-use';
 
@@ -9,9 +9,12 @@ import {
   DebateList,
   GlobalState,
   PublicRequestKeys,
+  QueryParameterBase,
   ReactReduxRequestDispatch,
   RequestStatus,
+  RequestWithPager,
   RestMethodKeys,
+  ScrollPager,
   withConfig,
   WithConfigProps,
 } from '../../../../Library';
@@ -19,6 +22,7 @@ import { useDebates, useDebateSocket } from '../../../Hooks';
 import { DebateListItem } from './DebateListItem';
 import { DebateFormEdit } from './FormEdit';
 import { DebateSettings } from './Settings';
+import { isEqual } from 'lodash';
 
 type DebateListType = DebateList & WithConfigProps;
 
@@ -35,26 +39,47 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   path,
   router,
 }) => {
+  const query: QueryParameterBase = {
+    _sort: 'created_at:DESC',
+    _start: 0,
+    _limit: 2,
+  };
+
   const {
     clear,
-    state: { result: debates, status },
+    send,
+    state: { result, status },
     reload,
-  } = useDebates<Debate[]>({
+  } = useDebates<RequestWithPager<Debate[]>>({
     key: PublicRequestKeys.Debates,
-    search: '_sort=created_at:DESC',
+    query,
   });
 
-  const [debate, meta] = useDebateSocket();
+  const debates = result && result.value;
+
+  const [debate, meta, clearSocket] = useDebateSocket();
+
   const prevDebate = usePrevious(debate);
   const prevHash = usePrevious(meta.hash);
 
   const { location } = router;
 
+  const handleReach = useCallback(
+    (q: QueryParameterBase) => {
+      const nextStart = q._start || 0;
+      if ((result?.next?.start || 0) <= nextStart) {
+        console.log('go');
+      }
+    },
+    [result?.next?.start],
+  );
+
   useEffect(() => {
-    const shouldReload = meta.hash !== prevHash && debate ? true : false;
+    const shouldReload = meta.hash !== prevHash && !isEqual(debate, prevDebate);
 
     if (shouldReload && status === RequestStatus.Loaded) {
       reload();
+      clearSocket();
     }
   }, [
     config,
@@ -70,6 +95,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
     meta,
     clear,
     path,
+    clearSocket,
   ]);
 
   useUnmount(() => {
@@ -77,6 +103,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
       clear();
     }
   });
+
   return (
     <>
       <DebateSettings method={RestMethodKeys.Create} />
@@ -85,7 +112,12 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
         <>
           <section className="section section-debate section-debate-list">
             {debates && (
-              <>
+              <ScrollPager
+                useWindow={true}
+                query={query}
+                count={result?.count || 0}
+                onReach={handleReach}
+              >
                 {debates &&
                   debates.length &&
                   debates.map(
@@ -99,7 +131,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
                       )) ||
                       null,
                   )}
-              </>
+              </ScrollPager>
             )}
           </section>
         </>

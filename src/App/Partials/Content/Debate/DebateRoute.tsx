@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { GlobalState, PublicRequestKeys, DebateList as DebateListProps } from '../../../../Library';
+import {
+  GlobalState,
+  PublicRequestKeys,
+  DebateList as DebateListProps,
+} from '../../../../Library';
 import DebateDetail from './DebateDetail';
 import DebateListComponent from './DebateList';
 
 export interface DebateRouteProps extends DebateListProps {
-  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router],
+  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
   dispatch: unknown;
   isAdmin: boolean;
   path: string;
@@ -15,40 +19,30 @@ export interface DebateRouteProps extends DebateListProps {
 }
 
 export const DebateRouteBase: React.FC<DebateRouteProps> = (props) => {
-  const {
-    dispatch,
-    isAdmin,
-    path,
-    routeProps,
-    router,
-    ...rest
-  } = props;
-  
+  const { dispatch, isAdmin, path, routeProps, router, ...rest } = props;
   const [location, setLocation] = useState(router.location);
-    
+
   useEffect(() => {
     if (router.location.key !== location.key) {
       setLocation(router.location);
     }
-  }, [
-    location,
-    router.location,
-    setLocation,
-  ])
-  
+  }, [location, router.location, setLocation]);
+
   if (path === location.pathname) {
-    return <DebateListComponent {...rest} path={path} />
+    return <DebateListComponent {...rest} path={path} />;
   }
 
   if (location.pathname.startsWith(path) && routeProps) {
-    return <DebateDetail 
-      isAdmin={isAdmin}
-      path={path}
-      routeProps={routeProps} 
-      debateList={rest} 
-    />
+    return (
+      <DebateDetail
+        isAdmin={isAdmin}
+        path={path}
+        routeProps={routeProps}
+        debateList={rest}
+      />
+    );
   }
-    
+
   return null;
 };
 

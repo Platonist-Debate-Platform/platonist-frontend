@@ -4,12 +4,14 @@
 @import '../../../node_modules/slick-carousel/slick/slick.scss';
 @import '../../../node_modules/slick-carousel/slick/slick-theme.scss';
 
+@import '../../../node_modules/react-datepicker/src/stylesheets/datepicker.scss';
+
 @import './Theme/index.scss';
 
 // .form-group {
-//   .was-validated :invalid ~ .invalid-feedback, 
-//   .was-validated :invalid ~ .invalid-tooltip, 
-//   .is-invalid ~ .invalid-feedback, 
+//   .was-validated :invalid ~ .invalid-feedback,
+//   .was-validated :invalid ~ .invalid-tooltip,
+//   .is-invalid ~ .invalid-feedback,
 //   .is-invalid ~ .invalid-tooltip {
 //     display: inline-block;
 //     width: auto;

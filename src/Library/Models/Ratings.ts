@@ -1,6 +1,4 @@
-import {
-  Article
-} from './Article';
+import { Article } from './Article';
 
 export interface Ratings {
   id: string;
@@ -8,8 +6,8 @@ export interface Ratings {
   argumentation: number;
   quality: number;
   user: string;
-  articles: (Article | null)[] | null
-  published_at: string;
+  articles: (Article | null)[] | null;
+  published_at: number;
   created_by: Date | string;
   updated_by: Date | string;
 }

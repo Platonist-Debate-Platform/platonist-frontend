@@ -12,6 +12,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { GlobalState, PublicRequestKeys } from '../../../Library';
 
 export interface ModalWithRouteProps {
+  backdrop?: boolean | 'static';
   children: ReactNode;
   close?: boolean;
   footer?: ReactNode;
@@ -24,6 +25,7 @@ export interface ModalWithRouteProps {
 }
 
 export const ModalWithRoute: FunctionComponent<ModalWithRouteProps> = ({
+  backdrop,
   children,
   close,
   footer,
@@ -73,6 +75,7 @@ export const ModalWithRoute: FunctionComponent<ModalWithRouteProps> = ({
   return (
     <>
       <Modal
+        backdrop={backdrop}
         isOpen={modal}
         onClosed={onClosed}
         onOpened={onOpened}

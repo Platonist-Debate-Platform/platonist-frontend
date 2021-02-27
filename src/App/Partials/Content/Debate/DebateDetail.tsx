@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { match as Match, RouteComponentProps } from 'react-router-dom';
+import { match as Match, Route, RouteComponentProps } from 'react-router-dom';
 import { usePrevious, useUnmount } from 'react-use';
 import { Col, Container, Row } from 'reactstrap';
 
@@ -35,6 +35,7 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
   config,
   debateLink,
   dispatch,
+  path,
   routeProps,
 }) => {
   const {
@@ -90,6 +91,8 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
     }
   });
 
+  // console.log(path);
+
   return (
     <>
       {debate && (
@@ -121,7 +124,32 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
             </div>
           </div>
           <section className="section section-debate section-debate-detail">
-            <CommentList debateId={debate.id} />
+            <Route
+              path={`${path}/${debate.title}/:commentId`}
+              exact={true}
+              render={(props: RouteComponentProps<{ commentId?: string }>) => {
+                return (
+                  <CommentList
+                    debateId={debate.id}
+                    match={props.match}
+                    path={`${path}/${debate.title}`}
+                  />
+                );
+              }}
+            />
+            <Route
+              path={`${path}/${debate.title}`}
+              exact={true}
+              render={(props: RouteComponentProps<{ commentId?: string }>) => {
+                return (
+                  <CommentList
+                    debateId={debate.id}
+                    match={props.match}
+                    path={`${path}/${debate.title}`}
+                  />
+                );
+              }}
+            />
           </section>
         </>
       )}
