@@ -1,4 +1,3 @@
-import { clear } from 'console';
 import { useEffect, useState } from 'react';
 import { Debate, randomHash } from '../../../Library';
 import { SocketKeys, SocketMethod } from './Keys';
