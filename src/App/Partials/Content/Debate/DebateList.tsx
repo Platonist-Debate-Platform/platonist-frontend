@@ -1,6 +1,7 @@
 import './DebateList.scss';
 
-import React, { useCallback, useEffect } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { usePrevious, useUnmount } from 'react-use';
 
@@ -22,7 +23,6 @@ import { useDebates, useDebateSocket } from '../../../Hooks';
 import { DebateListItem } from './DebateListItem';
 import { DebateFormEdit } from './FormEdit';
 import { DebateSettings } from './Settings';
-import { isEqual } from 'lodash';
 
 type DebateListType = DebateList & WithConfigProps;
 
@@ -39,11 +39,11 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   path,
   router,
 }) => {
-  const query: QueryParameterBase = {
+  const [query, setQuery] = useState<QueryParameterBase>({
     _sort: 'created_at:DESC',
     _start: 0,
     _limit: 2,
-  };
+  });
 
   const {
     clear,
@@ -67,11 +67,19 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const handleReach = useCallback(
     (q: QueryParameterBase) => {
       const nextStart = q._start || 0;
-      if ((result?.next?.start || 0) <= nextStart) {
-        console.log('go');
+      const count = result?.count || 0;
+      const limit = (q._start || 0) + (q._limit || 0);
+
+      if ((result?.next?._start || 0) <= nextStart && count <= limit && status === RequestStatus.Loaded) {
+        const newQuery = {
+          ...query,
+          ...q
+        };
+        send({ query: newQuery });
+        setQuery(newQuery);
       }
     },
-    [result?.next?.start],
+    [query, result?.count, result?.next?._start, send, status],
   );
 
   useEffect(() => {
@@ -81,22 +89,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
       reload();
       clearSocket();
     }
-  }, [
-    config,
-    debates,
-    status,
-    page,
-    debate,
-    reload,
-    prevDebate,
-    location.pathname,
-    prevHash,
-    meta.hash,
-    meta,
-    clear,
-    path,
-    clearSocket,
-  ]);
+  }, [config, debates, status, page, debate, reload, prevDebate, location.pathname, prevHash, meta.hash, meta, clear, path, clearSocket, query]);
 
   useUnmount(() => {
     if (status === RequestStatus.Loaded) {
@@ -108,34 +101,32 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
     <>
       <DebateSettings method={RestMethodKeys.Create} />
       <DebateFormEdit debates={debates} from={location.pathname} />
-      {status === RequestStatus.Loaded && (
-        <>
-          <section className="section section-debate section-debate-list">
-            {debates && (
-              <ScrollPager
-                useWindow={true}
-                query={query}
-                count={result?.count || 0}
-                onReach={handleReach}
-              >
-                {debates &&
-                  debates.length &&
-                  debates.map(
-                    (debate, index) =>
-                      (page.result && debate && (
-                        <DebateListItem
-                          key={`debate_list_item_${debate.id}_${index}`}
-                          pageTitle={page.result.title}
-                          {...debate}
-                        />
-                      )) ||
-                      null,
-                  )}
-              </ScrollPager>
-            )}
-          </section>
-        </>
-      )}
+      <section className="section section-debate section-debate-list">
+        {debates && (
+          <ScrollPager
+            useWindow={true}
+            query={{
+              ...query,
+              ...result?.current
+            }}
+            count={result?.count || 0}
+            onReach={handleReach}
+          >
+            {debates &&
+              debates.length &&
+              debates.map(
+                (debate, index) =>
+                  (page.result && debate && (
+                    <DebateListItem
+                      key={`debate_list_item_${debate.id}_${index}`}
+                      pageTitle={page.result.title}
+                      {...debate}
+                    />
+                  )) ||
+                  null,
+              )}
+          </ScrollPager>)}
+      </section>
     </>
   );
 };

@@ -59,7 +59,7 @@ export interface ReactReduxRequestError {
 export interface ReactReduxRequestState<
   Payload extends Object,
   Meta extends Object
-> {
+  > {
   error?: ReactReduxRequestError;
   hash: string;
   id: KeysOfRequestIDs;
@@ -69,8 +69,8 @@ export interface ReactReduxRequestState<
 }
 
 export interface RequestWithPagerProps {
-  limit: number;
-  start: number;
+  _limit: number;
+  _start: number;
 }
 
 export interface RequestWithPager<Model> {

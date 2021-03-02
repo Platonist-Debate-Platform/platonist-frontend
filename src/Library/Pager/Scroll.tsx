@@ -50,12 +50,11 @@ export const ScrollPager: FunctionComponent<
 
       const _start = (query._start || 0) + (query._limit || 0);
 
-      if (query._start !== _start && count >= _start) {
+      if (query._start !== _start && count > _start) {
         const newQuery = {
           ...query,
           _start: (query._start || 0) + (query._limit || 0),
         };
-
         setQuery(newQuery);
         onReach(newQuery);
       }
@@ -67,37 +66,6 @@ export const ScrollPager: FunctionComponent<
     ) {
       setAchievedBottom(false);
     }
-
-    // setAchievedBottom((prevAchievedBottom) => {
-    //   console.log('1', prevAchievedBottom);
-    //   console.log('2', achievedBottom);
-
-    //   if (prevAchievedBottom && !achievedBottom) {
-    //     console.log('Hola');
-    //   }
-    //   return prevAchievedBottom;
-    // });
-
-    // console.log(achievedBottom);
-
-    // if (parentBottomEdge > (childHeight || 0)) {
-    //   console.log('parentBottomEdge: ', parentBottomEdge);
-    //   console.log('childHeight: ', childHeight);
-
-    //   const _start = (query._start || 0) + (query._limit || 0);
-    //   console.log(_start);
-
-    //   if (query._start !== _start && count <= _start + (query._limit || 0)) {
-    //     const newQuery = {
-    //       ...query,
-    //       _start: (query._start || 0) + (query._limit || 0),
-    //     };
-    //     console.log(newQuery);
-
-    //     // setQuery(newQuery);
-    //     // onReach(newQuery);
-    //   }
-    // }
   }, [
     achievedBottom,
     count,
@@ -111,8 +79,8 @@ export const ScrollPager: FunctionComponent<
   return useWindow ? (
     <div ref={parentRef}>{children}</div>
   ) : (
-    <div ref={parentRef}>
-      <div ref={childRef}>{children}</div>
-    </div>
-  );
+      <div ref={parentRef}>
+        <div ref={childRef}>{children}</div>
+      </div>
+    );
 };
