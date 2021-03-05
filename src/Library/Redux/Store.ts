@@ -19,7 +19,7 @@ const logics = reactReduxRequest.createLogic();
 
 const logicMiddleware = createLogicMiddleware(logics);
 
-const middleware = isDevelopment ? 
+const middleware = isDevelopment ?
   composeWithDevTools(
     applyMiddleware(
       routerMiddleware(history),
@@ -28,7 +28,6 @@ const middleware = isDevelopment ?
     ),
   ) : applyMiddleware(
     routerMiddleware(history),
-    logger,
     logicMiddleware,
   );
 
