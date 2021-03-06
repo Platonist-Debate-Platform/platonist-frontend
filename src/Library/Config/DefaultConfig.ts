@@ -15,6 +15,9 @@ export const isStaging =
   (env.NODE_ENV as AppEnvKeys) === AppEnvKeys.Staging ? true : false;
 export const isProduction =
   (env.NODE_ENV as AppEnvKeys) === AppEnvKeys.Production ? true : false;
+export const isTest =
+  (env.NODE_ENV as AppEnvKeys) === AppEnvKeys.Test ? true : false;
+
 export const isLocalhost =
   window &&
   window.location &&

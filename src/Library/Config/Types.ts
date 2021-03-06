@@ -17,7 +17,7 @@ export interface DefaultConfig {
   api: DefaultConfigApi;
   breakpoints: Breakpoint[];
   cookieNames: {
-      signInRedirect: string;
+    signInRedirect: string;
   };
   env: DefaultConfigEnv;
   isDevelopment: boolean;
@@ -30,17 +30,18 @@ export enum AppEnvKeys {
   Development = 'development',
   Production = 'production',
   Staging = 'staging',
+  Test = 'test',
 }
 
 export enum ApiProtocol {
   Http = 'http',
-  Https = 'https'
+  Https = 'https',
 }
 
 export interface ApiConfig {
   path?: string;
   port?: number;
-  protocol: ApiProtocol
+  protocol: ApiProtocol;
   url: string;
 }
 

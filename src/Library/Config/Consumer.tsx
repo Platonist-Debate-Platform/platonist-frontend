@@ -9,22 +9,21 @@ export interface WithConfigProps {
 }
 
 export const withConfig = <P extends Object = {}>(
-  WrappedComponent: ComponentType<P & WithConfigProps>
-) => class WithConfigValues extends Component<P & WithConfigProps> {
-  render() {
-    return (
-      <ConfigContext.Consumer>
-        {(config) => (
-          <WrappedComponent {...this.props} config={config} />
-        )}
-      </ConfigContext.Consumer>
-    );
-  }
-};
+  WrappedComponent: ComponentType<P & WithConfigProps>,
+) =>
+  class WithConfigValues extends Component<P & WithConfigProps> {
+    render() {
+      return (
+        <ConfigContext.Consumer>
+          {(config) => <WrappedComponent {...this.props} config={config} />}
+        </ConfigContext.Consumer>
+      );
+    }
+  };
 
 export const useConfig = () => {
   return {
     ...useContext(ConfigContext),
-    createApiUrl
+    createApiUrl,
   };
 };
