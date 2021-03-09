@@ -22,7 +22,7 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
 }: InputProps<Data>) => {
 
   const {
-    data, 
+    data,
     formId,
     setFormValue,
     submitData,
@@ -31,14 +31,14 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
   const inputValue = data && data[inputKey as keyof Data];
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
+
     const value = event.target.value;
     const compareKey = inputValue.config?.compareKey;
     const comparison = (
-        inputValue.config?.validate === FormValidationTypes.Equal && compareKey && submitData.data[compareKey]
-      ) || undefined;
-    
-    if (inputValue && setFormValue) {
+      inputValue.config?.validate === FormValidationTypes.Equal && compareKey && submitData.data[compareKey]
+    ) || undefined;
+
+    if (inputValue) {
       const newFormValue = {
         ...inputValue,
         value,
@@ -49,19 +49,19 @@ export const Input: FunctionComponent<InputProps<Object>> = <Data extends Object
   };
 
   const handleFocus = () => {
-    if (inputValue && setFormValue) {
+    if (inputValue) {
       const newFormValue = {
         ...inputValue,
         touched: true,
       };
-      
+
       setFormValue(inputKey, newFormValue);
     }
   };
 
   const isValid = inputValue?.pristine || inputValue?.isValid ? true : false;
   const name = inputValue?.name as string;
-  
+
   return (
     <FormGroup className={className}>
       {!hideLabel && (

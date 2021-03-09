@@ -14,6 +14,8 @@ const logger = createLogger({
 });
 
 export const history = createBrowserHistory();
+console.log(history);
+
 
 const logics = reactReduxRequest.createLogic();
 
@@ -36,7 +38,7 @@ export const configureStore = (preloadedState?: GlobalState) => {
     createRootReducer(history), // root reducer with router state
     {},
     middleware,
-  )
+  );
 
   return store
 }
