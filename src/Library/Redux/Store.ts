@@ -36,7 +36,7 @@ export const configureStore = (preloadedState?: GlobalState) => {
     createRootReducer(history), // root reducer with router state
     {},
     middleware,
-  )
+  );
 
   return store
 }

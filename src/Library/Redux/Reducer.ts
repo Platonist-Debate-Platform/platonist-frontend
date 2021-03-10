@@ -8,7 +8,7 @@ import { alertReducer } from '../Alerts';
 import { localizeReducer } from '../Localize';
 import { debateLinkReducer } from '../DebateLink';
 
-const getRequestKeys = (requestKeys: Object): string[] => 
+const getRequestKeys = (requestKeys: Object): string[] =>
   Object.keys(requestKeys).map((key) => requestKeys[key as never]);
 
 export const reactReduxRequest = new ReactReduxRequest({
