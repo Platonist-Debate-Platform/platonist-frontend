@@ -14,8 +14,6 @@ const logger = createLogger({
 });
 
 export const history = createBrowserHistory();
-console.log(history);
-
 
 const logics = reactReduxRequest.createLogic();
 
