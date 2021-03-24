@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { GlobalState, PublicRequestKeys } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 import { ChangePassword } from '../Authentication';
 import { ModalWithRoute } from '../Modal';
 

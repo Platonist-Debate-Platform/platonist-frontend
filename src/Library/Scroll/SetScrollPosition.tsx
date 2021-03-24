@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
-import { GlobalState, PublicRequestKeys } from '../Redux';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 
 interface ScrollPositionProps {
   [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];

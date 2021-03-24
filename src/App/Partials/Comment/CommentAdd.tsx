@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Col, Collapse, Row } from 'reactstrap';
 
-import { Debate, GlobalState, PublicRequestKeys } from '../../../Library';
+import { Debate, GlobalState, PublicRequestKeys } from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import { AuthenticationButton } from '../Authentication';
 import { CommentForm } from './CommentForm';

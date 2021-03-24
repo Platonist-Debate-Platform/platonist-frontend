@@ -17,17 +17,16 @@ import { connect, Provider } from 'react-redux';
 
 import App from './App/App';
 import {
-  Alerts,
   AvailableLanguage,
   ConfigProvider,
-  configureStore,
   defaultConfig,
   GlobalState,
-  history,
   isProduction,
   isStaging,
   isTest,
-} from './Library';
+} from 'platonist-library';
+import { configureStore, history } from './Library/Redux/Store';
+import { Alerts } from './Library/Alerts';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 

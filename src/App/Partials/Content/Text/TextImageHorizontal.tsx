@@ -1,19 +1,23 @@
 import React from 'react';
-import { Image as ImageProps, MediaSize, MediaPosition } from '../../../../Library';
+import {
+  Image as ImageProps,
+  MediaSize,
+  MediaPosition,
+} from 'platonist-library';
 import { Row, Col } from 'reactstrap';
 import { Image } from '../../Image';
 
 export interface TextImageHorizontalProps {
   media: (ImageProps | null)[];
   mediaPosition: MediaPosition;
-  mediaSize: MediaSize,
-  showCaption: boolean,
+  mediaSize: MediaSize;
+  showCaption: boolean;
 }
 
 export const TextImageHorizontal: React.FC<TextImageHorizontalProps> = ({
   media,
   mediaPosition,
-  mediaSize, 
+  mediaSize,
   showCaption,
 }) => {
   let col = 10;
@@ -39,13 +43,13 @@ export const TextImageHorizontal: React.FC<TextImageHorizontalProps> = ({
     <Row>
       <Col md={col} className={colClassName}>
         {!isGallery && media[0] && (
-          <Image 
+          <Image
             {...media[0]}
             className={`img-wrap-${mediaPosition}`}
             showCaption={showCaption}
           />
         )}
-      </Col> 
+      </Col>
     </Row>
   );
-}
+};

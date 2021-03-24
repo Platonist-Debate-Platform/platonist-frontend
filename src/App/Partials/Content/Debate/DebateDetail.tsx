@@ -17,7 +17,7 @@ import {
   RequestStatus,
   withConfig,
   WithConfigProps,
-} from '../../../../Library';
+} from 'platonist-library';
 import { RequestSendProps, useDebates } from '../../../Hooks';
 import { ArticleItem } from '../../Article';
 import { CommentList } from '../../Comment';
@@ -90,8 +90,6 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
       clear();
     }
   });
-
-  // console.log(path);
 
   return (
     <>

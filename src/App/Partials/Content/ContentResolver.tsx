@@ -11,7 +11,7 @@ import {
   Text,
   TextWithImage as TextWithImageProps,
   TextWithList as TextWithListProps,
-} from '../../../Library';
+} from 'platonist-library';
 import { DebateRoute } from './Debate';
 import { JumbotronComponent } from './Jumbotron';
 import { TabPage } from './Tab';
@@ -30,7 +30,8 @@ export interface ContentResolverItemExtendedProps {
   path: string;
 }
 
-export interface ContentResolverItemDefaultProps extends ContentResolverItemExtendedProps {
+export interface ContentResolverItemDefaultProps
+  extends ContentResolverItemExtendedProps {
   routeProps?: RouteComponentProps;
 }
 
@@ -38,13 +39,17 @@ export type ContentResolverItemProps = Content &
   ContentResolverItemDefaultProps;
 
 export const ContentResolverItem: React.FC<ContentResolverItemProps> = (
-  props
+  props,
 ) => {
   const { __component } = props;
 
   switch (__component) {
-    case ContentKeys.DebateList: 
-      return <DebateRoute {...(props as DebateListProps & ContentResolverItemExtendedProps)} />;
+    case ContentKeys.DebateList:
+      return (
+        <DebateRoute
+          {...(props as DebateListProps & ContentResolverItemExtendedProps)}
+        />
+      );
 
     case ContentKeys.Jumbotron:
       return <JumbotronComponent {...(props as Jumbotron)} />;

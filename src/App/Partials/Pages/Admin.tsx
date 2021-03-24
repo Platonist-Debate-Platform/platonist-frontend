@@ -11,35 +11,41 @@ import {
   requestAction,
   RequestStatus,
   useConfig,
-} from '../../../Library';
+} from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import { AdminRoutes } from '../Routes';
 
 export const PageAdmin: FunctionComponent = () => {
-  
   const config = useConfig();
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
   const url = config.createApiUrl(config.api.config);
   url.pathname = `/users`;
 
-  const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(state => state[PrivateRequestKeys.User]);
+  const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(
+    (state) => state[PrivateRequestKeys.User],
+  );
   const [isAuthenticated, state] = useAuthentication();
-  
-  const showLoginForm = (!isAuthenticated && !user.result) || (isAuthenticated && !user.result) ? true : false;
+
+  const showLoginForm =
+    (!isAuthenticated && !user.result) || (isAuthenticated && !user.result)
+      ? true
+      : false;
 
   useEffect(() => {
     if (isAuthenticated && state && user.status === RequestStatus.Initial) {
       url.pathname = `${url.pathname}/${state.id}`;
 
-      dispatch(requestAction.load(PrivateRequestKeys.User, {
-        url: url.href,
-        withCredentials: true,
-      }));
+      dispatch(
+        requestAction.load(PrivateRequestKeys.User, {
+          url: url.href,
+          withCredentials: true,
+        }),
+      );
     }
   });
-    
+
   return (
-    <section 
+    <section
       className={classNames('section', {
         'section-login': showLoginForm,
         'section-admin': !showLoginForm,
@@ -50,13 +56,11 @@ export const PageAdmin: FunctionComponent = () => {
           {showLoginForm && (
             <Col>
               <p>
-                Please <Link to="/auth/login" >Login</Link>
+                Please <Link to="/auth/login">Login</Link>
               </p>
             </Col>
           )}
-          {isAuthenticated && user.result && (
-            <AdminRoutes {...user.result} />
-          )}
+          {isAuthenticated && user.result && <AdminRoutes {...user.result} />}
         </Row>
       </Container>
     </section>

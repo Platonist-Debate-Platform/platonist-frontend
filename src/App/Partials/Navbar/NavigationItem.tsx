@@ -3,14 +3,14 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Nav, NavItem } from 'reactstrap';
-import { GlobalState, Page, PublicRequestKeys } from '../../../Library';
+import { GlobalState, Page, PublicRequestKeys } from 'platonist-library';
 import { NavigationType } from './Keys';
 import { enableNavItem } from './Utils';
 
 export interface NavigationItemProps extends Page {
   index: number;
   isSandwich: boolean;
-  level: number,
+  level: number;
   navFor: NavigationType;
   parentLink?: string;
   toggled: boolean;
@@ -20,7 +20,7 @@ interface NavigationContentItemProps {
   item: Page;
   parentLink?: string;
   title: string;
-  location: GlobalState['router']['location']
+  location: GlobalState['router']['location'];
 }
 
 export const NavigationContentItem: React.FC<NavigationContentItemProps> = ({
@@ -29,9 +29,11 @@ export const NavigationContentItem: React.FC<NavigationContentItemProps> = ({
   parentLink,
   title,
 }) => {
-
-  const linkTo = parentLink ? parentLink + `/${item.title}` : `/${title}/${item.title}`;
-  const isActive = location.pathname === linkTo || location.pathname.startsWith(linkTo);
+  const linkTo = parentLink
+    ? parentLink + `/${item.title}`
+    : `/${title}/${item.title}`;
+  const isActive =
+    location.pathname === linkTo || location.pathname.startsWith(linkTo);
 
   return (
     <NavItem active={isActive}>
@@ -57,13 +59,17 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
     toggled,
   } = props;
 
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { location } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(state => state[PublicRequestKeys.Router]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state[PublicRequestKeys.Router]);
   const enabled = enableNavItem(navFor, inNavigation, inFooter);
 
   const items = pages || [];
   const linkTo = (parentLink || '') + `/${title}`;
-  const isActive = location.pathname === linkTo || location.pathname.startsWith(linkTo);
+  const isActive =
+    location.pathname === linkTo || location.pathname.startsWith(linkTo);
   const hasNoItems = !items || (items && items.length === 0);
 
   const handleMouseMove = (event: MouseEvent<HTMLLIElement>) => {
@@ -79,10 +85,16 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
       return;
     }
 
-    const headerElement = document.getElementById('navbar_main') as HTMLDivElement | null;
-    const headerBg = headerElement?.parentElement?.querySelector('.header-sub-bg') as HTMLDivElement | null;
+    const headerElement = document.getElementById(
+      'navbar_main',
+    ) as HTMLDivElement | null;
+    const headerBg = headerElement?.parentElement?.querySelector(
+      '.header-sub-bg',
+    ) as HTMLDivElement | null;
     const currentTarget = event.currentTarget as HTMLLIElement;
-    const subList = currentTarget.childNodes && currentTarget.childNodes.item(1) as HTMLUListElement | null;
+    const subList =
+      currentTarget.childNodes &&
+      (currentTarget.childNodes.item(1) as HTMLUListElement | null);
     const headerHeight = headerElement?.clientHeight || 0;
     const subListHeight = subList?.clientHeight || 0;
     const itemHeight = headerHeight + subListHeight;
@@ -97,8 +109,11 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
     }
   };
 
-  const handleClick = (event: MouseEvent<HTMLAnchorElement>, backLink: boolean) => {
-    if (!isSandwich || hasNoItems ) {
+  const handleClick = (
+    event: MouseEvent<HTMLAnchorElement>,
+    backLink: boolean,
+  ) => {
+    if (!isSandwich || hasNoItems) {
       return;
     }
 
@@ -117,11 +132,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
     if (!toggled && isOpen) {
       setIsOpen(false);
     }
-  }, [
-    isOpen,
-    setIsOpen,
-    toggled,
-  ]);
+  }, [isOpen, setIsOpen, toggled]);
 
   if (!active || !enabled) {
     return null;
@@ -139,13 +150,14 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
         title={title}
         onClick={(event) => handleClick(event, false)}
       >
-        {name || title} {isSandwich && navFor === NavigationType.Navbar && items && (
+        {name || title}{' '}
+        {isSandwich && navFor === NavigationType.Navbar && items && (
           <i className="icon icon-arrow-right" />
         )}
       </Link>
-      <Nav 
+      <Nav
         className={classNames('nav-sub', {
-          'show': isOpen,
+          show: isOpen,
         })}
         navbar={false}
         vertical={true}
@@ -153,35 +165,35 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
         {isSandwich && navFor === NavigationType.Navbar && (
           <>
             <NavItem className="nav-item-title">
-              <Link 
-                className="nav-link" 
-                to={encodeURI(linkTo)} 
+              <Link
+                className="nav-link"
+                to={encodeURI(linkTo)}
                 title={title}
                 onClick={(event) => handleClick(event, true)}
               >
-                <i className="icon icon-arrow-left" />  {name || title}
+                <i className="icon icon-arrow-left" /> {name || title}
               </Link>
             </NavItem>
             <NavItem>
-              <Link 
-                className="nav-link" 
-                to={encodeURI(linkTo)} 
-                title={title}
-              >
+              <Link className="nav-link" to={encodeURI(linkTo)} title={title}>
                 {name || title} Übersicht
               </Link>
             </NavItem>
           </>
         )}
-        {items && items.map((item, index) => item && (
-          <NavigationContentItem 
-            key={`nav_footer_item_${item.id}_${index}`}
-            location={location}
-            item={item}
-            parentLink={linkTo}
-            title={title}
-          />
-        ))}
+        {items &&
+          items.map(
+            (item, index) =>
+              item && (
+                <NavigationContentItem
+                  key={`nav_footer_item_${item.id}_${index}`}
+                  location={location}
+                  item={item}
+                  parentLink={linkTo}
+                  title={title}
+                />
+              ),
+          )}
       </Nav>
     </NavItem>
   );

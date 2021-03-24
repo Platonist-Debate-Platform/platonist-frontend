@@ -1,30 +1,27 @@
 import { isEqual } from 'lodash';
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import {
+  alertAction,
+  AlertActions,
+  AlertTypes,
+  DebateState,
+  Dispatch,
+  PublicRequestKeys,
+  RequestStatus,
+  RestMethodKeys,
+  ToggleType,
+} from 'platonist-library';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { usePrevious } from 'react-use';
 import { Col, Form, Row } from 'reactstrap';
 
 import {
-  alertAction,
-  AlertActions,
-  AlertTypes,
   createDefaultData,
-  DebateState,
-  Dispatch,
   FormClickEvent,
   FormContextValue,
   FormDataConfig,
   FormProvider,
-  PublicRequestKeys,
-  RequestStatus,
-  RestMethodKeys,
-  ToggleType,
 } from '../../../../Library';
 import {
   Checkbox,
@@ -167,7 +164,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       const config = index > 0 && formData[index];
 
       if (config && config.group && config.key === key) {
-        config.group.map((conf) => {
+        config.group.map((conf: any) => {
           conf.editable = true;
           return conf;
         });
@@ -215,7 +212,7 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
           });
         }
 
-        config.group.map((conf) => {
+        config.group.map((conf: any) => {
           conf.editable = false;
           return conf;
         });

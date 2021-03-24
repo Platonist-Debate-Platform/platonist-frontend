@@ -2,15 +2,17 @@ import './ArticleItem.scss';
 
 import React, { FunctionComponent } from 'react';
 
-import { Article } from '../../../Library';
+import { Article } from 'platonist-library';
 
 const trimString = (str: string, max: number = 115) => {
   let trimmed = str.substr(0, max);
   if (str.length > trimmed.length) {
-    trimmed = trimmed.substr(0, Math.min(trimmed.length, trimmed.lastIndexOf(' '))) + '...';
+    trimmed =
+      trimmed.substr(0, Math.min(trimmed.length, trimmed.lastIndexOf(' '))) +
+      '...';
   }
   return trimmed;
-}
+};
 
 export const ArticleItem: FunctionComponent<Article> = ({
   description,
@@ -38,15 +40,11 @@ export const ArticleItem: FunctionComponent<Article> = ({
             )}
           </div>
           <div className="debate-article-content">
-            <h4 className="mb-2">
-              {title}
-            </h4>
-            <p title={description}>
-              {trimString(description)}
-            </p>
+            <h4 className="mb-2">{title}</h4>
+            <p title={description}>{trimString(description)}</p>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};

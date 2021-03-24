@@ -1,6 +1,3 @@
-import React from "react";
-import { connect } from "react-redux";
-
 import {
   GlobalState,
   PublicRequestKeys,
@@ -8,9 +5,12 @@ import {
   requestAction,
   withConfig,
   WithConfigProps,
-} from "../../../Library";
-import { ContentResolver } from "../Content";
-import PageMeta from "./Meta";
+} from 'platonist-library';
+import React from 'react';
+import { connect } from 'react-redux';
+
+import { ContentResolver } from '../Content';
+import PageMeta from './Meta';
 
 export interface PageResolverProps extends WithConfigProps {
   [PublicRequestKeys.Homepage]: GlobalState[PublicRequestKeys.Homepage];
@@ -32,7 +32,7 @@ export class PageResolverBase extends React.Component<PageResolverProps> {
       dispatch(
         requestAction.load(PublicRequestKeys.Page, {
           url: url.href,
-        })
+        }),
       );
     }
   }
@@ -43,12 +43,7 @@ export class PageResolverBase extends React.Component<PageResolverProps> {
   }
 
   render() {
-    const { 
-      isAdmin,
-      homepage, 
-      page, 
-      path 
-    } = this.props;
+    const { isAdmin, homepage, page, path } = this.props;
 
     return (
       <>
@@ -59,8 +54,8 @@ export class PageResolverBase extends React.Component<PageResolverProps> {
               title={page.result.title}
               path={path}
             />
-            <ContentResolver 
-              contents={page.result.content} 
+            <ContentResolver
+              contents={page.result.content}
               isAdmin={isAdmin}
               path={path}
             />

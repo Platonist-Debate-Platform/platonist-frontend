@@ -4,7 +4,13 @@ import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Collapse, Navbar } from 'reactstrap';
 
-import { GlobalState, Homepage, Page, PublicRequestKeys, User } from '../../../Library';
+import {
+  GlobalState,
+  Homepage,
+  Page,
+  PublicRequestKeys,
+  User,
+} from 'platonist-library';
 import { NavigationType } from './Keys';
 import Logo from './NavbarBrand';
 import Header from './NavbarHeader';
@@ -21,20 +27,26 @@ export interface NavbarComponentProps {
 export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
   pages,
   router,
-  homePageData
+  homePageData,
 }) => {
   const [location, setLocation] = useState(router.location);
   const [toggled, setToggle] = useState<boolean>(false);
-  const [screenSize, setScreenSize] = useState<{height: number; width: number;}>({
+  const [screenSize, setScreenSize] = useState<{
+    height: number;
+    width: number;
+  }>({
     height: window.innerHeight,
     width: window.innerWidth,
   });
-  
-  const homepage = useSelector<GlobalState, GlobalState[PublicRequestKeys.Homepage]>(state => state[PublicRequestKeys.Homepage]);
+
+  const homepage = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Homepage]
+  >((state) => state[PublicRequestKeys.Homepage]);
   const isHomepage = location.pathname === '/';
   const isNotFound = location.pathname === '/404';
 
-  const handleResize = (size: {height: number; width: number;}) => {
+  const handleResize = (size: { height: number; width: number }) => {
     setScreenSize(size);
   };
 
@@ -51,11 +63,7 @@ export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
     if (router.location.key !== location.key) {
       setLocation(router.location);
     }
-  }, [
-    location,
-    router.location,
-    setLocation,
-  ]);
+  }, [location, router.location, setLocation]);
 
   return (
     <Header
@@ -67,29 +75,50 @@ export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
         className={classNames('fixed-top', {
           'navbar-home': isHomepage || isNotFound,
           'navbar-regular': !(isHomepage || isNotFound),
-        })} 
-        
+        })}
         id={`navbar_main`}
-        light={!(isHomepage || isNotFound)} 
+        light={!(isHomepage || isNotFound)}
         expand="md"
       >
-          {homepage.result && homepage.result.logo ? (
-            <Logo
-              {...homepage.result.logo} 
-              title={homepage.result.title || 'Platonist Application'}
-              isHomepage={(isHomepage || isNotFound) || true}
-            />
-          ) : (
-            <Link className="navbar-brand" to="/">
-              {homepage.result?.title || 'Platonist Application'}
-            </Link>
-          )}
-          {!isTabletScreen && (
-            <Collapse isOpen={false} navbar>
+        {homepage.result && homepage.result.logo ? (
+          <Logo
+            {...homepage.result.logo}
+            title={homepage.result.title || 'Platonist Application'}
+            isHomepage={isHomepage || isNotFound || true}
+          />
+        ) : (
+          <Link className="navbar-brand" to="/">
+            {homepage.result?.title || 'Platonist Application'}
+          </Link>
+        )}
+        {!isTabletScreen && (
+          <Collapse isOpen={false} navbar>
+            {pages && pages.length > 0 && (
+              <Navigation
+                className={'ml-auto'}
+                isHomepage={isHomepage || isNotFound}
+                level={1}
+                navFor={NavigationType.Navbar}
+                pages={pages}
+                toggled={toggled}
+                tools={homepage.result && homepage.result.tools}
+                homepageMenu={homePageData && homePageData.menuTitle}
+              />
+            )}
+          </Collapse>
+        )}
+        {isTabletScreen && (
+          <NavigationMobile
+            screenSize={screenSize}
+            isMobileScreen={isMobileScreen}
+            toggle={handleToggle}
+          >
+            <>
               {pages && pages.length > 0 && (
                 <Navigation
                   className={'ml-auto'}
                   isHomepage={isHomepage || isNotFound}
+                  isSandwich={isTabletScreen}
                   level={1}
                   navFor={NavigationType.Navbar}
                   pages={pages}
@@ -98,35 +127,13 @@ export const NavbarComponentBase: React.FC<NavbarComponentProps> = ({
                   homepageMenu={homePageData && homePageData.menuTitle}
                 />
               )}
-            </Collapse>
-          )}
-          {isTabletScreen && (
-            <NavigationMobile
-              screenSize={screenSize}
-              isMobileScreen={isMobileScreen}
-              toggle={handleToggle}
-            >
-              <>
-                {pages && pages.length > 0 && (
-                  <Navigation
-                    className={'ml-auto'}
-                    isHomepage={isHomepage || isNotFound}
-                    isSandwich={isTabletScreen}
-                    level={1}
-                    navFor={NavigationType.Navbar}
-                    pages={pages}
-                    toggled={toggled}
-                    tools={homepage.result && homepage.result.tools}
-                    homepageMenu={homePageData && homePageData.menuTitle}
-                  />
-                )}
-              </>
-            </NavigationMobile>
-          )}
+            </>
+          </NavigationMobile>
+        )}
       </Navbar>
     </Header>
   );
-}
+};
 
 export const NavbarComponent = connect((state: GlobalState) => ({
   [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],

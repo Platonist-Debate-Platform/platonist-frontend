@@ -3,16 +3,16 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from "react";
-import Dropzone, { DropEvent, FileRejection } from "react-dropzone";
-import { Redirect } from "react-router-dom";
-import { usePrevious } from "react-use";
-import { Button } from "reactstrap";
+} from 'react';
+import Dropzone, { DropEvent, FileRejection } from 'react-dropzone';
+import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
+import { Button } from 'reactstrap';
 
-import { Image, RequestStatus, User } from "../../../Library";
-import useUser from "../../Hooks/Requests/useUser";
-import { ImageCrop } from "../Image";
-import { ModalWithRoute } from "../Modal";
+import { Image, RequestStatus, User } from 'platonist-library';
+import useUser from '../../Hooks/Requests/useUser';
+import { ImageCrop } from '../Image';
+import { ModalWithRoute } from '../Modal';
 
 export interface ProfileImageEditProps {
   from: string;
@@ -23,18 +23,18 @@ export interface ProfileImageEditProps {
 }
 
 const appendFileExtension = (fileName: string, type: string) => {
-  let extension: string = "";
+  let extension: string = '';
 
   switch (type.toLocaleLowerCase()) {
-    case "image/jpg":
-    case "image/jpeg":
-      extension = "jpg";
+    case 'image/jpg':
+    case 'image/jpeg':
+      extension = 'jpg';
       break;
-    case "image/png":
-      extension = "png";
+    case 'image/png':
+      extension = 'png';
       break;
     default:
-      extension = type.replace("image/", "");
+      extension = type.replace('image/', '');
       break;
   }
 
@@ -69,10 +69,10 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
 
   const handleClick = useCallback(() => {
     send({
-      method: "PUT",
+      method: 'PUT',
       data: formData,
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
   }, [formData, send]);
@@ -82,23 +82,23 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
     formData.append(
       `files.avatar`,
       data,
-      appendFileExtension(data.name, data.type)
+      appendFileExtension(data.name, data.type),
     );
     if (file && image?.name !== file.name) {
       formData.append(
         `files.avatarOriginal`,
         file,
-        appendFileExtension(file.name, file.type)
+        appendFileExtension(file.name, file.type),
       );
     }
-    formData.append("data", JSON.stringify({}));
+    formData.append('data', JSON.stringify({}));
     setFormData(formData);
   };
 
   const handleImageDrop = (
     files: File[],
     _fileRejections: FileRejection[],
-    _event: DropEvent
+    _event: DropEvent,
   ) => {
     if (files && files.length > 0 && files[0]) {
       setFile(files[0]);
@@ -170,7 +170,7 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
       from={from}
       header="Edit and upload your profile image"
       onClosed={handleModalClose}
-      size={"xl"}
+      size={'xl'}
       to={to}
     >
       <div className="profile-image-edit-settings text-right mb-3">
@@ -180,7 +180,7 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
           size="sm"
           title="Reset Image"
         >
-          <i className="fa fa-undo" />{" "}
+          <i className="fa fa-undo" />{' '}
           <span className="sr-only">Reset image</span>
         </Button>
         <Button
@@ -190,19 +190,19 @@ export const ProfileImageEdit: FunctionComponent<ProfileImageEditProps> = ({
           size="sm"
           title="Remove image"
         >
-          <i className="fa fa-upload" />{" "}
+          <i className="fa fa-upload" />{' '}
           <span className="sr-only">Remove image</span>
         </Button>
       </div>
       <div className="shadow p-3">
         <Dropzone
-          accept={["image/jpg", "image/jpeg", "image/png"]}
+          accept={['image/jpg', 'image/jpeg', 'image/png']}
           preventDropOnDocument={true}
           onDrop={handleImageDrop}
         >
           {({ getRootProps, getInputProps }) => (
             <section className="drop-zone-container">
-              <div {...getRootProps({ className: "drop-zone-area" })}>
+              <div {...getRootProps({ className: 'drop-zone-area' })}>
                 <input {...getInputProps({ multiple: false })} />
                 <p>
                   Drag 'n' drop your profile image here, or click to select

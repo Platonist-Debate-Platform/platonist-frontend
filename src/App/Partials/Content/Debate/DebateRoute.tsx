@@ -6,7 +6,7 @@ import {
   GlobalState,
   PublicRequestKeys,
   DebateList as DebateListProps,
-} from '../../../../Library';
+} from 'platonist-library';
 import DebateDetail from './DebateDetail';
 import DebateListComponent from './DebateList';
 

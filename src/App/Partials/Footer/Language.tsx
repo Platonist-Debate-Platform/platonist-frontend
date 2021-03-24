@@ -1,20 +1,32 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { connect } from "react-redux";
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { connect } from 'react-redux';
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
 
-import { GlobalState, PublicRequestKeys, availableLanguages, LocalizeDispatch, selectLanguage, AvailableLanguage} from "../../../Library";
+import {
+  GlobalState,
+  PublicRequestKeys,
+  availableLanguages,
+  LocalizeDispatch,
+  selectLanguage,
+  AvailableLanguage,
+} from 'platonist-library';
 
-interface LanguageProps{
+interface LanguageProps {
   [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
   [PublicRequestKeys.Locals]: GlobalState[PublicRequestKeys.Locals];
 }
 
-export const LanguageBase: FC<LanguageProps> =  (props) => {
+export const LanguageBase: FC<LanguageProps> = (props) => {
   const { locals } = props;
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggle = () => setDropdownOpen(prevState => !prevState);
+  const toggle = () => setDropdownOpen((prevState) => !prevState);
 
   const changeLanguage = (lang: AvailableLanguage) => {
     dispatch(selectLanguage(lang.extendedCode));
@@ -22,29 +34,33 @@ export const LanguageBase: FC<LanguageProps> =  (props) => {
 
   const dispatch = useDispatch<LocalizeDispatch>();
 
-  return((
-    <Dropdown isOpen={dropdownOpen} toggle={toggle} size="md" className={'dd-language'} >
-      <DropdownToggle caret className={"toggle"}>
-        {locals.code}
-      </DropdownToggle>
-      <DropdownMenu>
-        {
-          availableLanguages.map((lang, index) => {
-            return(
-              <DropdownItem 
+  return (
+    (
+      <Dropdown
+        isOpen={dropdownOpen}
+        toggle={toggle}
+        size="md"
+        className={'dd-language'}
+      >
+        <DropdownToggle caret className={'toggle'}>
+          {locals.code}
+        </DropdownToggle>
+        <DropdownMenu>
+          {availableLanguages.map((lang, index) => {
+            return (
+              <DropdownItem
                 key={`language_dropdown_${index}`}
-                onClick={e => changeLanguage(lang)}
+                onClick={(e) => changeLanguage(lang)}
               >
-                  {lang.name}
-                </DropdownItem>
-            )
-          })
-        }
-      </DropdownMenu>
-    </Dropdown>
-  )
-  || null);
-}
+                {lang.name}
+              </DropdownItem>
+            );
+          })}
+        </DropdownMenu>
+      </Dropdown>
+    ) || null
+  );
+};
 
 export const Language = connect((state: GlobalState) => ({
   [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],

@@ -13,7 +13,7 @@ import {
   requestAction,
   RequestStatus,
   useConfig,
-} from '../../../Library';
+} from 'platonist-library';
 
 export interface UseRequestBaseProps {
   id?: number;

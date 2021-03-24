@@ -1,8 +1,7 @@
+import { Logo, useConfig } from 'platonist-library';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { useConfig } from '../../../Library';
-import { Logo } from '../../../Library/Models';
 import logoBw from '../../../Assets/Images/Logo/platonist-logo-full-white.svg';
 import logoPos from '../../../Assets/Images/Logo/platonist-logo.svg';
 

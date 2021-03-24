@@ -18,7 +18,7 @@ import {
   PublicRequestKeys,
   RequestStatus,
   ToggleType,
-} from '../../../../Library';
+} from 'platonist-library';
 import { useDebates } from '../../../Hooks';
 import { ModalWithRoute } from '../../Modal';
 import { cleanParsedSearch, CurrentSearchProps } from './FormEdit';

@@ -3,7 +3,12 @@ import 'react-image-crop/lib/ReactCrop.scss';
 import React from 'react';
 import ReactCrop, { Crop, PercentCrop } from 'react-image-crop';
 
-import { Image, randomHash, withConfig, WithConfigProps } from '../../../Library';
+import {
+  Image,
+  randomHash,
+  withConfig,
+  WithConfigProps,
+} from 'platonist-library';
 
 export interface ImageCropProps extends WithConfigProps {
   file?: File;
@@ -15,11 +20,14 @@ export interface ImageCropProps extends WithConfigProps {
 export interface ImageCropState {
   crop: Crop;
   croppedImageUrl?: string;
-  fileName: string
+  fileName: string;
   src?: string | null;
 }
 
-export class ImageCropBase extends React.Component<ImageCropProps, ImageCropState> {
+export class ImageCropBase extends React.Component<
+  ImageCropProps,
+  ImageCropState
+> {
   fileUrl: string | undefined;
   imageRef: HTMLImageElement | undefined;
   reader = new FileReader();
@@ -37,7 +45,7 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
     };
   }
 
-  public componentDidMount () {
+  public componentDidMount() {
     this.setSrcFromImage();
 
     const _self = this;
@@ -45,17 +53,17 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
       _self.handleFileReaderLoading(this, event);
     });
   }
-  
+
   public componentDidUpdate(prevProps: ImageCropProps) {
-    const {
-      file,
-      reset,
-    } = this.props;
+    const { file, reset } = this.props;
 
     const prevFile = prevProps.file;
     const prevReset = prevProps.reset;
-    
-    if (file && (prevFile?.name !== file?.name || file?.size !== prevFile?.size)) {
+
+    if (
+      file &&
+      (prevFile?.name !== file?.name || file?.size !== prevFile?.size)
+    ) {
       this.reader.readAsDataURL(file);
       this.makeClientCrop(this.state.crop);
     }
@@ -65,18 +73,22 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
     }
   }
 
-  private getCroppedImage = async (image: HTMLImageElement, crop: any, fileName: string): Promise<{url: string, blob: Blob} | undefined> => {   
+  private getCroppedImage = async (
+    image: HTMLImageElement,
+    crop: any,
+    fileName: string,
+  ): Promise<{ url: string; blob: Blob } | undefined> => {
     if (!image || !crop) {
       return;
     }
-        
+
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
     canvas.width = crop.width || 300;
     canvas.height = crop.height || 300;
     const ctx = canvas.getContext('2d');
-    
+
     if (!ctx) {
       return;
     }
@@ -90,64 +102,63 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
       0,
       0,
       crop.width,
-      crop.height
+      crop.height,
     );
 
     return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
+      canvas.toBlob((blob) => {
         if (!blob) {
           console.error('Canvas is Empty');
           return;
         }
-        (blob as Blob & {name: string}).name = fileName;
+        (blob as Blob & { name: string }).name = fileName;
 
         window.URL.revokeObjectURL(this.fileUrl || '');
         this.fileUrl = URL.createObjectURL(blob);
-        
+
         resolve({
           url: this.fileUrl,
           blob,
         });
-      }, 'image/jpeg')
-    })
-  }
+      }, 'image/jpeg');
+    });
+  };
 
-  private handleFileReaderLoading = (reader: FileReader, event: ProgressEvent) => {
+  private handleFileReaderLoading = (
+    reader: FileReader,
+    event: ProgressEvent,
+  ) => {
     this.setState({
       src: reader.result?.toString(),
       fileName: randomHash(32),
     });
-  }
+  };
 
   private makeClientCrop = async (crop: Crop) => {
-    const {
-      onCrop
-    } = this.props;
+    const { onCrop } = this.props;
 
-    const {
-      fileName
-    } = this.state;
+    const { fileName } = this.state;
 
     if (this.imageRef && crop.width && crop.height) {
       const croppedImage = await this.getCroppedImage(
         this.imageRef,
         crop,
-        fileName
+        fileName,
       );
 
       if (croppedImage && croppedImage.blob && onCrop) {
         const reader = new FileReader();
-        reader.readAsArrayBuffer(croppedImage?.blob)
+        reader.readAsArrayBuffer(croppedImage?.blob);
         reader.addEventListener('loadend', (e: ProgressEvent) => {
           const arrayBuffer = (e.target as any).result as ArrayBuffer;
-          const blob = new Blob([arrayBuffer], {type: 'image/jpeg'})
-          const file = new File([blob], randomHash(32), {type: 'image/jpeg'});
+          const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+          const file = new File([blob], randomHash(32), { type: 'image/jpeg' });
           onCrop(file);
         });
       }
-      this.setState({croppedImageUrl: croppedImage?.url})
+      this.setState({ croppedImageUrl: croppedImage?.url });
     }
-  }
+  };
 
   onCropChange = (crop: Crop) => {
     this.setState({ crop });
@@ -155,18 +166,15 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
 
   private onCropComplete = (crop: Crop, percentCrop: PercentCrop) => {
     this.makeClientCrop(crop);
-  }
+  };
 
   private onImageLoaded = (image: HTMLImageElement) => {
     this.imageRef = image;
-  }
+  };
 
   private setSrcFromImage = () => {
-    const {
-      config,
-      image
-    } = this.props;
-    
+    const { config, image } = this.props;
+
     if (config) {
       const apiUrl = config.api.createApiUrl(config.api.config);
       apiUrl.pathname = (image && image.url) || '';
@@ -176,7 +184,7 @@ export class ImageCropBase extends React.Component<ImageCropProps, ImageCropStat
         fileName: randomHash(32),
       });
     }
-  }
+  };
 
   public render() {
     const { crop, src } = this.state;

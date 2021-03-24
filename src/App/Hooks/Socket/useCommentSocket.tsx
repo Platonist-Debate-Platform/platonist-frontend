@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Comment, randomHash } from '../../../Library';
+import { Comment, randomHash } from 'platonist-library';
 import { SocketKeys, SocketMethod } from './Keys';
 import { useSocket } from './useSocket';
 

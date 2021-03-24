@@ -1,9 +1,9 @@
 import './Form.scss';
 
 import { isEqual, isObject } from 'lodash';
-import React, { Component, ReactNode } from 'react';
+import { randomHash } from 'platonist-library';
+import { Component, ReactNode } from 'react';
 
-import { randomHash } from '../Utils';
 import { FormContext } from './Context';
 import { Form } from './Form';
 import {

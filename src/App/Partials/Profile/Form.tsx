@@ -1,14 +1,23 @@
-import React, { FunctionComponent } from "react";
-import { connect, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { usePrevious } from "react-use";
+import {
+  GlobalState,
+  PrivateRequestKeys,
+  PublicRequestKeys,
+  randomHash,
+  RequestStatus,
+  User,
+} from 'platonist-library';
+import { SubmitButton } from 'platonist-library/build/Form/Fields';
+import { FunctionComponent } from 'react';
+import { connect, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { usePrevious } from 'react-use';
 import {
   FormGroup,
   Input,
   InputGroup,
   InputGroupText,
   Label,
-} from "reactstrap";
+} from 'reactstrap';
 
 import {
   createDefaultData,
@@ -20,38 +29,31 @@ import {
   FormProvider,
   FormValidationTypes,
   getDefaultDataFromResult,
-  GlobalState,
-  PrivateRequestKeys,
-  PublicRequestKeys,
-  randomHash,
-  RequestStatus,
-  User,
-} from "../../../Library";
-import { SubmitButton } from "../../../Library/Form/Fields";
-import useUser from "../../Hooks/Requests/useUser";
+} from '../../../Library';
+import useUser from '../../Hooks/Requests/useUser';
 
 const profileFormData: FormDataConfig<Partial<User>>[] = [
   {
     editable: true,
-    key: "firstName",
+    key: 'firstName',
     required: true,
-    title: "First name",
+    title: 'First name',
     type: FormInputTypes.String,
     validate: FormValidationTypes.Length,
   },
   {
     editable: true,
-    key: "lastName",
+    key: 'lastName',
     required: true,
-    title: "Last name",
+    title: 'Last name',
     type: FormInputTypes.String,
     validate: FormValidationTypes.Length,
   },
   {
     editable: false,
-    key: "username",
+    key: 'username',
     required: true,
-    title: "Username",
+    title: 'Username',
     type: FormInputTypes.String,
     validate: FormValidationTypes.Length,
   },
@@ -72,7 +74,7 @@ export const ProfileFormBase: FunctionComponent<{
   const handleSubmit = <
     Ev extends FormClickEvent<Partial<User>> | FormEvent<Partial<User>>
   >(
-    event: Ev
+    event: Ev,
   ) => {
     if (!event.submitData.isValid && !userState.result) {
       return;
@@ -85,7 +87,7 @@ export const ProfileFormBase: FunctionComponent<{
         ...userState.result,
         ...data,
       },
-      method: "PUT",
+      method: 'PUT',
     });
   };
 
@@ -96,7 +98,7 @@ export const ProfileFormBase: FunctionComponent<{
         (userState.result &&
           getDefaultDataFromResult<Partial<User>>(
             userState.result,
-            profileFormData
+            profileFormData,
           )) ||
         createDefaultData<Partial<User>>(profileFormData)
       }
@@ -142,7 +144,7 @@ export const ProfileFormBase: FunctionComponent<{
         </FormGroup>
         <div className="text-right">
           <SubmitButton
-            className={"btn-success"}
+            className={'btn-success'}
             onClick={(ev) => handleSubmit(ev as any)}
             disabled={userState.status === RequestStatus.Updating}
           >

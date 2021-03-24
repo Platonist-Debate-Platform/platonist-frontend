@@ -1,7 +1,11 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { GlobalState, PublicRequestKeys, RequestStatus } from '../../../Library';
+import {
+  GlobalState,
+  PublicRequestKeys,
+  RequestStatus,
+} from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import useUser from '../../Hooks/Requests/useUser';
 
@@ -9,16 +13,16 @@ export const PageEmailConfirmation: FunctionComponent = () => {
   const [isAuthenticated] = useAuthentication();
 
   const {
-    user: {
-      result: user,
-      status,
-    },
+    user: { result: user, status },
     send,
   } = useUser();
 
-  const { location } = useSelector<GlobalState, GlobalState[PublicRequestKeys.Router]>(state => state.router);
+  const { location } = useSelector<
+    GlobalState,
+    GlobalState[PublicRequestKeys.Router]
+  >((state) => state.router);
   const [successful, setSuccessful] = useState(false);
-  
+
   useEffect(() => {
     if (isAuthenticated && user && !user.confirmed && !successful) {
       send({
@@ -28,21 +32,15 @@ export const PageEmailConfirmation: FunctionComponent = () => {
       });
       setSuccessful(true);
     }
-  }, [isAuthenticated, location.search, send, successful, user])
-  
-  if (!isAuthenticated || (isAuthenticated && !user) || (isAuthenticated && user && user.confirmed)) {
-    return (
-      <> 
-        {status === RequestStatus.Loaded && (
-          <Redirect to="/" />
-        )}
-      </>
-    );
-  };
+  }, [isAuthenticated, location.search, send, successful, user]);
 
-  return (
-    <section className="section section-authenticate">
+  if (
+    !isAuthenticated ||
+    (isAuthenticated && !user) ||
+    (isAuthenticated && user && user.confirmed)
+  ) {
+    return <>{status === RequestStatus.Loaded && <Redirect to="/" />}</>;
+  }
 
-    </section>
-  );
+  return <section className="section section-authenticate"></section>;
 };

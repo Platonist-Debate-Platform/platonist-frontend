@@ -1,18 +1,18 @@
-import classnames from "classnames";
-import React, { useState } from "react";
-import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import classnames from 'classnames';
+import React, { useState } from 'react';
+import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
-import { Page, Tab as TabPageProps, TabItem } from "../../../../Library";
-import { Image } from "../../Image";
-import { Link } from "react-router-dom";
+import { Page, Tab as TabPageProps, TabItem } from 'platonist-library';
+import { Image } from '../../Image';
+import { Link } from 'react-router-dom';
 
 export const TabPage: React.FunctionComponent<TabPageProps> = (props) => {
   const { tabItem } = props;
   const [activeTab, setActiveTab] = useState<number>(
-    (tabItem && tabItem.length > 0 && tabItem[0]?.id) || 1
+    (tabItem && tabItem.length > 0 && tabItem[0]?.id) || 1,
   );
 
-  const toggle = (id: TabItem<Page>["id"]) => {
+  const toggle = (id: TabItem<Page>['id']) => {
     if (activeTab !== id) setActiveTab(id);
   };
 
@@ -34,7 +34,7 @@ export const TabPage: React.FunctionComponent<TabPageProps> = (props) => {
                 >
                   {tab.icon && (
                     <span className="nav-icon">
-                      <i className={`icon-${tab.icon || "globe"}`} />
+                      <i className={`icon-${tab.icon || 'globe'}`} />
                     </span>
                   )}
                   <span className="nav-text">
@@ -60,8 +60,8 @@ export const TabPage: React.FunctionComponent<TabPageProps> = (props) => {
                   {tab.teaser && <p className="lead">{tab.teaser}</p>}
                   {tab.item && (
                     <Link
-                      className={"btn btn-ghost btn-sized mt-3"}
-                      to={"/" + encodeURI(tab.item.title)}
+                      className={'btn btn-ghost btn-sized mt-3'}
+                      to={'/' + encodeURI(tab.item.title)}
                       title={tab.item.title}
                     >
                       {tab.callToAction

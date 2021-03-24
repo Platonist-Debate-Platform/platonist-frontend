@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Homepage, ContentKeys } from '../../../Library';
+import { Page, Homepage, ContentKeys } from 'platonist-library';
 import { ContentResolverItem, PageResolver } from '../../Partials';
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
 

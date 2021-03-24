@@ -14,7 +14,7 @@ import {
   GlobalState,
   Image as ImageProps,
   PublicRequestKeys,
-} from '../../../Library';
+} from 'platonist-library';
 import useUser from '../../Hooks/Requests/useUser';
 import { Image } from '../Image';
 import { ProfileImageEdit } from './ImageEdit';

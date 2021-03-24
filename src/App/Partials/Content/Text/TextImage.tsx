@@ -1,13 +1,17 @@
 import React from 'react';
 
-import { Image as ImageProps, MediaPosition, MediaSize } from '../../../../Library';
+import {
+  Image as ImageProps,
+  MediaPosition,
+  MediaSize,
+} from 'platonist-library';
 import { Image } from '../../Image';
 
 export interface TextImageProps {
   media: (ImageProps | null)[];
   mediaPosition: MediaPosition;
-  mediaSize: MediaSize,
-  showCaption: boolean,
+  mediaSize: MediaSize;
+  showCaption: boolean;
 }
 
 export const TextImage: React.FC<TextImageProps> = ({
@@ -15,13 +19,12 @@ export const TextImage: React.FC<TextImageProps> = ({
   mediaPosition,
   showCaption,
 }) => {
-  
   const isGallery = media && media.length > 1 ? true : false;
 
   return (
     <>
       {!isGallery && media[0] && (
-        <Image 
+        <Image
           {...media[0]}
           className={`img-wrap-${mediaPosition}`}
           showCaption={showCaption}
@@ -29,4 +32,4 @@ export const TextImage: React.FC<TextImageProps> = ({
       )}
     </>
   );
-}
+};

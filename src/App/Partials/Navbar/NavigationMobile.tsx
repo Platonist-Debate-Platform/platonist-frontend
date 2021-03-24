@@ -1,14 +1,14 @@
 import React, { ReactNode, useState, useEffect } from 'react';
-import { slide as MobileMenu, State } from 'react-burger-menu'
+import { slide as MobileMenu, State } from 'react-burger-menu';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { GlobalState, PublicRequestKeys } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 
 export interface NavigationMobileProps {
-  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router]
+  [PublicRequestKeys.Router]: GlobalState[PublicRequestKeys.Router];
   children: ReactNode;
   isMobileScreen: boolean;
-  screenSize: {height: number; width: number;};
+  screenSize: { height: number; width: number };
   toggle: (state: boolean) => void;
 }
 
@@ -17,23 +17,27 @@ export const NavigationMobileBase: React.FC<NavigationMobileProps> = ({
   isMobileScreen,
   router,
   screenSize,
-  toggle
+  toggle,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [location, setLocation] = useState(router.location);
 
   const handleStateChange = (state: State) => {
-    const navbar = document.getElementById('navbar_main') as HTMLDivElement | null;
-    const navbarBrand = navbar?.querySelector('.navbar-brand') as HTMLAnchorElement | null;
+    const navbar = document.getElementById(
+      'navbar_main',
+    ) as HTMLDivElement | null;
+    const navbarBrand = navbar?.querySelector(
+      '.navbar-brand',
+    ) as HTMLAnchorElement | null;
 
     if (state.isOpen && navbarBrand) {
-      navbarBrand.classList.add('nav-toggled')
+      navbarBrand.classList.add('nav-toggled');
     }
 
     if (!state.isOpen && navbarBrand) {
-      navbarBrand.classList.remove('nav-toggled')
+      navbarBrand.classList.remove('nav-toggled');
     }
-    
+
     if (state.isOpen !== isOpen) {
       setIsOpen(state.isOpen);
     }
@@ -52,18 +56,14 @@ export const NavigationMobileBase: React.FC<NavigationMobileProps> = ({
       }
       setLocation(router.location);
     }
-  }, [
-    location.pathname,
-    isOpen,
-    router.location,
-  ]);
+  }, [location.pathname, isOpen, router.location]);
 
   return (
     <>
       <div className="navbar-sandwich">
-        <button 
+        <button
           className={classNames('navbar-sandwich-toggle', {
-            'active': isOpen,
+            active: isOpen,
           })}
           onClick={handleClick}
         >
@@ -82,15 +82,17 @@ export const NavigationMobileBase: React.FC<NavigationMobileProps> = ({
         outerContainerId="page"
         pageWrapId="main_body"
         right={true}
-        width={isMobileScreen ? '100%' : (screenSize.width * (100 / 3) / 100) * 2}
+        width={
+          isMobileScreen ? '100%' : ((screenSize.width * (100 / 3)) / 100) * 2
+        }
         onStateChange={handleStateChange}
       >
         {children}
       </MobileMenu>
     </>
   );
-}
+};
 
 export const NavigationMobile = connect((state: GlobalState) => ({
   [PublicRequestKeys.Router]: state[PublicRequestKeys.Router],
-}))(NavigationMobileBase)
+}))(NavigationMobileBase);

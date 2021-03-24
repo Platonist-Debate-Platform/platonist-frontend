@@ -10,7 +10,7 @@ import {
   requestAction,
   RequestStatus,
   useConfig,
-} from '../../../Library';
+} from 'platonist-library';
 
 export interface ProfileImageEditProps {
   from: string;
@@ -18,13 +18,11 @@ export interface ProfileImageEditProps {
   to: string;
 }
 
-export const useFile = (props?: {pathname: string, fileName: string}) => {
-  const {
-    result,
-    status
-  } = useSelector<GlobalState, GlobalState[PrivateRequestKeys.File]>(
-    state => state.file,
-  );
+export const useFile = (props?: { pathname: string; fileName: string }) => {
+  const { result, status } = useSelector<
+    GlobalState,
+    GlobalState[PrivateRequestKeys.File]
+  >((state) => state.file);
 
   const prevStatus = usePrevious(status);
 
@@ -35,23 +33,24 @@ export const useFile = (props?: {pathname: string, fileName: string}) => {
   const [file, setFile] = useState<File | undefined>(undefined);
 
   useEffect(() => {
-    
     url.pathname = props?.pathname || '';
 
     if (!props) {
       return;
     }
     if (status === RequestStatus.Initial) {
-      dispatch(requestAction.load(PrivateRequestKeys.File, {
-        url: url.href,
-        responseType: 'blob',
-        withCredentials: true,
-      }));
+      dispatch(
+        requestAction.load(PrivateRequestKeys.File, {
+          url: url.href,
+          responseType: 'blob',
+          withCredentials: true,
+        }),
+      );
     }
     if (status === RequestStatus.Loaded && result && !file) {
       setFile(new File([result], props.fileName));
     }
   }, [props, status, result, file, dispatch, prevStatus, config.api, url]);
-  
+
   return file;
 };

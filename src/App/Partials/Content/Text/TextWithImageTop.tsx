@@ -3,10 +3,12 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Col, Row } from 'reactstrap';
 
-import { TextWithImage as TextWithImageProps } from '../../../../Library';
+import { TextWithImage as TextWithImageProps } from 'platonist-library';
 import { TextImageHorizontal } from './TextImageHorizontal';
 
-export const TextWithImageTop: React.FC<TextWithImageProps & {forJobs?: boolean}> = ({
+export const TextWithImageTop: React.FC<
+  TextWithImageProps & { forJobs?: boolean }
+> = ({
   __component,
   content,
   forJobs,
@@ -17,17 +19,17 @@ export const TextWithImageTop: React.FC<TextWithImageProps & {forJobs?: boolean}
   showCaption,
 }) => {
   const className = __component.replace(/\./g, '-').toLowerCase();
-  
+
   return (
-    <div className={classNames(className, `${className}-top`)} >
-      <div 
+    <div className={classNames(className, `${className}-top`)}>
+      <div
         className={classNames({
-          'container': !forJobs && !isFluid,
+          container: !forJobs && !isFluid,
           'container-fluid': !forJobs && isFluid,
-        })
-      }>
+        })}
+      >
         {media && (
-          <TextImageHorizontal 
+          <TextImageHorizontal
             media={media}
             mediaPosition={mediaPosition}
             mediaSize={mediaSize}
@@ -35,10 +37,11 @@ export const TextWithImageTop: React.FC<TextWithImageProps & {forJobs?: boolean}
           />
         )}
         <Row>
-          <Col md={!forJobs ? 10 : 12} className={classNames({'offset-md-1': !forJobs})} >
-            <ReactMarkdown 
-              source={content}
-            />
+          <Col
+            md={!forJobs ? 10 : 12}
+            className={classNames({ 'offset-md-1': !forJobs })}
+          >
+            <ReactMarkdown source={content} />
           </Col>
         </Row>
       </div>

@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 
-import { GlobalState, PublicRequestKeys } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import { AuthenticationModal } from '../Authentication';
 

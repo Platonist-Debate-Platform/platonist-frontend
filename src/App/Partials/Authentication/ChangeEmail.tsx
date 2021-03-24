@@ -1,12 +1,13 @@
+import { RequestStatus, User } from 'platonist-library';
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
   useState,
-} from "react";
-import { Redirect } from "react-router-dom";
-import { usePrevious } from "react-use";
-import { Form } from "reactstrap";
+} from 'react';
+import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
+import { Form } from 'reactstrap';
 
 import {
   AutocompleteKeys,
@@ -15,11 +16,9 @@ import {
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
-  RequestStatus,
-  User,
-} from "../../../Library";
-import { Input, SubmitButton } from "../../../Library/Form/Fields";
-import useUser from "../../Hooks/Requests/useUser";
+} from '../../../Library';
+import { Input, SubmitButton } from '../../../Library/Form/Fields';
+import useUser from '../../Hooks/Requests/useUser';
 
 interface ChangeEmailData {
   email: string;
@@ -30,19 +29,19 @@ const changeEmailFormData: FormDataConfig<Partial<ChangeEmailData>>[] = [
   {
     autocomplete: AutocompleteKeys.Email,
     editable: true,
-    key: "email",
+    key: 'email',
     required: true,
-    title: "New E-Mail",
+    title: 'New E-Mail',
     type: FormInputTypes.Email,
     validate: FormValidationTypes.Email,
   },
   {
     autocomplete: AutocompleteKeys.Email,
-    compareKey: "email",
+    compareKey: 'email',
     editable: true,
-    key: "emailRepeat",
+    key: 'emailRepeat',
     required: true,
-    title: "Repeat E-mail",
+    title: 'Repeat E-mail',
     type: FormInputTypes.Email,
     validate: FormValidationTypes.Equal,
     validateOptions: {},
@@ -75,11 +74,11 @@ export const ChangeEmail: FunctionComponent<{
 
       send({
         data,
-        method: "POST",
-        pathname: "/auth/local/change-email",
+        method: 'POST',
+        pathname: '/auth/local/change-email',
       });
     },
-    [send]
+    [send],
   );
 
   useEffect(() => {
@@ -98,7 +97,7 @@ export const ChangeEmail: FunctionComponent<{
 
   return (
     <FormProvider
-      data={{ email: "", emailRepeat: "" }}
+      data={{ email: '', emailRepeat: '' }}
       inputConfig={changeEmailFormData}
       reset={shouldReset || reset}
     >

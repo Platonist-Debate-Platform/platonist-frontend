@@ -1,20 +1,20 @@
-import { stringify } from "querystring";
-import React, { FunctionComponent } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Col, Container, Row } from "reactstrap";
-
 import {
   ApplicationKeys,
   Debate,
   GlobalState,
   PublicRequestKeys,
   RestMethodKeys,
-} from "../../../../Library";
-import { DebatePermission } from "./Permission";
+} from 'platonist-library';
+import { stringify } from 'querystring';
+import { FunctionComponent } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Col, Container, Row } from 'reactstrap';
+
+import { DebatePermission } from './Permission';
 
 export interface DebateSettingsProps {
-  debateId?: Debate["id"];
+  debateId?: Debate['id'];
   method: RestMethodKeys;
 }
 

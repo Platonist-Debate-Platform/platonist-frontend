@@ -18,7 +18,7 @@ import {
   ScrollPager,
   withConfig,
   WithConfigProps,
-} from '../../../../Library';
+} from 'platonist-library';
 import { useDebates, useDebateSocket } from '../../../Hooks';
 import { DebateListItem } from './DebateListItem';
 import { DebateFormEdit } from './FormEdit';
@@ -42,7 +42,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
   const [query, setQuery] = useState<QueryParameterBase>({
     _sort: 'created_at:DESC',
     _start: 0,
-    _limit: 2,
+    _limit: 10,
   });
 
   const {
@@ -70,10 +70,14 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
       const count = result?.count || 0;
       const limit = (q._start || 0) + (q._limit || 0);
 
-      if ((result?.next?._start || 0) <= nextStart && count <= limit && status === RequestStatus.Loaded) {
+      if (
+        (result?.next?._start || 0) <= nextStart &&
+        count <= limit &&
+        status === RequestStatus.Loaded
+      ) {
         const newQuery = {
           ...query,
-          ...q
+          ...q,
         };
         send({ query: newQuery });
         setQuery(newQuery);
@@ -89,7 +93,23 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
       reload();
       clearSocket();
     }
-  }, [config, debates, status, page, debate, reload, prevDebate, location.pathname, prevHash, meta.hash, meta, clear, path, clearSocket, query]);
+  }, [
+    config,
+    debates,
+    status,
+    page,
+    debate,
+    reload,
+    prevDebate,
+    location.pathname,
+    prevHash,
+    meta.hash,
+    meta,
+    clear,
+    path,
+    clearSocket,
+    query,
+  ]);
 
   useUnmount(() => {
     if (status === RequestStatus.Loaded) {
@@ -107,7 +127,7 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
             useWindow={true}
             query={{
               ...query,
-              ...result?.current
+              ...result?.current,
             }}
             count={result?.count || 0}
             onReach={handleReach}
@@ -125,7 +145,8 @@ export const DebateListBase: React.FunctionComponent<DebateListProps> = ({
                   )) ||
                   null,
               )}
-          </ScrollPager>)}
+          </ScrollPager>
+        )}
       </section>
     </>
   );

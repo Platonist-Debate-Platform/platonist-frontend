@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
 import {
   GlobalState,
   PrivateRequestKeys,
@@ -8,12 +5,15 @@ import {
   requestAction,
   RequestStatus,
   useConfig,
-} from "../../../Library";
-import { useAuthentication } from "./useAuthentication";
+} from 'platonist-library';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useAuthentication } from './useAuthentication';
 
 export interface UseRequestSendProps<Data extends Object> {
   data?: Partial<Data>;
-  method: "GET" | "POST" | "PUT";
+  method: 'GET' | 'POST' | 'PUT';
   pathname?: string;
   search?: string;
   headers?: { [key: string]: string };
@@ -28,7 +28,7 @@ export const useUser = <Data extends Object>(id?: string) => {
   url.pathname = `users/${userId}`;
 
   const user = useSelector<GlobalState, GlobalState[PrivateRequestKeys.User]>(
-    (state) => state[PrivateRequestKeys.User]
+    (state) => state[PrivateRequestKeys.User],
   );
 
   const send = ({
@@ -42,7 +42,7 @@ export const useUser = <Data extends Object>(id?: string) => {
     if (pathname) {
       sendUrl = config.createApiUrl(config.api.config);
       sendUrl.pathname = pathname;
-      sendUrl.search = search || "";
+      sendUrl.search = search || '';
     }
 
     if (userId && isAuthenticated) {
@@ -52,7 +52,7 @@ export const useUser = <Data extends Object>(id?: string) => {
           url: sendUrl?.href || url.href,
           data,
           withCredentials: true,
-        })
+        }),
       );
     }
   };
@@ -61,10 +61,10 @@ export const useUser = <Data extends Object>(id?: string) => {
     if (userId && isAuthenticated && user.status === RequestStatus.Initial) {
       dispatch(
         requestAction.load(PrivateRequestKeys.User, {
-          method: "GET",
+          method: 'GET',
           url: url.href,
           withCredentials: true,
-        })
+        }),
       );
     }
   }, [dispatch, isAuthenticated, user, url.href, state?.status, userId]);

@@ -7,7 +7,7 @@ import {
   Debate,
   PublicRequestKeys,
   RequestStatus,
-} from '../../../Library';
+} from 'platonist-library';
 import { useComments, useDebates } from '../../Hooks';
 import { CollapseWithRoute } from '../Collapse';
 import { CommentForm } from './CommentForm';

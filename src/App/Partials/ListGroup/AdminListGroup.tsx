@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 
 import { Navigation } from '../Navbar';
-import { GlobalState, Homepage } from '../../../Library';
+import { GlobalState, Homepage } from 'platonist-library';
 import { NavigationType } from '../Navbar/Keys';
 import { Link } from 'react-router-dom';
 
@@ -13,14 +13,12 @@ export const AdminListGroupItem: FunctionComponent<Homepage> = (homepage) => {
   return (
     <ListGroupItem>
       <div className="">
-        <i className="fa fa-plus mr-3"/> 
-        <Link to={baseLink}>
-          {homepage.url}
-        </Link>
+        <i className="fa fa-plus mr-3" />
+        <Link to={baseLink}>{homepage.url}</Link>
       </div>
       <div>
         {homepage.pages && (
-          <Navigation 
+          <Navigation
             className={'nav-admin'}
             navFor={NavigationType.Admin}
             isHomepage={router.location.pathname === '/'}
@@ -33,19 +31,23 @@ export const AdminListGroupItem: FunctionComponent<Homepage> = (homepage) => {
       </div>
     </ListGroupItem>
   );
-}
+};
 
-export interface AdminListGroupProps {
-
-}
+export interface AdminListGroupProps {}
 
 export const AdminListGroup: FunctionComponent<AdminListGroupProps> = () => {
   const homepages = useSelector((state: GlobalState) => state.homepages);
-  return (homepages.result && (
-    <ListGroup>
-      {homepages.result.map((homepage, index) => 
-        <AdminListGroupItem key={`list_group_item_homepages_${homepage.id}_${index}`} {...homepage} />
-      )}
-    </ListGroup>
-  )) || null;
-}
+  return (
+    (homepages.result && (
+      <ListGroup>
+        {homepages.result.map((homepage, index) => (
+          <AdminListGroupItem
+            key={`list_group_item_homepages_${homepage.id}_${index}`}
+            {...homepage}
+          />
+        ))}
+      </ListGroup>
+    )) ||
+    null
+  );
+};

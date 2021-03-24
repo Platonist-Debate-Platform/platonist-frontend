@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import { Teaser as TeaserProps } from "../../../../Library";
-import { ContentResolverItemDefaultProps } from "../ContentResolver";
-import { Container, Row, Col } from "reactstrap";
+import { Teaser as TeaserProps } from 'platonist-library';
+import { ContentResolverItemDefaultProps } from '../ContentResolver';
+import { Container, Row, Col } from 'reactstrap';
 
-import shadeRight from "../../../../Assets/Images/gct_circle-shape_right.svg";
+import shadeRight from '../../../../Assets/Images/gct_circle-shape_right.svg';
 
 export const Teaser: React.FC<
   TeaserProps & ContentResolverItemDefaultProps
 > = ({ lead, title, isFluid }) => {
   let style;
-  let classNameRow = "align-items-end";
-  let classNameCol = "";
+  let classNameRow = 'align-items-end';
+  let classNameCol = '';
 
   style = {
     backgroundImage: `url(${shadeRight})`,
@@ -20,8 +20,8 @@ export const Teaser: React.FC<
     style = {
       height: `30vh`,
     };
-    classNameRow = "";
-    classNameCol = "offset-md-3 text-center";
+    classNameRow = '';
+    classNameCol = 'offset-md-3 text-center';
   }
 
   return (

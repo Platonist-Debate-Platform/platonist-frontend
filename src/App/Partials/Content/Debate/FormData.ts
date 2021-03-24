@@ -1,6 +1,6 @@
+import { Article, Debate } from 'platonist-library';
+
 import {
-  Article,
-  Debate,
   FormDataConfig,
   FormInputTypes,
   FormValidationTypes,

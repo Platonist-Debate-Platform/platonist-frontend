@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { match as Match } from 'react-router-dom';
 
-import { Debate, PublicRequestKeys } from '../../../Library';
+import { Debate, PublicRequestKeys } from 'platonist-library';
 import { useComments } from '../../Hooks';
 
 export interface CommentRouteProps {
@@ -14,7 +14,7 @@ export const CommentRoute: FunctionComponent<CommentRouteProps> = ({
   match,
 }) => {
   const {
-    state: { result: comments, status },
+    state: { result: comments },
   } = useComments({
     key: PublicRequestKeys.Comments,
     query: {

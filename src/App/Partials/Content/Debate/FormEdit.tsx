@@ -1,15 +1,17 @@
-import { parse, ParsedQs, stringify } from 'qs';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-
 import {
   ApplicationKeys,
-  createDefaultData,
   Debate,
-  getDefaultDataFromResult,
   GlobalState,
   PublicRequestKeys,
   RestMethodKeys,
+} from 'platonist-library';
+import { parse, ParsedQs, stringify } from 'qs';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import {
+  createDefaultData,
+  getDefaultDataFromResult,
 } from '../../../../Library';
 import { DebateDelete } from './Delete';
 import { DebateForm } from './Form';

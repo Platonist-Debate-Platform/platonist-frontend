@@ -9,7 +9,7 @@ import { Redirect } from 'react-router-dom';
 import { usePrevious } from 'react-use';
 import { Collapse } from 'reactstrap';
 
-import { GlobalState, PublicRequestKeys } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 
 export interface CollapseWithRouteProps {
   children: ReactNode;

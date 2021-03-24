@@ -11,7 +11,7 @@ import {
   RequestStatus,
   useConfig,
   User,
-} from '../../../Library';
+} from 'platonist-library';
 import { useRequest, UseRequestBaseProps } from './useRequest';
 
 /**

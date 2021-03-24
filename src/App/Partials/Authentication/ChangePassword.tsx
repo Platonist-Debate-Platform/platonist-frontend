@@ -1,12 +1,14 @@
+import { RequestStatus, User } from 'platonist-library';
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
   useState,
-} from "react";
-import { Redirect } from "react-router-dom";
-import { usePrevious } from "react-use";
-import { Form } from "reactstrap";
+} from 'react';
+import { Redirect } from 'react-router-dom';
+import { usePrevious } from 'react-use';
+import { Form } from 'reactstrap';
+
 import {
   AutocompleteKeys,
   FormClickEvent,
@@ -14,11 +16,9 @@ import {
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
-  RequestStatus,
-  User,
-} from "../../../Library";
-import { Input, SubmitButton } from "../../../Library/Form/Fields";
-import useUser from "../../Hooks/Requests/useUser";
+} from '../../../Library';
+import { Input, SubmitButton } from '../../../Library/Form/Fields';
+import useUser from '../../Hooks/Requests/useUser';
 
 interface ChangePasswordData {
   oldPassword: string;
@@ -30,28 +30,28 @@ const changePasswordFormData: FormDataConfig<Partial<ChangePasswordData>>[] = [
   {
     autocomplete: AutocompleteKeys.Email,
     editable: true,
-    key: "oldPassword",
+    key: 'oldPassword',
     required: true,
-    title: "Old password",
+    title: 'Old password',
     type: FormInputTypes.Password,
     validate: FormValidationTypes.Length,
   },
   {
     autocomplete: AutocompleteKeys.CurrentPassword,
     editable: true,
-    key: "password",
+    key: 'password',
     required: true,
-    title: "Password",
+    title: 'Password',
     type: FormInputTypes.Password,
     validate: FormValidationTypes.Password,
   },
   {
     autocomplete: AutocompleteKeys.CurrentPassword,
-    compareKey: "password",
+    compareKey: 'password',
     editable: true,
-    key: "passwordRepeat",
+    key: 'passwordRepeat',
     required: true,
-    title: "Repeat password",
+    title: 'Repeat password',
     type: FormInputTypes.Password,
     validate: FormValidationTypes.Equal,
     validateOptions: {},
@@ -84,11 +84,11 @@ export const ChangePassword: FunctionComponent<{
 
       send({
         data,
-        method: "POST",
-        pathname: "/auth/local/change-password",
+        method: 'POST',
+        pathname: '/auth/local/change-password',
       });
     },
-    [send]
+    [send],
   );
 
   useEffect(() => {
@@ -107,7 +107,7 @@ export const ChangePassword: FunctionComponent<{
 
   return (
     <FormProvider
-      data={{ oldPassword: "", password: "", passwordRepeat: "" }}
+      data={{ oldPassword: '', password: '', passwordRepeat: '' }}
       inputConfig={changePasswordFormData}
       reset={shouldReset || reset}
     >

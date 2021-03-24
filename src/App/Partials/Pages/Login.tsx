@@ -3,7 +3,7 @@ import React, { FunctionComponent, ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Col, Container, Row } from 'reactstrap';
-import { GlobalState, PublicRequestKeys } from '../../../Library';
+import { GlobalState, PublicRequestKeys } from 'platonist-library';
 
 import { useAuthentication } from '../../Hooks';
 import { Authentication } from '../Authentication';

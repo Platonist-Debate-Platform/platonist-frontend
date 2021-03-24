@@ -1,7 +1,6 @@
+import { AlertTypes } from 'platonist-library';
 import React, { Component } from 'react';
 import { Progress } from 'reactstrap';
-
-import { AlertTypes } from './Redux';
 
 export interface AlertsProgressProps {
   done?: () => void;
@@ -13,12 +12,15 @@ export interface AlertsProgressState {
   intervalId?: NodeJS.Timeout | number;
 }
 
-export class AlertsProgress extends Component<AlertsProgressProps, AlertsProgressState> {
+export class AlertsProgress extends Component<
+  AlertsProgressProps,
+  AlertsProgressState
+> {
   constructor(props: AlertsProgressProps) {
     super(props);
 
     this.state = {
-      count: 100
+      count: 100,
     };
 
     this.timer = this.timer.bind(this);
@@ -31,24 +33,25 @@ export class AlertsProgress extends Component<AlertsProgressProps, AlertsProgres
       intervalId: intervalId,
     });
   }
-  
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     // use intervalId from the state to clear the interval
     clearInterval(this.state.intervalId as number);
- }
+  }
 
-  private timer () {
-   const newCount = this.state.count - 1;
+  private timer() {
+    const newCount = this.state.count - 1;
 
-    if (newCount >= 0) { 
-      this.setState({ 
-        count: newCount
+    if (newCount >= 0) {
+      this.setState({
+        count: newCount,
       });
-    }
-    else {
+    } else {
       clearInterval(this.state.intervalId as number);
       const callBack = () => {
-        if (this.props.done) { this.props.done(); }
+        if (this.props.done) {
+          this.props.done();
+        }
       };
       setTimeout(callBack, 100);
     }
@@ -56,7 +59,7 @@ export class AlertsProgress extends Component<AlertsProgressProps, AlertsProgres
 
   render() {
     return (
-      <Progress 
+      <Progress
         animated={true}
         color={this.props.type}
         value={(this.state.count - 100) * -1}

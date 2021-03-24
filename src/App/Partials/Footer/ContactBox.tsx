@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { connect } from "react-redux";
-import { Col, Container, Row } from "reactstrap";
+import { Contact, GlobalState, PublicRequestKeys } from 'platonist-library';
+import React, { FC } from 'react';
+import { connect } from 'react-redux';
+import { Col, Container, Row } from 'reactstrap';
 
-import { Contact, GlobalState, PublicRequestKeys } from "../../../Library";
-import { Image } from "../Image";
+import { Image } from '../Image';
 
 interface ContactBoxProps {
   [PublicRequestKeys.Page]: GlobalState[PublicRequestKeys.Page];
@@ -12,17 +12,16 @@ interface ContactBoxProps {
 }
 
 export const ContactBoxBase: FC<ContactBoxProps> = (props) => {
-  const { page, router} = props;
+  const { page, router } = props;
 
   const pageContact = page.result && page.result.contact;
   const homepageContact =
-    router.location.pathname === "/" ? props.contact : null;
-  const contact =
-     pageContact || homepageContact || null; // props.contact;
+    router.location.pathname === '/' ? props.contact : null;
+  const contact = pageContact || homepageContact || null; // props.contact;
 
   return (
     contact &&
-    ((router.location.pathname !== "/404" && (
+    ((router.location.pathname !== '/404' && (
       <section className="section section-contact">
         <div className="contact">
           <Container>
@@ -54,7 +53,7 @@ export const ContactBoxBase: FC<ContactBoxProps> = (props) => {
                       <a href={`tel:${contact.author.phone}`}>
                         <i className="icon-phone" />
                         {contact.author.phone}
-                      </a>{" "}
+                      </a>{' '}
                       <br />
                       <a href={`mailto:${contact.email}`}>
                         <i className="icon-mail" /> {contact.email}

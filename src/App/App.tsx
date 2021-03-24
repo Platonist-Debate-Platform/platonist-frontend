@@ -1,15 +1,17 @@
-import React from 'react';
+import { getCurrentHomepage, RequestStatus } from 'platonist-library';
+import { FunctionComponent } from 'react';
 
-import { getCurrentHomepage, RequestStatus, SetScrollPosition } from '../Library';
+import { SetScrollPosition } from '../Library';
 import { useHomepages } from './Hooks';
-import HomepageRoutes from './Partials/Routes/HomepageRoutes';
-import LoaderMain from './Partials/Loader/LoaderMain';
 import { Loader, NotFound } from './Partials';
+import LoaderMain from './Partials/Loader/LoaderMain';
+import HomepageRoutes from './Partials/Routes/HomepageRoutes';
 
-export const App: React.FC = () => {
+export const App: FunctionComponent = () => {
   const homepages = useHomepages();
   const location = window.location;
-  const homepage = homepages.result && getCurrentHomepage(location, homepages.result);
+  const homepage =
+    homepages.result && getCurrentHomepage(location, homepages.result);
 
   if (!homepages) {
     return null;
@@ -21,24 +23,16 @@ export const App: React.FC = () => {
         <>
           <Loader />
           <SetScrollPosition>
-            {homepage ? (
-              <HomepageRoutes {...homepage} />
-            ) : (
-              <NotFound />
-            )}
+            {homepage ? <HomepageRoutes {...homepage} /> : <NotFound />}
           </SetScrollPosition>
         </>
       );
     case RequestStatus.Error:
-      return (
-        <NotFound />
-      );
+      return <NotFound />;
     case RequestStatus.Initial:
     case RequestStatus.Updating:
     default:
-      return (
-        <LoaderMain />
-      );
+      return <LoaderMain />;
   }
 };
 

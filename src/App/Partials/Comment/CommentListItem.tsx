@@ -21,7 +21,7 @@ import {
   RolePermissionTypes,
   RoleState,
   User,
-} from '../../../Library';
+} from 'platonist-library';
 import { usePermission, useRoles, useUser } from '../../Hooks';
 import { CommentItem } from './CommentItem';
 import { CommentReplies } from './CommentReplies';

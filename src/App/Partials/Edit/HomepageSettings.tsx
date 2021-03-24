@@ -1,5 +1,3 @@
-import React, { FunctionComponent } from "react";
-
 import {
   ApplicationKeys,
   PrivateRequestKeys,
@@ -7,8 +5,10 @@ import {
   RolePermissionTypes,
   RoleState,
   User,
-} from "../../../Library";
-import { usePermission, useRoles } from "../../Hooks";
+} from 'platonist-library';
+import React, { FunctionComponent } from 'react';
+
+import { usePermission, useRoles } from '../../Hooks';
 
 export interface HomepageSettingsProps {
   user: User;

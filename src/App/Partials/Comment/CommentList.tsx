@@ -18,7 +18,7 @@ import {
   RolePermissionTypes,
   RoleState,
   useConfig,
-} from '../../../Library';
+} from 'platonist-library';
 import {
   useComments,
   useCommentSocket,

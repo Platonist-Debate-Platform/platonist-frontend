@@ -1,3 +1,12 @@
+import {
+  Article,
+  GlobalState,
+  PrivateRequestKeys,
+  ReactReduxRequestDispatch,
+  requestAction,
+  RequestStatus,
+  useConfig,
+} from 'platonist-library';
 import React, {
   FunctionComponent,
   useCallback,
@@ -10,17 +19,10 @@ import { usePrevious } from 'react-use';
 import { Button, Col, FormGroup, Label, Row } from 'reactstrap';
 
 import {
-  Article,
   FormContext,
   FormContextValue,
   FormDataItem,
-  GlobalState,
-  PrivateRequestKeys,
-  ReactReduxRequestDispatch,
-  requestAction,
-  RequestStatus,
   SetFormValueFn,
-  useConfig,
   useInputValue,
 } from '../../../../Library';
 import { Input } from '../../../../Library/Form/Fields';

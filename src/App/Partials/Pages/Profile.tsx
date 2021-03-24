@@ -7,7 +7,7 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-} from '../../../Library';
+} from 'platonist-library';
 import { useUserComments } from '../../Hooks';
 import useUser from '../../Hooks/Requests/useUser';
 import {

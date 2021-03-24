@@ -1,6 +1,12 @@
 import React, { FunctionComponent } from 'react';
 
-import { ApplicationKeys, PrivateRequestKeys, RestMethodKeys, RolePermissionTypes, RoleState } from '../../../../Library';
+import {
+  ApplicationKeys,
+  PrivateRequestKeys,
+  RestMethodKeys,
+  RolePermissionTypes,
+  RoleState,
+} from 'platonist-library';
 import { usePermission } from '../../../Hooks';
 import { useRoles, useUser } from '../../../Hooks/Requests';
 
@@ -13,27 +19,25 @@ export const DebatePermission: FunctionComponent<DebatePermissionProps> = ({
   method,
 }) => {
   const {
-    user: {
-      result: user,
-    },
+    user: { result: user },
   } = useUser();
   const role = useRoles(PrivateRequestKeys.Role, user?.role?.id) as RoleState;
-  
+
   const [hasPermission] = usePermission({
-    methods: method || [RestMethodKeys.Create, RestMethodKeys.Update, RestMethodKeys.Delete],
+    methods: method || [
+      RestMethodKeys.Create,
+      RestMethodKeys.Update,
+      RestMethodKeys.Delete,
+    ],
     permission: RolePermissionTypes.Application,
     type: ApplicationKeys.Debate,
     id: user?.role?.id,
     state: role,
   });
-  
+
   if (!hasPermission) {
     return null;
   }
 
-  return (
-    <>
-      {children}
-    </>
-  );
-}
+  return <>{children}</>;
+};

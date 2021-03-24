@@ -1,11 +1,16 @@
 import './Alerts.scss';
 
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 
-import { GlobalState, PublicRequestKeys } from '../Redux';
 import { AlertsList } from './AlertsList';
-import { AlertDispatch, AlertTypes } from './Redux';
+
+import {
+  GlobalState,
+  PublicRequestKeys,
+  AlertDispatch,
+  AlertTypes,
+} from 'platonist-library';
 
 export interface AlertProps {
   [PublicRequestKeys.Alerts]: GlobalState[PublicRequestKeys.Alerts];
@@ -13,25 +18,25 @@ export interface AlertProps {
 }
 
 export const AlertsWithoutState: FunctionComponent<AlertProps> = (props) => {
-  const {
-    alerts,
-    dispatch,
-  } = props;
-  
-  const alertKeys = Object.keys(props.alerts) as (keyof GlobalState[PublicRequestKeys.Alerts])[] as AlertTypes[];
-  const hasAlerts = alertKeys.some(key => alerts[key].length > 0);
-  
+  const { alerts, dispatch } = props;
+
+  const alertKeys = (Object.keys(
+    props.alerts,
+  ) as (keyof GlobalState[PublicRequestKeys.Alerts])[]) as AlertTypes[];
+  const hasAlerts = alertKeys.some((key) => alerts[key].length > 0);
+
   return hasAlerts ? (
     <div className="alerts-wrap">
       {alertKeys.map((key, index) => {
         const alertCategory = alerts[key];
-        return alertCategory && alertCategory.length > 0 ? 
-          <AlertsList 
+        return alertCategory && alertCategory.length > 0 ? (
+          <AlertsList
             alerts={alertCategory}
             alertType={key}
             dispatch={dispatch}
             key={`alert_${key}_${index}`}
-          /> : null;
+          />
+        ) : null;
       })}
     </div>
   ) : null;

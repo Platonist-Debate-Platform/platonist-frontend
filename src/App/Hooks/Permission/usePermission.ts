@@ -10,7 +10,7 @@ import {
   RolePermissions,
   RolePermissionTypes,
   RoleState,
-} from '../../../Library';
+} from 'platonist-library';
 
 export interface HasPermissionOptions {
   methods: RestMethodKeys | RestMethodKeys[];

@@ -2,14 +2,10 @@ import { isEmpty } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { FormattedDate } from 'react-intl';
 import { Badge, Col, Container, Row } from 'reactstrap';
-import {
-  Article,
-  Debate,
-  DebateLink,
-  RestMethodKeys,
-} from '../../../../Library';
+import { Article, Debate, RestMethodKeys } from 'platonist-library';
 import { ArticleItem } from '../../Article';
 import { DebateSettings } from './Settings';
+import { DebateLink } from '../../../../Library';
 
 export interface DebateListItemProps extends Debate {
   pageTitle: string;

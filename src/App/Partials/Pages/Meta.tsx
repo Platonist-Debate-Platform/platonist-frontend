@@ -1,7 +1,13 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-import { Homepage, isDevelopment, Meta, useConfig, ApiProtocol } from '../../../Library';
+import {
+  Homepage,
+  isDevelopment,
+  Meta,
+  useConfig,
+  ApiProtocol,
+} from 'platonist-library';
 
 export interface PageMetaProps {
   homepage: Homepage;
@@ -17,26 +23,35 @@ export const PageMeta: React.FC<PageMetaProps> = ({
   title,
 }) => {
   const config = useConfig();
-  const isLocal = isDevelopment && window.location.hostname === ('localhost' || '127.0.0.1') ? true : false;
-  
-  const baseUrl = isLocal ? config.createApiUrl({
-    url: config.env.host,
-    port: config.env.port,
-    protocol: config.env.protocol,
-    path: path || '',
-  }) : config.createApiUrl({
-      url: homepage.url,
-      port: undefined,
-      protocol: ApiProtocol.Https,
-      path: path || '',
-  });
+  const isLocal =
+    isDevelopment && window.location.hostname === ('localhost' || '127.0.0.1')
+      ? true
+      : false;
+
+  const baseUrl = isLocal
+    ? config.createApiUrl({
+        url: config.env.host,
+        port: config.env.port,
+        protocol: config.env.protocol,
+        path: path || '',
+      })
+    : config.createApiUrl({
+        url: homepage.url,
+        port: undefined,
+        protocol: ApiProtocol.Https,
+        path: path || '',
+      });
 
   const isHome = baseUrl.pathname === ('/' || '') ? true : false;
 
-  const metaData: JSX.IntrinsicElements['meta'][] = (meta && meta.length > 0 && meta.map(item => ({
-    name: item?.name,
-    content: item?.content,
-  }))) || [];
+  const metaData: JSX.IntrinsicElements['meta'][] =
+    (meta &&
+      meta.length > 0 &&
+      meta.map((item) => ({
+        name: item?.name,
+        content: item?.content,
+      }))) ||
+    [];
 
   if (homepage.admin) {
     metaData.push({
@@ -48,9 +63,7 @@ export const PageMeta: React.FC<PageMetaProps> = ({
   const dynamicTitle = isHome ? homepage.title : `${homepage.title} | ${title}`;
 
   return (
-    <Helmet
-      meta={metaData}
-    >
+    <Helmet meta={metaData}>
       <base href={baseUrl.href} />
       <title>{dynamicTitle}</title>
     </Helmet>

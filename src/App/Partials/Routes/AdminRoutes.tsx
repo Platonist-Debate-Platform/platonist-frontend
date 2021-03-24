@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { Col } from 'reactstrap';
 
-import { GlobalState, Homepage, User } from '../../../Library';
+import { GlobalState, Homepage, User } from 'platonist-library';
 import { useRoutes } from '../../Hooks';
 import { AdminListGroup } from '../ListGroup';
 import { HomepageResolver } from '../Pages';
 
 const AdminHomepageRoutes: FunctionComponent<Homepage> = (homepage) => {
-  
   const path = `/admin/${homepage.url}`;
   const routes = useRoutes({
     isAdmin: true,
@@ -19,19 +18,17 @@ const AdminHomepageRoutes: FunctionComponent<Homepage> = (homepage) => {
 
   return (
     <>
-      <Route 
-        path={path} 
-        exact={true} 
-        render={() => 
-          <HomepageResolver {...homepage} isAdmin={true}/>
-        } 
+      <Route
+        path={path}
+        exact={true}
+        render={() => <HomepageResolver {...homepage} isAdmin={true} />}
       />
       {routes.map((route, index) => (
         <Route {...route} key={`admin_route_${index}`} />
       ))}
     </>
   );
-}
+};
 
 export const AdminRoutes: FunctionComponent<User> = (props) => {
   const homepages = useSelector((state: GlobalState) => state.homepages);
@@ -42,9 +39,13 @@ export const AdminRoutes: FunctionComponent<User> = (props) => {
         <AdminListGroup />
       </Col>
       <Col md={9}>
-        {homepages.result && homepages.result.map((homepage, index) => 
-          <AdminHomepageRoutes {...homepage} key={`admin_page_route_${index}`} />
-        )}
+        {homepages.result &&
+          homepages.result.map((homepage, index) => (
+            <AdminHomepageRoutes
+              {...homepage}
+              key={`admin_page_route_${index}`}
+            />
+          ))}
       </Col>
     </>
   );

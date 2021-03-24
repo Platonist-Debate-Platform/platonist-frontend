@@ -7,7 +7,7 @@ import {
   GlobalState,
   PublicRequestKeys,
   User,
-} from '../../../Library';
+} from 'platonist-library';
 import TimeAgo from 'react-timeago';
 import { useSelector } from 'react-redux';
 import { DismissButton } from './DismissButton';

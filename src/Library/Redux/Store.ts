@@ -5,9 +5,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { createLogger } from 'redux-logger';
 import { createLogicMiddleware } from 'redux-logic';
 
-import createRootReducer, { reactReduxRequest } from './Reducer';
-import { GlobalState } from './Types';
-import { isDevelopment } from '../Config';
+import {
+  isDevelopment,
+  GlobalState,
+  createRootReducer,
+  reactReduxRequest,
+} from 'platonist-library';
 
 const logger = createLogger({
   collapsed: true,
@@ -19,17 +22,11 @@ const logics = reactReduxRequest.createLogic();
 
 const logicMiddleware = createLogicMiddleware(logics);
 
-const middleware = isDevelopment ?
-  composeWithDevTools(
-    applyMiddleware(
-      routerMiddleware(history),
-      logger,
-      logicMiddleware,
-    ),
-  ) : applyMiddleware(
-    routerMiddleware(history),
-    logicMiddleware,
-  );
+const middleware = isDevelopment
+  ? composeWithDevTools(
+      applyMiddleware(routerMiddleware(history), logger, logicMiddleware),
+    )
+  : applyMiddleware(routerMiddleware(history), logicMiddleware);
 
 export const configureStore = (preloadedState?: GlobalState) => {
   const store = createStore(
@@ -38,7 +35,7 @@ export const configureStore = (preloadedState?: GlobalState) => {
     middleware,
   );
 
-  return store
-}
+  return store;
+};
 
 export default configureStore;

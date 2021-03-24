@@ -1,23 +1,20 @@
 import classNames from 'classnames';
-import React, {
-  FunctionComponent,
-  ReactElement,
-  useEffect,
-  useState,
-} from 'react';
+import {
+  Comment,
+  Debate,
+  PrivateRequestKeys,
+  RequestStatus,
+} from 'platonist-library';
+import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { usePrevious } from 'react-use';
 import { Form } from 'reactstrap';
 
 import {
-  Comment,
-  Debate,
   FormClickEvent,
   FormDataConfig,
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
-  PrivateRequestKeys,
-  RequestStatus,
 } from '../../../Library';
 import { SubmitButton, Text } from '../../../Library/Form/Fields';
 import { useAuthentication, useComments } from '../../Hooks';
