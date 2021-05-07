@@ -15,9 +15,9 @@ import {
   requestAction,
   RequestStatus,
   ToggleType,
-  useConfig,
 } from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
+import { useConfig } from '../../../Library';
 
 export const PageLogout: FunctionComponent = () => {
   const authentication = useSelector<

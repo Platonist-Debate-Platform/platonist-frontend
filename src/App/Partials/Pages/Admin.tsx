@@ -10,10 +10,10 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-  useConfig,
 } from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import { AdminRoutes } from '../Routes';
+import { useConfig } from '../../../Library';
 
 export const PageAdmin: FunctionComponent = () => {
   const config = useConfig();

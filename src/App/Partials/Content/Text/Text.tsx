@@ -3,7 +3,7 @@ import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Col, Row } from 'reactstrap';
 
-import { assetRenderer, Text as TextComponentProps } from 'platonist-library';
+import { Text as TextComponentProps } from 'platonist-library';
 
 export const TextComponent: React.FunctionComponent<
   TextComponentProps & { forJobs?: boolean }
@@ -28,11 +28,14 @@ export const TextComponent: React.FunctionComponent<
             className={classNames({ 'offset-md-1': !forJobs })}
           >
             <ReactMarkdown
-              source={content}
-              renderers={{
-                image: assetRenderer,
-              }}
-            />
+              // components={{
+              //   image: ({node, }) => {
+              //     return node && node.properties && <>{assetRenderer({src: node.properties.src})}</>
+              //   },
+              // }}
+            >
+              {content}
+            </ReactMarkdown>
           </Col>
         </Row>
       </div>

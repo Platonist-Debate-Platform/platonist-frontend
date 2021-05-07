@@ -5,7 +5,6 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-  useConfig,
 } from 'platonist-library';
 import React, {
   FunctionComponent,
@@ -23,6 +22,7 @@ import {
   FormContextValue,
   FormDataItem,
   SetFormValueFn,
+  useConfig,
   useInputValue,
 } from '../../../../Library';
 import { Input } from '../../../../Library/Form/Fields';

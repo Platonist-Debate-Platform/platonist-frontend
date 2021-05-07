@@ -27,7 +27,9 @@ export const TextWithList: React.FunctionComponent<
             md={!forJobs ? 10 : 12}
             className={classNames({ 'offset-md-1': !forJobs })}
           >
-            <ReactMarkdown source={content} />
+            <ReactMarkdown>
+              {content}
+            </ReactMarkdown>
             {items && items.length > 0 && (
               <ul>
                 {items.map(

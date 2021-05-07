@@ -1,7 +1,7 @@
 import { getCurrentHomepage, RequestStatus } from 'platonist-library';
 import { FunctionComponent } from 'react';
 
-import { SetScrollPosition } from '../Library';
+import { isDevelopment, SetScrollPosition } from '../Library';
 import { useHomepages } from './Hooks';
 import { Loader, NotFound } from './Partials';
 import LoaderMain from './Partials/Loader/LoaderMain';
@@ -11,8 +11,12 @@ export const App: FunctionComponent = () => {
   const homepages = useHomepages();
   const location = window.location;
   const homepage =
-    homepages.result && getCurrentHomepage(location, homepages.result);
-
+    homepages.result && getCurrentHomepage(location, homepages.result, isDevelopment);
+  
+  console.log(isDevelopment);
+  
+  console.log(homepages);
+  
   if (!homepages) {
     return null;
   }

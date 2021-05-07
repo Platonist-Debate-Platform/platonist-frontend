@@ -3,20 +3,19 @@ import {
   AvailableLanguages,
   AvailableLanguagesExtended,
 } from 'platonist-library';
-import { createIntl, createIntlCache } from 'react-intl';
-import { OptionalIntlConfig } from 'react-intl/src/components/provider';
+import { createIntl, createIntlCache, IntlConfig } from 'react-intl';
 
 import translations from '../../Assets/I18n/messages';
 
 const intlCache = createIntlCache();
 
-const intlConfigDe: OptionalIntlConfig = {
+const intlConfigDe: IntlConfig = {
   locale: AvailableLanguagesExtended.DeDE,
   defaultLocale: AvailableLanguagesExtended.En150,
   messages: translations.de,
 };
 
-const intlConfigEn: OptionalIntlConfig = {
+const intlConfigEn: IntlConfig = {
   locale: AvailableLanguagesExtended.En150,
   messages: translations.en,
 };

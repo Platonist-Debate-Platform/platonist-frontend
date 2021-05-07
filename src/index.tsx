@@ -10,7 +10,7 @@ import 'core-js/es/set';
 import 'raf/polyfill';
 
 import { ConnectedRouter } from 'connected-react-router';
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 import { connect, Provider } from 'react-redux';
@@ -18,17 +18,13 @@ import { connect, Provider } from 'react-redux';
 import App from './App/App';
 import {
   AvailableLanguage,
-  ConfigProvider,
-  defaultConfig,
   GlobalState,
-  isProduction,
-  isStaging,
-  isTest,
 } from 'platonist-library';
 import { configureStore, history } from './Library/Redux/Store';
 import { Alerts } from './Library/Alerts';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { ConfigProvider, defaultConfig, isProduction, isStaging, isTest } from './Library';
 
 // initGTM();
 
@@ -36,12 +32,11 @@ const store = configureStore();
 
 const AppWithTranslationWithoutState: FunctionComponent<{
   locals: AvailableLanguage;
-}> = ({ locals }) => (
+}> = ({ locals }) =>
   <IntlProvider {...locals.intl}>
     <App />
     <Alerts />
-  </IntlProvider>
-);
+  </IntlProvider>;
 
 const AppWithTranslation = connect((state: GlobalState) => ({
   locals: state.locals,

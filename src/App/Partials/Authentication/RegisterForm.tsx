@@ -1,7 +1,6 @@
 import {
   GlobalState,
   PublicRequestKeys,
-  useConfig,
   User,
   ReactReduxRequestDispatch,
   requestAction,
@@ -18,6 +17,7 @@ import {
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
+  useConfig,
 } from '../../../Library';
 import { Input, SubmitButton } from '../../../Library/Form/Fields';
 

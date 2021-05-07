@@ -118,7 +118,7 @@ globPromise()
       );
       _assign(locales, { [availableLanguages[index]]: trans });
     });
-    const writeTSTrabslations = fs.writeFileSync(
+    const writeTSTranslations = fs.writeFileSync(
       path.resolve(process.cwd(), 'src', 'Assets', 'I18n', 'messages.ts'),
       `/* tslint:disable:quotemark */\n\n` +
         `/* tslint:disable:max-line-length */\n\n` +
@@ -131,7 +131,7 @@ globPromise()
         )};\n\n` +
         `export default translations;`,
     );
-    return Promise.all([writeTranslations, writeTSTrabslations]);
+    return Promise.all([writeTranslations, writeTSTranslations]);
   })
   .then(() => console.log('Done translations.'))
   .catch((err) => console.log(err));

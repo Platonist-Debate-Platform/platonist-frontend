@@ -1,4 +1,4 @@
-import 'react-image-crop/lib/ReactCrop.scss';
+// import 'react-image-crop/lib/ReactCrop.scss';
 
 import React from 'react';
 import ReactCrop, { Crop, PercentCrop } from 'react-image-crop';
@@ -6,9 +6,8 @@ import ReactCrop, { Crop, PercentCrop } from 'react-image-crop';
 import {
   Image,
   randomHash,
-  withConfig,
-  WithConfigProps,
 } from 'platonist-library';
+import { withConfig, WithConfigProps } from '../../../Library';
 
 export interface ImageCropProps extends WithConfigProps {
   file?: File;

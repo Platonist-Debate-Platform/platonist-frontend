@@ -33,7 +33,9 @@ export const TextWithImageBottom: React.FC<
             md={!forJobs ? 10 : 12}
             className={classNames({ 'offset-md-1': !forJobs })}
           >
-            <ReactMarkdown source={content} />
+            <ReactMarkdown>
+              {content}
+            </ReactMarkdown>
           </Col>
         </Row>
         {media && (

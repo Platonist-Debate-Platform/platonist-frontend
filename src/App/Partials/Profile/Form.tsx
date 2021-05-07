@@ -6,7 +6,7 @@ import {
   RequestStatus,
   User,
 } from 'platonist-library';
-import { SubmitButton } from 'platonist-library/build/Form/Fields';
+import { SubmitButton } from '../../../Library/Form/Fields';
 import { FunctionComponent } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';

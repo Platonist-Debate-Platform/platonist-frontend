@@ -1,9 +1,10 @@
-import { Logo, useConfig } from 'platonist-library';
+import { Logo } from 'platonist-library';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import logoBw from '../../../Assets/Images/Logo/platonist-logo-full-white.svg';
 import logoPos from '../../../Assets/Images/Logo/platonist-logo.svg';
+import { useConfig } from '../../../Library';
 
 export interface NavbarBrandProps extends Logo {
   title: string;

@@ -3,11 +3,10 @@ import {
   PublicRequestKeys,
   ReactReduxRequestDispatch,
   requestAction,
-  withConfig,
-  WithConfigProps,
 } from 'platonist-library';
 import React from 'react';
 import { connect } from 'react-redux';
+import { withConfig, WithConfigProps } from '../../../Library';
 
 import { ContentResolver } from '../Content';
 import PageMeta from './Meta';

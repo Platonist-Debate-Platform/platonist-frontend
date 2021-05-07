@@ -45,7 +45,9 @@ export const TextWithImageLeft: React.FC<
                 )}
               </Col>
               <Col md={7}>
-                <ReactMarkdown source={content} />
+                <ReactMarkdown>
+                  {content}
+                </ReactMarkdown>
               </Col>
             </Row>
           </Col>

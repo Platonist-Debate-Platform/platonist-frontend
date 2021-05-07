@@ -7,9 +7,9 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-  useConfig,
 } from 'platonist-library';
 import { useAuthentication } from './useAuthentication';
+import { useConfig } from '../../../Library';
 
 export const useRoles = (
   key: PrivateRequestKeys.Role | PrivateRequestKeys.Roles,

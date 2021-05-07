@@ -7,14 +7,13 @@ import { Col, Container, Jumbotron, Row } from 'reactstrap';
 import shadeLeft from '../../../../Assets/Images/gct_circle-shape_left.svg';
 import shadeRight from '../../../../Assets/Images/gct_circle-shape_right.svg';
 import {
-  BreakpointTypes,
   Image as ImageProps,
   Jumbotron as JumbotronProps,
   TextAlign,
-  useConfig,
 } from 'platonist-library';
 import { useWindowSize } from '../../../Hooks';
 import { Image } from '../../Image';
+import { BreakpointTypes, useConfig } from '../../../../Library';
 
 export const JumbotronComponentContent: React.FC<JumbotronProps> = ({
   callToAction,
@@ -114,7 +113,7 @@ export const JumbotronComponent: React.FunctionComponent<
 
   const shape = (hasShape && getShape(textAlign)) || undefined;
 
-  const styles: React.CSSProperties = {
+  const styles = {
     height: ((sm && sm.size) || 768) > width ? height : undefined,
   };
 

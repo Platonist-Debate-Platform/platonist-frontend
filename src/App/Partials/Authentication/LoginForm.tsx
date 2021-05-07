@@ -4,7 +4,6 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-  useConfig,
 } from 'platonist-library';
 import React, { FunctionComponent } from 'react';
 import { connect, useDispatch } from 'react-redux';
@@ -17,6 +16,7 @@ import {
   FormInputTypes,
   FormProvider,
   FormValidationTypes,
+  useConfig,
 } from '../../../Library';
 import { Input, SubmitButton } from '../../../Library/Form/Fields';
 

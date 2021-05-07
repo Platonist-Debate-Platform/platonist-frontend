@@ -6,11 +6,11 @@ import { createLogger } from 'redux-logger';
 import { createLogicMiddleware } from 'redux-logic';
 
 import {
-  isDevelopment,
   GlobalState,
   createRootReducer,
   reactReduxRequest,
 } from 'platonist-library';
+import { isDevelopment } from '../Config';
 
 const logger = createLogger({
   collapsed: true,

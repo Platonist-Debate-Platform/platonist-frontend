@@ -3,11 +3,9 @@ import { Helmet } from 'react-helmet';
 
 import {
   Homepage,
-  isDevelopment,
   Meta,
-  useConfig,
-  ApiProtocol,
 } from 'platonist-library';
+import { ApiProtocol, isDevelopment, useConfig } from '../../../Library';
 
 export interface PageMetaProps {
   homepage: Homepage;

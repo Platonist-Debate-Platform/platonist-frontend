@@ -9,10 +9,10 @@ import {
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
-  useConfig,
   User,
 } from 'platonist-library';
 import { useRequest, UseRequestBaseProps } from './useRequest';
+import { useConfig } from '../../../Library';
 
 /**
  * Deprecated
