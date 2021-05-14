@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { encodeLink } from 'platonist-library';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +15,7 @@ export const DismissButton: FunctionComponent<{
   title,
 }) => (
   <Link 
-    to={pathname}
+    to={encodeLink(pathname)}
     className={classNames('btn', className || '', {
       'btn-none p-0': !isBtn,
       'btn-danger': isBtn,

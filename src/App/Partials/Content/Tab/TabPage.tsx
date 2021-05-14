@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { useState } from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
-import { Page, Tab as TabPageProps, TabItem } from 'platonist-library';
+import { encodeLink, Page, Tab as TabPageProps, TabItem } from 'platonist-library';
 import { Image } from '../../Image';
 import { Link } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ export const TabPage: React.FunctionComponent<TabPageProps> = (props) => {
                   {tab.item && (
                     <Link
                       className={'btn btn-ghost btn-sized mt-3'}
-                      to={'/' + encodeURI(tab.item.title)}
+                      to={'/' + encodeLink(tab.item.title)}
                       title={tab.item.title}
                     >
                       {tab.callToAction

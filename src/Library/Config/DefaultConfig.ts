@@ -8,7 +8,6 @@ import {
 } from './Types';
 
 const env = process.env;
-console.log(process.env.NODE_ENV);
 
 export const isDevelopment =
   (env.NODE_ENV as AppEnvKeys) === AppEnvKeys.Development ? true : false;

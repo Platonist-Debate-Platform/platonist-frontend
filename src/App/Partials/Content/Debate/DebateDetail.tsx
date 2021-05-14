@@ -11,6 +11,8 @@ import {
   Debate,
   DebateLinkDispatch,
   DebateList,
+  decodeLink,
+  encodeLink,
   GlobalState,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
@@ -54,7 +56,7 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
     const requestProps: RequestSendProps<Debate> = {
       pathname: debateLink.id
         ? `debates/${debateLink.id}`
-        : `debates/findByTitle/${match.params.title}`,
+        : decodeLink(`debates/findByTitle/${match.params.title}`),
       method: 'GET',
     };
 
@@ -122,27 +124,27 @@ export const DebateDetailBase: FunctionComponent<DebateDetailProps> = ({
           </div>
           <section className="section section-debate section-debate-detail">
             <Route
-              path={`${path}/${debate.title}/:commentId`}
+              path={encodeLink(`${path}/${debate.title}/:commentId`)}
               exact={true}
               render={(props: RouteComponentProps<{ commentId?: string }>) => {
                 return (
                   <CommentList
                     debateId={debate.id}
                     match={props.match}
-                    path={`${path}/${debate.title}`}
+                    path={encodeLink(`${path}/${debate.title}`)}
                   />
                 );
               }}
             />
             <Route
-              path={`${path}/${debate.title}`}
+              path={encodeLink(`${path}/${debate.title}`)}
               exact={true}
               render={(props: RouteComponentProps<{ commentId?: string }>) => {
                 return (
                   <CommentList
                     debateId={debate.id}
                     match={props.match}
-                    path={`${path}/${debate.title}`}
+                    path={encodeLink(`${path}/${debate.title}`)}
                   />
                 );
               }}

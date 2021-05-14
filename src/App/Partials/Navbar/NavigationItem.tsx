@@ -3,7 +3,7 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Nav, NavItem } from 'reactstrap';
-import { GlobalState, Page, PublicRequestKeys } from 'platonist-library';
+import { encodeLink, GlobalState, Page, PublicRequestKeys } from 'platonist-library';
 import { NavigationType } from './Keys';
 import { enableNavItem } from './Utils';
 
@@ -37,7 +37,7 @@ export const NavigationContentItem: React.FC<NavigationContentItemProps> = ({
 
   return (
     <NavItem active={isActive}>
-      <Link className="nav-link" to={encodeURI(linkTo)}>
+      <Link className="nav-link" to={encodeLink(linkTo)}>
         {item.title}
       </Link>
     </NavItem>
@@ -146,7 +146,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
     >
       <Link
         className="nav-link"
-        to={encodeURI(linkTo)}
+        to={encodeLink(linkTo)}
         title={title}
         onClick={(event) => handleClick(event, false)}
       >
@@ -167,7 +167,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
             <NavItem className="nav-item-title">
               <Link
                 className="nav-link"
-                to={encodeURI(linkTo)}
+                to={encodeLink(linkTo)}
                 title={title}
                 onClick={(event) => handleClick(event, true)}
               >
@@ -175,7 +175,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = (props) => {
               </Link>
             </NavItem>
             <NavItem>
-              <Link className="nav-link" to={encodeURI(linkTo)} title={title}>
+              <Link className="nav-link" to={encodeLink(linkTo)} title={title}>
                 {name || title} Übersicht
               </Link>
             </NavItem>

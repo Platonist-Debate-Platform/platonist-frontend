@@ -1,6 +1,7 @@
 import {
   ApplicationKeys,
   Debate,
+  encodeLink,
   GlobalState,
   PublicRequestKeys,
   RestMethodKeys,
@@ -51,7 +52,7 @@ export const DebateSettings: FunctionComponent<DebateSettingsProps> = ({
   });
 
   const searchQuery = stringify(query);
-  const linkTo = `${location.pathname}?${searchQuery}`;
+  const linkTo = `${encodeLink(location.pathname)}?${searchQuery}`;
 
   return (
     <DebatePermission method={method}>

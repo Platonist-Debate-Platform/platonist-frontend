@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
 
-import { GlobalState, PublicRequestKeys } from 'platonist-library';
+import { encodeLink, GlobalState, PublicRequestKeys } from 'platonist-library';
 import { useAuthentication } from '../../Hooks';
 import { AuthenticationModal } from '../Authentication';
 
@@ -69,9 +69,9 @@ export const AuthenticationButton: FunctionComponent<AuthenticationButtonProps> 
   return (
     <Row>
       <Col className="text-right">
-        <AuthenticationModal pathname={pathname} />
+        <AuthenticationModal pathname={encodeLink(pathname)} />
         {isAuthenticated && pathToAction && (
-          <Link className="btn btn-primary" to={pathToAction}>
+          <Link className="btn btn-primary" to={encodeLink(pathToAction)}>
             {component || (
               <>
                 Sign in <i className="fa fa-sign-in-alt" />
@@ -90,7 +90,7 @@ export const AuthenticationButton: FunctionComponent<AuthenticationButtonProps> 
         )}
       </Col>
       {shouldRedirect && (
-        <Redirect to={!isAuthenticated ? pathname : router.location.pathname} />
+        <Redirect to={encodeLink(!isAuthenticated ? pathname : router.location.pathname)} />
       )}
     </Row>
   );

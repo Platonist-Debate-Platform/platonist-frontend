@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import {
+  encodeLink,
   GlobalState,
   Image as ImageProps,
   PublicRequestKeys,
@@ -72,7 +73,7 @@ export const ProfileImage: FunctionComponent = () => {
 
   return (
     <div className="profile-image">
-      <Link to={target}>
+      <Link to={encodeLink(target)}>
         {avatar ? <Image {...avatar} /> : <Image {...noImage} isLocal={true} />}
       </Link>
       <ProfileImageEdit

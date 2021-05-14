@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { FormattedDate } from 'react-intl';
 import { Badge, Col, Container, Row } from 'reactstrap';
-import { Article, Debate, RestMethodKeys } from 'platonist-library';
+import { Article, Debate, encodeLink, RestMethodKeys } from 'platonist-library';
 import { ArticleItem } from '../../Article';
 import { DebateSettings } from './Settings';
 import { DebateLink } from '../../../../Library';
@@ -17,7 +17,7 @@ export const DebateListItem: FunctionComponent<DebateListItemProps> = ({
 }) => {
   const { articleA, articleB, comments, created_at, subTitle, title } = debate;
 
-  const href = encodeURI(`/${pageTitle}/${debate.title}`);
+  const href = encodeLink(`/${pageTitle}/${debate.title}`);
   return (
     <div className="debate-list-item">
       <Container>

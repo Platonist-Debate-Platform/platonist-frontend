@@ -6,6 +6,7 @@ import {
   GlobalState,
   PublicRequestKeys,
   DebateList as DebateListProps,
+  encodeLink,
 } from 'platonist-library';
 import DebateDetail from './DebateDetail';
 import DebateListComponent from './DebateList';
@@ -29,14 +30,14 @@ export const DebateRouteBase: React.FC<DebateRouteProps> = (props) => {
   }, [location, router.location, setLocation]);
 
   if (path === location.pathname) {
-    return <DebateListComponent {...rest} path={path} />;
+    return <DebateListComponent {...rest} path={encodeLink(path)} />;
   }
 
   if (location.pathname.startsWith(path) && routeProps) {
     return (
       <DebateDetail
         isAdmin={isAdmin}
-        path={path}
+        path={encodeLink(path)}
         routeProps={routeProps}
         debateList={rest}
       />

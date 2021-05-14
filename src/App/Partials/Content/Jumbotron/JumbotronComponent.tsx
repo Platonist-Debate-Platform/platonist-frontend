@@ -7,6 +7,7 @@ import { Col, Container, Jumbotron, Row } from 'reactstrap';
 import shadeLeft from '../../../../Assets/Images/gct_circle-shape_left.svg';
 import shadeRight from '../../../../Assets/Images/gct_circle-shape_right.svg';
 import {
+  encodeLink,
   Image as ImageProps,
   Jumbotron as JumbotronProps,
   TextAlign,
@@ -65,7 +66,7 @@ export const JumbotronComponentContent: React.FC<JumbotronProps> = ({
             {page && (
               <Link
                 className="btn btn-ghost btn-sized"
-                to={`/${encodeURI(page.title)}`}
+                to={`/${encodeLink(page.title)}`}
               >
                 {callToAction || 'Read more'}
               </Link>

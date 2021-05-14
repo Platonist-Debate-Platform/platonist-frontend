@@ -13,10 +13,6 @@ export const App: FunctionComponent = () => {
   const homepage =
     homepages.result && getCurrentHomepage(location, homepages.result, isDevelopment);
   
-  console.log(isDevelopment);
-  
-  console.log(homepages);
-  
   if (!homepages) {
     return null;
   }

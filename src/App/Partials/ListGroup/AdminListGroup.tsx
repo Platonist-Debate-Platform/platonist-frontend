@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 
 import { Navigation } from '../Navbar';
-import { GlobalState, Homepage } from 'platonist-library';
+import { encodeLink, GlobalState, Homepage } from 'platonist-library';
 import { NavigationType } from '../Navbar/Keys';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ export const AdminListGroupItem: FunctionComponent<Homepage> = (homepage) => {
     <ListGroupItem>
       <div className="">
         <i className="fa fa-plus mr-3" />
-        <Link to={baseLink}>{homepage.url}</Link>
+        <Link to={encodeLink(baseLink)}>{homepage.url}</Link>
       </div>
       <div>
         {homepage.pages && (

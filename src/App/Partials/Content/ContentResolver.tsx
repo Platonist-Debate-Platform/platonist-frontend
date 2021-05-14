@@ -5,6 +5,7 @@ import {
   Content,
   ContentKeys,
   DebateList as DebateListProps,
+  encodeLink,
   Jumbotron,
   Tab as TabProps,
   Teaser as TeaserProps,
@@ -93,7 +94,7 @@ export const ContentResolver: React.FC<ContentResolverProps> = ({
                 <ContentResolverItem
                   {...content}
                   isAdmin={isAdmin}
-                  path={path}
+                  path={encodeLink(path)}
                   routeProps={routeProps}
                 />
               )}

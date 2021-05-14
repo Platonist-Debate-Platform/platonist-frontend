@@ -8,7 +8,7 @@ import {
   PublicRequestKeys,
   User,
 } from 'platonist-library';
-// import TimeAgo from 'react-timeago';
+import TimeAgo from 'react-timeago2';
 import { useSelector } from 'react-redux';
 import { DismissButton } from './DismissButton';
 import { CommentForm } from './CommentForm';
@@ -50,13 +50,13 @@ export const CommentItem: FunctionComponent<CommentItemProps> = ({
           <span>
             commented{' '}
             <i>
-              {/* <TimeAgo date={item.created_at} /> */}
+              <TimeAgo date={item.created_at} />
             </i>{' '}
             {createdAt !== updatedAt && (
               <>
                 and edited this debate{' '}
                 <i>
-                  {/* <TimeAgo date={item.updated_at} /> */}
+                  <TimeAgo date={item.updated_at} />
                 </i>
                 .
               </>

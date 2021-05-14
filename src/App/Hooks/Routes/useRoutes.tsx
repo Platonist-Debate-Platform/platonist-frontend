@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Homepage, ContentKeys } from 'platonist-library';
+import { Page, Homepage, ContentKeys, encodeLink } from 'platonist-library';
 import { ContentResolverItem, PageResolver } from '../../Partials';
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
       exact: true,
       path,
       render: () => (
-        <PageResolver pageId={page.id} path={path} isAdmin={isAdmin} />
+        <PageResolver pageId={page.id} path={encodeLink(path)} isAdmin={isAdmin} />
       ),
     });
 
@@ -40,7 +40,7 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
             case ContentKeys.DebateList:
               routes.push({
                 exact: false,
-                path: `${path}/:title`,
+                path: encodeLink(`${path}/:title`),
                 render: (props: RouteComponentProps) => (
                   <ContentResolverItem
                     {...item}
@@ -60,7 +60,7 @@ export const createRoutes = (props: PageRoutesProps): RouteProps[] => {
 
     if (page.pages && page.pages.length > 0) {
       routes.push(
-        ...createRoutes({ pages: page.pages, parentPath: path, isAdmin }),
+        ...createRoutes({ pages: page.pages, parentPath: encodeLink(path), isAdmin }),
       );
     }
   });
