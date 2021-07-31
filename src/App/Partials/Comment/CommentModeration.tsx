@@ -130,7 +130,7 @@ export const CommentModeration: FunctionComponent<CommentModerationProps> = ({
   );
 
   useEffect(() => {
-    if (!formData && comment || formData && ) {
+    // if (!formData && comment || formData && ) {
       // setFormData({
       //   blocked: comment.blocked || false,
       //   disputed: comment.disputed || false,
