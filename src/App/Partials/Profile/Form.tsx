@@ -72,7 +72,7 @@ export const ProfileFormBase: FunctionComponent<{
   >((state) => state.router);
 
   const handleSubmit = <
-    Ev extends FormClickEvent<Partial<User>> | FormEvent<Partial<User>>
+    Ev extends FormClickEvent<Partial<User>> | FormEvent<Partial<User>>,
   >(
     event: Ev,
   ) => {

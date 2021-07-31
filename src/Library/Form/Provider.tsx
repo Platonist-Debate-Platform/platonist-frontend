@@ -1,7 +1,7 @@
 import './Form.scss';
 
 import { isEqual, isObject } from 'lodash';
-import { randomHash } from 'platonist-library';
+import { Comment, randomHash } from 'platonist-library';
 import { Component, ReactNode } from 'react';
 
 import { FormContext } from './Context';
@@ -17,7 +17,7 @@ import { createInitialFormData, getSubmitData, validateValues } from './Utils';
 export interface FormProviderProps<Data extends Object = {}> {
   children?: ReactNode;
   data: Data;
-  id?: string;
+  id?: Comment['id'];
   inputConfig: FormDataConfig<Data>[];
   isProtected?: boolean;
   onChange?: (data: FormContextValue<any>) => void;

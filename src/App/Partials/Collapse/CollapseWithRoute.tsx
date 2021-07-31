@@ -1,15 +1,15 @@
+import { GlobalState, PublicRequestKeys } from "platonist-library";
 import React, {
   FunctionComponent,
   ReactNode,
   useEffect,
   useState,
-} from 'react';
-import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { usePrevious } from 'react-use';
-import { Collapse } from 'reactstrap';
+} from "react";
 
-import { GlobalState, PublicRequestKeys } from 'platonist-library';
+import { Collapse } from "reactstrap";
+import { Redirect } from "react-router-dom";
+import { usePrevious } from "react-use";
+import { useSelector } from "react-redux";
 
 export interface CollapseWithRouteProps {
   children: ReactNode;
@@ -38,14 +38,13 @@ export const CollapseWithRoute: FunctionComponent<CollapseWithRouteProps> = ({
   >((state) => state.router);
 
   const getCurrentUrlFromLocation = (
-    location: GlobalState[PublicRequestKeys.Router]['location'],
+    location: GlobalState[PublicRequestKeys.Router]["location"]
   ) => `${location.pathname}${location.search}`;
 
   useEffect(() => {
     const currentUrl = getCurrentUrlFromLocation(router.location);
     const isFromUrl = from === currentUrl;
     const isToUrl = currentUrl.indexOf(to) > -1;
-    console.table([currentUrl, from, to, isToUrl]);
 
     if (isOpen && !isToUrl) {
       setIsOpen(false);

@@ -2,13 +2,15 @@ import React, { FunctionComponent } from 'react';
 
 import {
   ApplicationKeys,
+  GlobalState,
   PrivateRequestKeys,
   RestMethodKeys,
   RolePermissionTypes,
   RoleState,
 } from 'platonist-library';
 import { usePermission } from '../../../Hooks';
-import { useRoles, useUser } from '../../../Hooks/Requests';
+import { useRoles } from '../../../Hooks/Requests';
+import { useSelector } from 'react-redux';
 
 export interface DebatePermissionProps {
   method?: RestMethodKeys;
@@ -18,9 +20,11 @@ export const DebatePermission: FunctionComponent<DebatePermissionProps> = ({
   children,
   method,
 }) => {
-  const {
-    user: { result: user },
-  } = useUser();
+  const { result: user } = useSelector<
+    GlobalState,
+    GlobalState[PrivateRequestKeys.User]
+  >((state) => state.user);
+
   const role = useRoles(PrivateRequestKeys.Role, user?.role?.id) as RoleState;
 
   const [hasPermission] = usePermission({

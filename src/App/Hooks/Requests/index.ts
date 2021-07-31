@@ -1,4 +1,5 @@
 export * from './useAuthentication';
+export * from './useComment';
 export * from './useComments';
 export * from './useDebates';
 export * from './useFile';

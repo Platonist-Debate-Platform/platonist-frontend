@@ -14,9 +14,9 @@ import {
   encodeLink,
   GlobalState,
   Image as ImageProps,
+  PrivateRequestKeys,
   PublicRequestKeys,
 } from 'platonist-library';
-import useUser from '../../Hooks/Requests/useUser';
 import { Image } from '../Image';
 import { ProfileImageEdit } from './ImageEdit';
 
@@ -47,9 +47,10 @@ export const ProfileImage: FunctionComponent = () => {
     GlobalState[PublicRequestKeys.Router]
   >((state) => state[PublicRequestKeys.Router]);
 
-  const {
-    user: { result: user, status },
-  } = useUser();
+  const { result: user, status } = useSelector<
+    GlobalState,
+    GlobalState[PrivateRequestKeys.User]
+  >((state) => state.user);
 
   const [avatar, setAvatar] = useState(user?.avatar);
 

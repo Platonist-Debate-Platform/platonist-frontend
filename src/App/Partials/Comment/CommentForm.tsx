@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import {
   Comment,
+  CommentStatus,
   Debate,
   PrivateRequestKeys,
   RequestStatus,
@@ -69,10 +70,11 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
 
     const data = {
       ...event.submitData.data,
-      debate: (!parent && debateId) || undefined,
-      user: state?.id,
       created_by: state?.id,
+      debate: (!parent && debateId) || undefined,
+      status: (state?.status as CommentStatus) || CommentStatus.Active,
       updated_by: state?.id,
+      user: state?.id,
     };
 
     if (parent) {

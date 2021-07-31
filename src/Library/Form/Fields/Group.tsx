@@ -35,12 +35,7 @@ export const GroupBase: FunctionComponent<
   const handleContextChange = useCallback(
     (key: string, context: FormContextValue<Data>) => {
       const { submitData } = context;
-      // const shouldSetInitialFormValue = isEqual(value, defaultValue);
       const shouldSetFormValue = !isEqual(value, submitData.data);
-      // const shouldUpdate = shouldSetInitialFormValue && shouldSetFormValue;
-      // console.log(context);
-      // console.log(value);
-      // console.log(submitData.data);
 
       if (
         inputValue.config?.type === FormInputTypes.Group &&

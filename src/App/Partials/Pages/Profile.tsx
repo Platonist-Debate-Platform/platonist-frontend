@@ -1,15 +1,16 @@
 import React, { FunctionComponent, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Col, Container, Row } from 'reactstrap';
 
 import {
+  GlobalState,
+  PrivateRequestKeys,
   PublicRequestKeys,
   ReactReduxRequestDispatch,
   requestAction,
   RequestStatus,
 } from 'platonist-library';
 import { useUserComments } from '../../Hooks';
-import useUser from '../../Hooks/Requests/useUser';
 import {
   ProfileChangeEmailForm,
   ProfileChangePasswordForm,
@@ -20,9 +21,10 @@ import {
 export const PageProfile: FunctionComponent = () => {
   const dispatch = useDispatch<ReactReduxRequestDispatch>();
 
-  const {
-    user: { result: user },
-  } = useUser();
+  const { result: user } = useSelector<
+    GlobalState,
+    GlobalState[PrivateRequestKeys.User]
+  >((state) => state.user);
 
   const comments = useUserComments(user?.id);
 

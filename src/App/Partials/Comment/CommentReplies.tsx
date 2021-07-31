@@ -16,6 +16,7 @@ import { CommentListItem } from './CommentListItem';
 export interface CommentRepliesProps {
   canComment?: boolean;
   from: string;
+  isDisputed: boolean;
   isDetail: boolean;
   isForForm?: boolean;
   match?: Match<{ commentId?: string }>;
@@ -26,6 +27,7 @@ export interface CommentRepliesProps {
 
 export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
   canComment,
+  isDisputed,
   isDetail,
   isForForm,
   match,
@@ -85,6 +87,7 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
               <CommentListItem
                 canCreate={canComment ? true : false}
                 debateId={debate.id}
+                isDisputed={isDisputed}
                 isDetail={isDetail}
                 isReply={item.parent ? true : false}
                 key={`comment_list_item_reply_${parent}_${item.id}_${index}`}

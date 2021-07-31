@@ -130,7 +130,6 @@ export const DebateForm: FunctionComponent<DebateFormProps> = ({
       }
 
       submitData.published = Boolean(submitData.published);
-      console.log(submitData);
 
       if (status === RequestStatus.Initial && isValid && submitData) {
         send({

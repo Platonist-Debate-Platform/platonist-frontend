@@ -58,7 +58,12 @@ export const useUser = <Data extends Object>(id?: string) => {
   };
 
   useEffect(() => {
-    if (userId && isAuthenticated && user.status === RequestStatus.Initial) {
+    if (
+      userId &&
+      isAuthenticated &&
+      user.status === RequestStatus.Initial &&
+      !user.result
+    ) {
       dispatch(
         requestAction.load(PrivateRequestKeys.User, {
           method: 'GET',

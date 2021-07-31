@@ -142,6 +142,7 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
                 <CommentListItem
                   canEdit={canWrite}
                   debateId={debateId}
+                  isDisputed={item.disputed}
                   isDetail={false}
                   key={`comment_list_item_${item.id}_${index}`}
                   match={match}

@@ -16,7 +16,6 @@ export const ConfigProvider: FunctionComponent<ConfigProviderProps> = ({
   const [api /* setApi */] = useState(config.api);
 
   const handleApiChange = (code: AvailableLanguage) => {
-    console.log(code);
   };
 
   return (

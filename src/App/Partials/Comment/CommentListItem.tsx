@@ -1,15 +1,3 @@
-import { stringify } from 'qs';
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
-import { useSelector } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { Badge, Card, CardBody, Col, Row } from 'reactstrap';
-import { match as Match } from 'react-router-dom';
-
 import {
   ApplicationKeys,
   Comment,
@@ -22,14 +10,26 @@ import {
   RoleState,
   User,
 } from 'platonist-library';
-import { usePermission, useRoles, useUser } from '../../Hooks';
+import { stringify } from 'qs';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
+import { Link, match as Match, Redirect } from 'react-router-dom';
+import { Badge, Card, CardBody, Col, Row } from 'reactstrap';
+import { usePermission, useRoles } from '../../Hooks';
 import { CommentItem } from './CommentItem';
+import { CommentModeration } from './CommentModeration';
 import { CommentReplies } from './CommentReplies';
 
 export interface CommentListItemProps extends Comment {
   canCreate?: boolean;
   canEdit?: boolean;
   debateId: Debate['id'];
+  isDisputed: boolean;
   isDetail: boolean;
   isReply?: boolean;
   match?: Match<{ commentId?: string }>;
@@ -41,6 +41,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   canCreate,
   canEdit,
   debateId,
+  isDisputed,
   isDetail,
   isReply,
   match,
@@ -50,9 +51,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
 }) => {
   const author = props.user as User;
 
-  const {
-    user: { result: user },
-  } = useUser();
+  const { result: user } = useSelector<
+    GlobalState,
+    GlobalState[PrivateRequestKeys.User]
+  >((state) => state.user);
 
   const { location } = useSelector<
     GlobalState,
@@ -74,6 +76,14 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       }),
   );
 
+  const moderateQuery = unescape(
+    '?' +
+      stringify({
+        edit: 'moderate',
+        id: props.id,
+      }),
+  );
+
   const viewReplyQuery = unescape(
     '?' +
       stringify({
@@ -89,6 +99,18 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   const [canComment] = usePermission({
     id: user?.role?.id,
     methods: [RestMethodKeys.Create, RestMethodKeys.Update],
+    permission: RolePermissionTypes.Application,
+    state: roleState,
+    type: ApplicationKeys.Comment,
+  });
+
+  const [canModerate] = usePermission({
+    id: user?.role?.id,
+    methods: [
+      RestMethodKeys.Delete,
+      RestMethodKeys.Create,
+      RestMethodKeys.Update,
+    ],
     permission: RolePermissionTypes.Application,
     state: roleState,
     type: ApplicationKeys.Comment,
@@ -154,14 +176,14 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                           : location.pathname + viewReplyQuery
                       }
                       className="p-0 mr-3 btn btn-none btn-sm"
-                      title="Show relies"
+                      title="Show replies"
                     >
                       <Badge>{props.replyCount}</Badge> Replies{' '}
                       <i className="fa fa-chevron-right" />
                     </Link>
                   </Col>
                   <Col className="text-right">
-                    {canComment && (
+                    {!isDisputed && canComment && (
                       <Link
                         to={
                           (isDetail
@@ -173,12 +195,28 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                         <i className="fa fa-reply" /> Reply
                       </Link>
                     )}
-                    {canWrite && location.search !== editQuery && (
+                    {!isDisputed && canWrite && location.search !== editQuery && (
                       <Link
                         to={location.pathname + editQuery}
                         className="p-0 btn btn-none btn-sm"
                       >
                         <i className="fa fa-edit" /> Edit
+                      </Link>
+                    )}
+                    {canModerate && (
+                      <Link
+                        to={
+                          isDetail
+                            ? `${path}/${props.id}${moderateQuery}`
+                            : (location.pathname + location.search).indexOf(
+                                location.pathname + moderateQuery,
+                              ) > -1
+                            ? location.pathname
+                            : location.pathname + moderateQuery
+                        }
+                        className="p-o btn btn-none btn-sm"
+                      >
+                        <i className="fa fa-cogs" /> Moderate
                       </Link>
                     )}
                   </Col>
@@ -190,6 +228,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                     <CommentReplies
                       canComment={canComment}
                       from={location.pathname}
+                      isDisputed={isDisputed}
                       isDetail={true}
                       isForForm={true}
                       parent={props.id}
@@ -197,10 +236,17 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                       to={location.pathname + replyQuery}
                     />
                   )}
-
+                  {canModerate && (
+                    <CommentModeration
+                      from={location.pathname}
+                      to={location.pathname + moderateQuery}
+                      commentId={props.id}
+                    />
+                  )}
                   <CommentReplies
                     canComment={canComment}
                     from={location.pathname}
+                    isDisputed={isDisputed}
                     isDetail={true}
                     match={match}
                     parent={props.id}

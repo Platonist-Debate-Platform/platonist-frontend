@@ -66,7 +66,21 @@ export const CommentItem: FunctionComponent<CommentItemProps> = ({
       </CardSubtitle>
       <div className={'card-text'}>
         {location.search !== editQuery ? (
-          <p>{item.comment}</p>
+          <>
+            <p>{item.comment}</p>
+
+            {item.disputed && (
+              <p className="small text-danger">
+                <i className="fa fa-exclamation-triangle" /> This comment is
+                disputed by a moderator. Editing and replying is disabled.
+              </p>
+            )}
+            {item.moderationComment && (
+              <blockquote className="blockquote">
+                <p className="small mb-0">{item.moderationComment}</p>
+              </blockquote>
+            )}
+          </>
         ) : (
           <>
             <DismissButton
