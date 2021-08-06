@@ -9455,10 +9455,10 @@ pkg-up@3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-platonist-library@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.2.tgz#330c432c04084167fb552d6ebf0c8d3549cc4087"
-  integrity sha512-jYTrUSfhcxbFDJ+vEV8KSLsGhyFQWD0Hj5rwsZjRuOS4U5BQ5SwyHCfZqBBp+VlTfOIir9h5qox/DWvp5Ys10A==
+platonist-library@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.3.tgz#1e0e8d26962324151210a1f88f2c3d59fcc930a4"
+  integrity sha512-m8UugJTKhsoAtR8zpBMDeRNf1TmrkkAv1NMlvyAjp19OtUvC/ba7JT4Fmn/lD7qXyBMbCwryISokTmz8Vq3w4A==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.0.0"
     axios "^0.21.1"
