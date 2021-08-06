@@ -5,6 +5,7 @@ export * from './useDebates';
 export * from './useFile';
 export * from './useHomepage';
 export * from './useHomepages';
+export * from './useModerations';
 export * from './usePage';
 export * from './usePages';
 export * from './useRequest';

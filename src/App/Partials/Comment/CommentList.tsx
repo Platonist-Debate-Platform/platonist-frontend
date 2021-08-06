@@ -129,7 +129,8 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
       clear();
     }
   });
-
+  console.log(comments);
+  
   return (
     <div className="comments-list">
       <Container>

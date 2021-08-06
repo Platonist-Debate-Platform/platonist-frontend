@@ -50,7 +50,8 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   ...props
 }) => {
   const author = props.user as User;
-
+  console.log();
+  
   const { result: user } = useSelector<
     GlobalState,
     GlobalState[PrivateRequestKeys.User]
@@ -113,8 +114,8 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
     ],
     permission: RolePermissionTypes.Application,
     state: roleState,
-    type: ApplicationKeys.Comment,
-  });
+    type: ApplicationKeys.Moderation,
+  });  
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
@@ -238,9 +239,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                   )}
                   {canModerate && (
                     <CommentModeration
-                      from={location.pathname}
-                      to={location.pathname + moderateQuery}
                       commentId={props.id}
+                      from={location.pathname}
+                      hasModeration={props.moderation !== null}
+                      to={location.pathname + moderateQuery}
                     />
                   )}
                   <CommentReplies

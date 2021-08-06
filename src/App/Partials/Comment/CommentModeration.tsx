@@ -1,9 +1,11 @@
 import {
   Comment,
   CommentStatus,
-  PrivateRequestKeys,
+  Moderation,
+  PublicRequestKeys,
   RequestMethod,
   RequestStatus,
+  User,
 } from 'platonist-library';
 import React, {
   FunctionComponent,
@@ -11,7 +13,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useUnmount } from 'react-use';
+import { Redirect } from 'react-router';
+import { useUnmount, usePrevious } from 'react-use';
 import {
   FormClickEvent,
   FormDataConfig,
@@ -20,42 +23,21 @@ import {
   FormValidationTypes,
 } from '../../../Library';
 import {
-  Checkbox,
   Select,
   SubmitButton,
   Text,
 } from '../../../Library/Form/Fields';
-import { useComments } from '../../Hooks';
+import { useModerations, useUser } from '../../Hooks';
 import { ModalWithRoute, ModalWithRouteProps } from '../Modal';
 
 interface CommentModerationProps {
-  from: ModalWithRouteProps['from'];
-  to: ModalWithRouteProps['to'];
   commentId: Comment['id'];
+  from: ModalWithRouteProps['from'];
+  hasModeration: boolean;
+  to: ModalWithRouteProps['to'];
 }
 
-interface ModerationFormProps {
-  status: CommentStatus;
-  blocked: boolean;
-  disputed: boolean;
-  moderationComment: string;
-}
-
-const commentFormData: FormDataConfig<Partial<ModerationFormProps>>[] = [
-  {
-    editable: true,
-    key: 'blocked',
-    required: false,
-    title: 'Block comment',
-    type: FormInputTypes.Checkbox,
-  },
-  {
-    editable: true,
-    key: 'disputed',
-    required: false,
-    title: 'Dispute comment',
-    type: FormInputTypes.Checkbox,
-  },
+const commentFormData: FormDataConfig<Partial<Moderation>>[] = [
   {
     editable: true,
     key: 'status',
@@ -70,7 +52,7 @@ const commentFormData: FormDataConfig<Partial<ModerationFormProps>>[] = [
   },
   {
     editable: true,
-    key: 'moderationComment',
+    key: 'reason',
     required: false,
     title: 'Reason for disputing or blocking this Comment',
     type: FormInputTypes.Text,
@@ -83,65 +65,97 @@ const ModerationModalHeader = () => <>Moderate Comment</>;
 export const CommentModeration: FunctionComponent<CommentModerationProps> = ({
   commentId,
   from,
+  hasModeration,
   to,
 }) => {
   const [formData, setFormData] =
-    useState<Partial<ModerationFormProps> | undefined>();
+    useState<Partial<Moderation> | undefined>();
+  const [saving, setSaving] =
+    useState<boolean>(false);
+  const [shouldRedirect, setShouldRedirect] =
+    useState<boolean>(false);
 
   const {
     clear,
-    state: { status, result: comment },
+    state: { status, result: moderation },
     send,
     load,
-  } = useComments<Comment>({
-    id: Number(commentId),
-    key: PrivateRequestKeys.Moderate,
+  } = useModerations<Moderation>({
+    key: PublicRequestKeys.Moderation,
+    path: `moderations/byCommentId/${commentId}`,
     stateOnly: true,
   });
 
+  const {user: {result: user}} = useUser<User>()
+
+  const prevModeration = usePrevious(moderation);
+
   const handleClosing = useCallback(() => {
-    if (status === RequestStatus.Loaded && comment) {
+    if (status === RequestStatus.Loaded && moderation) {
       clear();
+      if (saving) {
+        setSaving(false);
+      }
     }
-  }, [clear, comment, status]);
+  }, [clear, moderation, saving, status]);
 
   const handleOpening = useCallback(() => {
-    if (status === RequestStatus.Initial && !comment) {
+    if (status === RequestStatus.Initial && !moderation && hasModeration) {
       load();
     }
-  }, [comment, load, status]);
+  }, [moderation, load, status, hasModeration]);
 
   const handleSubmit = useCallback(
-    ({ submitData }: FormClickEvent<ModerationFormProps>) => {
+    ({ submitData }: FormClickEvent<Partial<Moderation>>) => {
       if (submitData && submitData.data && submitData.isValid) {
         send({
-          method: RequestMethod.Update,
+          method: hasModeration ? RequestMethod.Update : RequestMethod.Create,
           data: {
+            moderator: user?.id,
+            comment: commentId,
             ...submitData.data,
-            blocked:
-              submitData.data?.blocked.toString() === 'true' ? true : false,
-            disputed:
-              submitData.data?.disputed.toString() === 'true' ? true : false,
           },
+          pathname: `moderations${moderation?.id ? '/' + moderation.id : ''}`
         });
+
+        if (!saving) {
+          setSaving(true);
+        }
       }
     },
-    [send],
+    [send, hasModeration, user?.id, commentId, moderation?.id, saving],
   );
 
   useEffect(() => {
-    // if (!formData && comment || formData && ) {
-      // setFormData({
-      //   blocked: comment.blocked || false,
-      //   disputed: comment.disputed || false,
-      //   status: comment.status || CommentStatus.Active,
-      //   moderationComment: comment.moderationComment,
-      // });
+    if (!formData && !hasModeration) {
+      setFormData({
+        status: CommentStatus.Active,
+        reason: '',
+      });
     }
-  }, [comment, formData, load, status]);
+    if (!formData && moderation) {
+      setFormData({
+        status: moderation.status || CommentStatus.Active,
+        reason: moderation.reason,
+      });
+    }
+
+    if (status === RequestStatus.Loaded && moderation?.updated_by !== prevModeration?.updated_at && saving) {
+      setSaving(false);
+      setShouldRedirect(true);
+    }
+
+    if (status === RequestStatus.Error && saving) {
+      setSaving(false)
+    }
+
+    if (shouldRedirect && !saving) {
+      setShouldRedirect(false);
+    }
+  }, [moderation, formData, load, status, hasModeration, prevModeration?.updated_at, saving, shouldRedirect]);
 
   useUnmount(() => {
-    if (status === RequestStatus.Loaded && comment) {
+    if (status === RequestStatus.Loaded && moderation) {
       clear();
     }
   });
@@ -157,10 +171,8 @@ export const CommentModeration: FunctionComponent<CommentModerationProps> = ({
     >
       {formData && (
         <FormProvider data={formData} inputConfig={commentFormData}>
-          <Checkbox inputKey="blocked" />
-          <Checkbox inputKey="disputed" />
           <Select inputKey="status" />
-          <Text inputKey="moderationComment" />
+          <Text inputKey="reason" />
           <SubmitButton
             className="btn btn-green btn-small"
             onClick={handleSubmit}
@@ -168,6 +180,9 @@ export const CommentModeration: FunctionComponent<CommentModerationProps> = ({
             Save
           </SubmitButton>
         </FormProvider>
+      )}
+      {shouldRedirect && (
+        <Redirect to={from} />
       )}
     </ModalWithRoute>
   );
