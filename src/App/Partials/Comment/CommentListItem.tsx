@@ -1,6 +1,7 @@
 import {
   ApplicationKeys,
   Comment,
+  CommentStatus,
   Debate,
   GlobalState,
   PrivateRequestKeys,
@@ -41,7 +42,6 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   canCreate,
   canEdit,
   debateId,
-  isDisputed,
   isDetail,
   isReply,
   match,
@@ -51,7 +51,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
 }) => {
   const author = props.user as User;
   console.log();
-  
+
   const { result: user } = useSelector<
     GlobalState,
     GlobalState[PrivateRequestKeys.User]
@@ -68,6 +68,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       edit: 'comment',
       id: props.id,
     });
+  console.log(location.pathname + editQuery);
 
   const replyQuery = unescape(
     '?' +
@@ -115,7 +116,18 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
     permission: RolePermissionTypes.Application,
     state: roleState,
     type: ApplicationKeys.Moderation,
-  });  
+  });
+
+  const isDisputed =
+    props.isDisputed ||
+    (props.moderation && props.moderation.status === CommentStatus.Disputed)
+      ? true
+      : false;
+
+  const isBlocked =
+    props.moderation && props.moderation.status === CommentStatus.Blocked
+      ? true
+      : false;
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
 

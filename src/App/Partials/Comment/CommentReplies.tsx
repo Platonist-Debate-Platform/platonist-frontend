@@ -76,7 +76,16 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
       onEntered={handleEntered}
     >
       {isForForm ? (
-        <>{debate && <CommentForm debateId={debate.id} parent={parent} />}</>
+        <>
+          {!isDisputed ? (
+            debate && <CommentForm debateId={debate.id} parent={parent} />
+          ) : (
+            <p className="small text-danger">
+              <i className="fa fa-exclamation-triangle"></i>
+              This Comment is Disputed, replying is disabled
+            </p>
+          )}
+        </>
       ) : (
         <div className="comment-list-reply mt-3">
           {' '}

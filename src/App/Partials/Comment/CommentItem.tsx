@@ -38,8 +38,7 @@ export const CommentItem: FunctionComponent<CommentItemProps> = ({
 
   const createdAt = new Date(item.created_at).toUTCString();
   const updatedAt = new Date(item.updated_at).toUTCString();
-  console.log(item.moderation);
-  
+
   return (
     <>
       <CardSubtitle>
@@ -67,47 +66,65 @@ export const CommentItem: FunctionComponent<CommentItemProps> = ({
         </small>
       </CardSubtitle>
       <div className={'card-text'}>
-        {location.search !== editQuery ? (
+        {(item.moderation && item.moderation.status !== CommentStatus.Active) ||
+        location.search !== editQuery ? (
           <>
             <p>{item.comment}</p>
-            {item.moderation?.status === CommentStatus.Disputed && (
-              <p className="small text-danger"> <i className="fa fa-exclamation-triangle" /> This comment is
-                disputed by a moderator. Editing and replying is disabled.
-              </p>
-            )}
-            {item.moderation?.status === CommentStatus.Blocked && (
-              <p className="small text-danger">
-                <i className="fa fa-exclamation-triangle" /> This comment is blocked by a moderator. Editing is disabled.
-              </p>
-            )}
-            {item.moderation?.reason && (
+            {item.moderation &&
+              item.moderation.status === CommentStatus.Disputed && (
+                <p className="small text-danger">
+                  {' '}
+                  <i className="fa fa-exclamation-triangle" /> This comment is
+                  disputed by a moderator. Editing and replying is disabled.
+                </p>
+              )}
+            {item.moderation &&
+              item.moderation.status === CommentStatus.Blocked && (
+                <p className="small text-danger">
+                  <i className="fa fa-exclamation-triangle" /> This comment is
+                  blocked by a moderator. Editing is disabled.
+                </p>
+              )}
+            {item.moderation && item.moderation.reason && (
               <blockquote className="blockquote">
-                <p className="small mb-0">{item.moderation?.reason}</p>
+                <p className="small mb-0">
+                  {item.moderation && item.moderation.reason}
+                </p>
               </blockquote>
             )}
           </>
         ) : (
           <>
-            <DismissButton
-              isBtn={false}
-              pathname={location.pathname}
-              title="Cancel"
-            />
-            <CommentForm
-              commentId={item.id}
-              debateId={debateId}
-              defaultData={{ comment: item.comment }}
-              dismissElement={
+            {item.moderation === null ||
+            item.moderation?.status === CommentStatus.Active ? (
+              <>
                 <DismissButton
-                  className="btn-sm mr-3"
-                  isBtn={true}
+                  isBtn={false}
                   pathname={location.pathname}
                   title="Cancel"
                 />
-              }
-              onSuccess={handleSuccess}
-              reset={false}
-            />
+                <CommentForm
+                  commentId={item.id}
+                  debateId={debateId}
+                  defaultData={{ comment: item.comment }}
+                  dismissElement={
+                    <DismissButton
+                      className="btn-sm mr-3"
+                      isBtn={true}
+                      pathname={location.pathname}
+                      title="Cancel"
+                    />
+                  }
+                  onSuccess={handleSuccess}
+                  reset={false}
+                />
+              </>
+            ) : (
+              <p className="small text-danger">
+                <i className="fa fa-exclamation-triangle" />
+                This comment is blocked by a moderator. Editing is disabled.
+              </p>
+            )}
           </>
         )}
       </div>
