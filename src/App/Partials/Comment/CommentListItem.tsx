@@ -68,6 +68,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       edit: 'comment',
       id: props.id,
     });
+  
   console.log(location.pathname + editQuery);
 
   const replyQuery = unescape(
