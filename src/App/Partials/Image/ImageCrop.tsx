@@ -1,13 +1,13 @@
 // import 'react-image-crop/lib/ReactCrop.scss';
 
+import React from 'react';
+import ReactCrop, { Crop, PercentCrop } from 'react-image-crop';
+
 import {
   Image,
-  randomHash
+  randomHash,
 } from 'platonist-library';
-import React from 'react';
-import ReactCrop, { Crop } from 'react-image-crop';
 import { withConfig, WithConfigProps } from '../../../Library';
-
 
 export interface ImageCropProps extends WithConfigProps {
   file?: File;
@@ -36,12 +36,9 @@ export class ImageCropBase extends React.Component<
 
     this.state = {
       crop: {
-        aspect: 1 / 1,
-        height: 50,
         unit: '%',
         width: 50,
-        x: 50,
-        y: 50,
+        aspect: 1 / 1,
       },
       fileName: randomHash(32),
     };
@@ -166,7 +163,7 @@ export class ImageCropBase extends React.Component<
     this.setState({ crop });
   };
 
-  private onCropComplete = (crop: Crop) => {
+  private onCropComplete = (crop: Crop, percentCrop: PercentCrop) => {
     this.makeClientCrop(crop);
   };
 
