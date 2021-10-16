@@ -9666,10 +9666,10 @@ pkg-up@3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-platonist-library@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.7.tgz#127789042ac331efadd9deb67bf7d0a8821420b4"
-  integrity sha512-kL3NS+nz2n8RsehUiY0Y4N/duhGGCIW1qCu7MJ9jWFRihJ5NFyTNsp0JCwHMQP79xo9zKtSlg9pDE6E8pDauQA==
+platonist-library@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.8.tgz#8eb6f2dbf52d28953374a89c25fc409f017f2b4a"
+  integrity sha512-mLvGyhdSj/bGbq95upC3msfOJCYr/c/MthnXKx3FQcic7/itSadGhQZvM7rRcESEWuX6pQ9DU2U+F8yPHikZUA==
   dependencies:
     axios "^0.21.1"
     connected-react-router "^6.9.1"
