@@ -125,10 +125,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       ? true
       : false;
 
-  const isBlocked =
-    props.moderation && props.moderation.status === CommentStatus.Blocked
-      ? true
-      : false;
+  // const isBlocked =
+  //   props.moderation && props.moderation.status === CommentStatus.Blocked
+  //     ? true
+  //     : false;
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
