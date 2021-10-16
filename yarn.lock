@@ -2302,7 +2302,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^4.0.0", "@typescript-eslint/eslint-plugin@^4.22.0", "@typescript-eslint/eslint-plugin@^4.5.0":
+"@typescript-eslint/eslint-plugin@^4.22.0", "@typescript-eslint/eslint-plugin@^4.5.0":
   version "4.33.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.33.0.tgz#c24dc7c8069c7706bc40d99f6fa87edcb2005276"
   integrity sha512-aINiAxGVdOl1eJyVjaWn/YcVAq4Gi/Yo35qHGCnqbWVz61g39D0h23veY/MA0rFFGfxK7TySg2uwDeNv+JgVpg==
@@ -9666,12 +9666,11 @@ pkg-up@3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-platonist-library@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.6.tgz#a3182429df621cdf5d3ef00e9d622b7ec72c3a15"
-  integrity sha512-VFLvOggYhZ0yrNdpDvQnFXKKGQUNlQR0kuDam9Gxuulzkl1o/O9uoQoLV4gFyju9AXPmEQVsCAHS3JDnykSQtw==
+platonist-library@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/platonist-library/-/platonist-library-1.0.7.tgz#127789042ac331efadd9deb67bf7d0a8821420b4"
+  integrity sha512-kL3NS+nz2n8RsehUiY0Y4N/duhGGCIW1qCu7MJ9jWFRihJ5NFyTNsp0JCwHMQP79xo9zKtSlg9pDE6E8pDauQA==
   dependencies:
-    "@typescript-eslint/eslint-plugin" "^4.0.0"
     axios "^0.21.1"
     connected-react-router "^6.9.1"
     eslint-plugin-react "^7.20.3"
