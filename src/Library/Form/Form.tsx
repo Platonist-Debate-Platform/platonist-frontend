@@ -1,10 +1,12 @@
 import React, {
   FunctionComponent,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
 } from 'react';
 import { Form as FormElement } from 'reactstrap';
+import { FromKeyboardEvent } from '.';
 
 import { FormContext } from './Context';
 import { FormResolver } from './FormResolver';
@@ -23,6 +25,7 @@ export interface FormProps<Data extends Object = {}> {
   onChange?: <D>(event: FormEvent<D>) => void;
   onContextChange?: <D>(key: string, data: FormContextValue<D>) => void;
   onSubmit?: <D>(event: FormEvent<D>) => void;
+  onKeyDown?: <D>(event: FromKeyboardEvent<D>) => void;
 }
 
 export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
@@ -40,6 +43,7 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
     onChange,
     onContextChange,
     onSubmit,
+    onKeyDown,
   } = props;
 
   const context = useContext(
@@ -65,6 +69,16 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
       });
     }
   };
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (onKeyDown && context) {
+      onKeyDown<Data>({
+        ...event,
+        data: context.data,
+        submitData: context.submitData,
+      });
+    }
+  }, [context, onKeyDown])
 
   useEffect(() => {
     if (!asForm && inputKey && onContextChange && context) {
@@ -92,6 +106,7 @@ export const Form: FunctionComponent<PropsWithChildren<FormProps>> = <
         inline={inline}
         onChange={handleChange}
         onSubmit={handleSubmit}
+        onKeyDown={handleKeyDown}
       >
         {(Object.keys(formData) as (keyof FormData<Data>)[]).map(
           (inputKey, index) => {

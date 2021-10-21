@@ -2,6 +2,7 @@ import './Assets/Sass/index.scss';
 import './Library/Fonts/amplesoft';
 import './Library/Fonts/icons';
 import '@fortawesome/fontawesome-free/css/all.css';
+import 'emoji-mart/css/emoji-mart.css'
 import 'core-js/es/map';
 import 'core-js/es/object/assign';
 import 'core-js/es/object/set-prototype-of';

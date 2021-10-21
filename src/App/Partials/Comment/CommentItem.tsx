@@ -69,7 +69,7 @@ export const CommentItem: FunctionComponent<CommentItemProps> = ({
         {(item.moderation && item.moderation.status !== CommentStatus.Active) ||
         location.search !== editQuery ? (
           <>
-            <p>{item.comment}</p>
+            <p style={{whiteSpace: 'pre-line'}}>{item.comment}</p>
             {item.moderation &&
               item.moderation.status === CommentStatus.Disputed && (
                 <p className="small text-danger">

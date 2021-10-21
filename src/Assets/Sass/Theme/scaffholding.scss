@@ -23,6 +23,15 @@ section {
     padding: ($section-padding-y / 2) 0;
   }
 
+  .emoji-mart-scroll &,
+  &.emoji-mart {
+    padding: 0;
+  }
+
+  &.emoji-mart {
+    width: 100% !important;
+  }
+
   &.section-branches-relevant {
     padding: 0;
   }

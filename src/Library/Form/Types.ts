@@ -1,3 +1,4 @@
+import React from 'react';
 import { ReactDatePickerProps } from 'react-datepicker';
 import validator from 'validator';
 
@@ -5,6 +6,11 @@ import { AutocompleteKeys, FormInputTypes, FormValidationTypes } from './Keys';
 import { ValidateBaseProps } from './Validate';
 
 export interface FormEvent<Data> extends React.FormEvent<HTMLFormElement> {
+  data: FormData<Data>;
+  submitData: SubmitData<Data>;
+}
+
+export interface FromKeyboardEvent<Data> extends React.KeyboardEvent<HTMLFormElement> {
   data: FormData<Data>;
   submitData: SubmitData<Data>;
 }
@@ -66,6 +72,7 @@ export interface FormDataConfig<Data> {
   selectValues?: string[];
   title: string;
   type: FormInputTypes;
+  usePicker?: boolean;
   validate?: FormValidationTypes | FormValidationTypes[];
   validateOptions?: ValidateOptions;
 }

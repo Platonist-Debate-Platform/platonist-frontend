@@ -15,6 +15,7 @@ import { CommentListItem } from './CommentListItem';
 
 export interface CommentRepliesProps {
   canComment?: boolean;
+  canEdit?: boolean;
   from: string;
   isDisputed: boolean;
   isDetail: boolean;
@@ -27,6 +28,7 @@ export interface CommentRepliesProps {
 
 export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
   canComment,
+  canEdit,
   isDisputed,
   isDetail,
   isForForm,
@@ -95,6 +97,7 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
             comments.map((item, index) => (
               <CommentListItem
                 canCreate={canComment ? true : false}
+                canEdit={canEdit}
                 debateId={debate.id}
                 isDisputed={isDisputed}
                 isDetail={isDetail}
@@ -104,7 +107,15 @@ export const CommentReplies: FunctionComponent<CommentRepliesProps> = ({
                 path={path}
                 {...item}
               />
-            ))) || <>No Comments yet!</>}
+            ))) || (
+              <>
+                {!(status === RequestStatus.Updating || status === RequestStatus.Initial) && (
+                  <>
+                    No Comments yet!
+                  </>
+                )}
+              </>
+            )}
         </div>
       )}
     </CollapseWithRoute>

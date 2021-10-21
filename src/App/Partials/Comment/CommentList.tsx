@@ -129,7 +129,6 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
       clear();
     }
   });
-  console.log(comments);
   
   return (
     <div className="comments-list">
@@ -151,7 +150,15 @@ export const CommentList: FunctionComponent<CommentListProps> = ({
                   path={path}
                   {...item}
                 />
-              ))) || <>No Comments yet!</>}
+              ))) || (
+                <>
+                  {!(status === RequestStatus.Updating || status === RequestStatus.Initial) && (
+                    <>
+                      No Comments yet!
+                    </>
+                  )}
+                </>
+              )}
           </Col>
         </Row>
       </Container>

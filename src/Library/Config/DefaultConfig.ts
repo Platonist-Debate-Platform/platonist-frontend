@@ -18,13 +18,13 @@ export const isProduction =
 export const isTest =
   (env.NODE_ENV as AppEnvKeys) === AppEnvKeys.Test ? true : false;
 
-const global = globalThis || window;
+const globalWindow = globalThis || window;
 
 export const isLocalhost =
-  global &&
-  global.location &&
-  (global.location.hostname === 'localhost' ||
-    global.location.hostname === '127.0.0.1');
+  globalWindow &&
+  globalWindow.location &&
+  (globalWindow.location.hostname === 'localhost' ||
+    globalWindow.location.hostname === '127.0.0.1');
 
 const resolveApiUrl = (environment: AppEnvKeys, forApi: boolean = true) => {
   switch (environment) {

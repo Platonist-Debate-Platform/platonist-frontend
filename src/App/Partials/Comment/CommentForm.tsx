@@ -6,9 +6,9 @@ import {
   PrivateRequestKeys,
   RequestStatus,
 } from 'platonist-library';
-import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { usePrevious } from 'react-use';
-import { Form } from 'reactstrap';
+import {  } from 'reactstrap';
 
 import {
   FormClickEvent,
@@ -17,7 +17,8 @@ import {
   FormProvider,
   FormValidationTypes,
 } from '../../../Library';
-import { SubmitButton, Text } from '../../../Library/Form/Fields';
+import { SubmitButton } from '../../../Library/Form/Fields';
+import { Form, FromKeyboardEvent } from '../../../Library/Form';
 import { useAuthentication, useComments } from '../../Hooks';
 
 const commentFormData: FormDataConfig<Partial<Comment>>[] = [
@@ -27,6 +28,7 @@ const commentFormData: FormDataConfig<Partial<Comment>>[] = [
     required: true,
     title: 'Create a new comment',
     type: FormInputTypes.Text,
+    usePicker: true,
     validate: FormValidationTypes.Words,
   },
 ];
@@ -63,7 +65,7 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
 
   const prevStatus = usePrevious(status);
 
-  const handleSubmit = (event: FormClickEvent<Partial<Comment>>) => {
+  const handleSubmit = useCallback((event: FormClickEvent<Partial<Comment>> | FromKeyboardEvent<Partial<Comment>>) => {
     if (!isAuthenticated && !state && !event.submitData.isValid) {
       return;
     }
@@ -86,7 +88,13 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
       method: defaultData ? 'PUT' : 'POST',
       pathname: `/comments${commentId ? '/' + commentId : ''}`,
     });
-  };
+  }, [commentId, debateId, defaultData, isAuthenticated, parent, send, state]);
+
+  const handleKeyDown = useCallback((event: FromKeyboardEvent<Partial<Comment>>) => {
+    if (event.nativeEvent.ctrlKey && (event.key === 'Enter' || event.key === 'enter')) {
+      handleSubmit(event);
+    }
+  }, [handleSubmit]);
 
   useEffect(() => {
     if (
@@ -126,8 +134,7 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
         inputConfig={commentFormData}
         reset={shouldReset || reset}
       >
-        <Form>
-          <Text inputKey="comment" hideLabel={defaultData ? true : false} />
+        <Form asForm={true} onKeyDown={handleKeyDown}>
           <div className="text-right">
             {dismissElement && <>{dismissElement}</>}
             <SubmitButton
@@ -135,7 +142,7 @@ export const CommentForm: FunctionComponent<CommentFormProps> = ({
                 'btn-sm': defaultData,
               })}
               disabled={status === RequestStatus.Updating}
-              onClick={handleSubmit}
+              onClick={(e: FormClickEvent<Partial<Comment>>) => handleSubmit(e)}
               preventDefault={true}
               type="submit"
             >

@@ -50,7 +50,6 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
   ...props
 }) => {
   const author = props.user as User;
-  console.log();
 
   const { result: user } = useSelector<
     GlobalState,
@@ -68,7 +67,6 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       edit: 'comment',
       id: props.id,
     });
-  console.log(location.pathname + editQuery);
 
   const replyQuery = unescape(
     '?' +
@@ -94,7 +92,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       }),
   );
 
-  const [canWrite, setCanWrite] = useState(canEdit && user?.id === author?.id);
+  const [canWrite, setCanWrite] = useState<boolean>(canEdit && user?.id === author?.id ? true : false);
 
   const roleState = useRoles(PrivateRequestKeys.Role, user?.id) as RoleState;
 
@@ -124,10 +122,10 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
       ? true
       : false;
 
-  // const isBlocked =
-  //   props.moderation && props.moderation.status === CommentStatus.Blocked
-  //     ? true
-  //     : false;
+  const isBlocked =
+    props.moderation && props.moderation.status === CommentStatus.Blocked
+      ? true
+      : false;
 
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
@@ -208,9 +206,9 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                         <i className="fa fa-reply" /> Reply
                       </Link>
                     )}
-                    {!isDisputed && canWrite && location.search !== editQuery && (
+                    {!isDisputed && !isBlocked && canWrite && location.search !== editQuery && (
                       <Link
-                        to={location.pathname + editQuery}
+                        to={(isReply ? `${path}/${props.id}` : location.pathname) + editQuery}
                         className="p-0 btn btn-none btn-sm"
                       >
                         <i className="fa fa-edit" /> Edit
@@ -259,6 +257,7 @@ export const CommentListItem: FunctionComponent<CommentListItemProps> = ({
                   )}
                   <CommentReplies
                     canComment={canComment}
+                    canEdit={canEdit}
                     from={location.pathname}
                     isDisputed={isDisputed}
                     isDetail={true}
